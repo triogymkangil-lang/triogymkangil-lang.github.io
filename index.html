@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>트리오짐 운동 일지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800;900&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* 트리오짐 4주 프로그램 공통 스타일 (일반·PT 페이지 함께 사용) */
+  /* 레이아웃: 위에 입력판, 그 아래 요약 → 4주 로드맵 → 일차별 루틴 → 회차별 운동 일지(주차 탭) → 유산소·식단 가이드 → 문자 */
+  :root{
+    --bg:#f2f4f8;--card:#ffffff;--ink:#131a2b;--sub:#5b6477;--line:#dde2ec;--soft:#eef1f6;
+    --accent:#1f4fe0;--accent-ink:#ffffff;--accent-soft:#e5ebff;
+    --good:#15803d;--good-soft:#e3f4e8;--warn:#a85a07;--warn-soft:#fff1dc;--bad:#c42b2b;--bad-soft:#fde8e8;
+    --display:"Gothic A1","IBM Plex Sans KR","Malgun Gothic",sans-serif;
+    --body:"IBM Plex Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+    --bg:#10141d;--card:#181d29;--ink:#e7eaf2;--sub:#9aa3b5;--line:#2a3142;--soft:#1f2533;
+    --accent:#7d9bff;--accent-ink:#0d1220;--accent-soft:#1f2a4a;
+    --good:#5ad48a;--good-soft:#173324;--warn:#f2b85b;--warn-soft:#3a2c14;--bad:#ff8a8a;--bad-soft:#3d1c1c;color-scheme:dark}}
+  :root[data-theme="dark"]{
+    --bg:#10141d;--card:#181d29;--ink:#e7eaf2;--sub:#9aa3b5;--line:#2a3142;--soft:#1f2533;
+    --accent:#7d9bff;--accent-ink:#0d1220;--accent-soft:#1f2a4a;
+    --good:#5ad48a;--good-soft:#173324;--warn:#f2b85b;--warn-soft:#3a2c14;--bad:#ff8a8a;--bad-soft:#3d1c1c;color-scheme:dark}
+  *{box-sizing:border-box}
+  main>*,.grid>*,.hero>*{min-width:0} /* 넓은 표가 화면 전체를 밀어내지 않게 */
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  main{max-width:1040px;margin:0 auto;padding-block:24px 64px;display:grid;gap:12px}
+  h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+  h1{font-size:26px;font-weight:900} h2{font-size:19px;font-weight:800;margin-top:22px} h3{font-size:16px;font-weight:800}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+  .sub{color:var(--sub);font-size:14px;margin:4px 0 0}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .grid{display:grid;gap:10px}
+  .g-form{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+  .g-2{grid-template-columns:1fr 1fr} @media (max-width:700px){.g-2{grid-template-columns:1fr}}
+  .g-kpi{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .g-week{grid-template-columns:repeat(4,1fr)} @media (max-width:860px){.g-week{grid-template-columns:1fr 1fr}} @media (max-width:480px){.g-week{grid-template-columns:1fr}}
+  .g-days{grid-template-columns:repeat(auto-fit,minmax(310px,1fr))}
+  .g-sess{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  label{display:block;font-size:12.5px;color:var(--sub);margin-bottom:4px;font-weight:500}
+  input[type=text],input[type=number],input[type=date]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:inherit;min-width:0}
+  input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:58px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+  .btn{padding:9px 16px;border-radius:9px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:700;cursor:pointer}
+  .btn.ghost{background:var(--card);color:var(--accent)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .memo{display:flex;gap:8px} .memo input{flex:1}
+  .hint{font-size:12.5px;color:var(--sub)}
+  code{font-family:var(--mono);font-size:12px;background:var(--soft);padding:1px 6px;border-radius:5px;word-break:break-all}
+  /* 요약 */
+  .hero{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:start} @media (max-width:760px){.hero{grid-template-columns:1fr}}
+  .kpi{background:var(--soft);border-radius:12px;padding:10px 14px}
+  .kpi .l{font-size:12px;color:var(--sub)} .kpi .v{font-size:22px;font-weight:700;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .kpi .d{font-size:12px;color:var(--sub)}
+  .pill{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:3px;font-family:var(--body)}
+  .ok{background:var(--good-soft);color:var(--good)} .hi{background:var(--warn-soft);color:var(--warn)} .bad{background:var(--bad-soft);color:var(--bad)} .lo{background:var(--accent-soft);color:var(--accent)}
+  .note{background:var(--warn-soft);color:var(--ink);border-radius:10px;padding:9px 13px;font-size:14px}
+  .facts{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+  .facts li{display:grid;grid-template-columns:86px 1fr;gap:8px;font-size:14px} .facts b{color:var(--sub);font-weight:500;font-size:13px}
+  /* 로드맵 */
+  .week{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:6px;align-content:start}
+  .week .wk{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600}
+  .week .what{font-size:13.5px} .week .meta{font-size:12.5px;color:var(--sub)}
+  .check{display:flex;gap:8px;align-items:flex-start;font-size:13px;background:var(--soft);border-radius:8px;padding:7px 9px}
+  .check input{margin-top:4px}
+  /* 일차 루틴 */
+  .day{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .day .hd{display:flex;gap:8px;align-items:baseline;margin-bottom:6px} .day .hd .wd{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:600}
+  .seq{font-size:12.5px;color:var(--sub);margin:4px 0 2px}
+  .seq ol{margin:2px 0 0;padding-left:18px} .seq li{margin:1px 0}
+  .ex{border-top:1px solid var(--line);padding:9px 0}
+  .ex .n{font-weight:700} .ex .part{font-size:11.5px;color:var(--sub);background:var(--soft);border-radius:6px;padding:0 6px;margin-left:6px;white-space:nowrap}
+  .ex .c{font-size:13px;margin-top:2px}
+  .ex dl{display:grid;grid-template-columns:62px 1fr;gap:1px 8px;margin:5px 0 0;font-size:12.5px} .ex dt{color:var(--sub)} .ex dd{margin:0}
+  .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+  .chips span{font-size:12px;background:var(--accent-soft);color:var(--ink);border-radius:6px;padding:1px 7px;font-family:var(--mono);white-space:nowrap}
+  .cardio{margin-top:8px;font-size:13px;background:var(--soft);border-radius:10px;padding:8px 11px}
+  /* 일지 */
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .tabs button{padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  .tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
+  .sess{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;break-inside:avoid}
+  .sess .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .sess .idx{font-family:var(--mono);font-weight:600;color:var(--accent)} .sess .dt{font-family:var(--mono);font-size:13px;color:var(--sub)}
+  .sess table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  .sess th{font-size:11.5px;color:var(--sub);font-weight:500;text-align:left;padding:3px 4px;border-bottom:1px solid var(--line)}
+  .sess td{padding:5px 4px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .sess td.p{font-family:var(--mono);font-size:12px;white-space:nowrap}
+  .sess td.w input{width:64px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:inherit;font-size:12px}
+  .flag{font-size:12.5px;background:var(--warn-soft);border-radius:8px;padding:5px 9px;margin-top:6px}
+  [hidden],.pane[hidden]{display:none!important}
+  /* 표 */
+  .tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
+  .tbl table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+  .tbl th,.tbl td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .tbl th{color:var(--sub);font-weight:500;font-size:12.5px;white-space:nowrap} .tbl tr:last-child td{border-bottom:none}
+  ul.plain{margin:0;padding-left:18px} ul.plain li{margin:3px 0}
+  .msg{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:13.5px;white-space:pre-wrap;max-height:520px;overflow:auto;min-width:0}
+  .bytes{font-size:12.5px;color:var(--sub)} .bytes.over{color:var(--bad);font-weight:700}
+  .print-only{display:none}
+  @media (prefers-reduced-motion: no-preference){.seg button,.tabs button,.btn{transition:background .15s,color .15s}}
+  @media print{
+    :root{--bg:#fff;--card:#fff;--soft:#f3f4f6;--ink:#000;--sub:#444;--line:#bbb;color-scheme:light}
+    body{font-size:11.5px;padding:0} main{max-width:none;padding:0;gap:8px}
+    .noprint{display:none!important} .print-only{display:block}
+    .pane[hidden]{display:grid!important} .pane::before{content:attr(data-title);display:block;font-weight:800;font-size:13px;margin:8px 0 4px;grid-column:1/-1}
+    .panel,.week,.day,.sess,.tbl{break-inside:avoid} .g-sess{grid-template-columns:1fr 1fr} .g-days{grid-template-columns:1fr 1fr}
+    h2{margin-top:10px;font-size:15px} @page{size:A4;margin:11mm}
+  }
+
+</style>
+<style>
+  /* 회원 휴대폰용: 오늘 할 운동 카드가 맨 위, 그 아래 무게 변화와 전체 회차 */
+  main{max-width:680px}
+  .bar{height:10px;border-radius:999px;background:var(--soft);overflow:hidden} .bar i{display:block;height:100%;background:var(--accent);border-radius:999px}
+  .today{border:2px solid var(--accent)}
+  .exrow{display:grid;grid-template-columns:1fr auto auto;gap:6px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+  .exrow:first-of-type{border-top:none}
+  .exrow .ps{font-family:var(--mono);font-size:12.5px;color:var(--sub)}
+  .exrow details{min-width:0} .exrow summary{cursor:pointer;font-weight:700;list-style:none}
+  .exrow summary::-webkit-details-marker{display:none}
+  .exrow summary::after{content:" ⓘ";color:var(--accent);font-weight:400;font-size:13px}
+  .howto{font-size:12.5px;background:var(--soft);border-radius:8px;padding:7px 9px;margin-top:5px;display:grid;gap:2px}
+  .howto b{color:var(--sub);font-weight:500}
+  .exrow .why{grid-column:1/-1;font-size:12px;color:var(--sub);margin-top:-2px}
+  .exrow .why.up{color:var(--good)} .exrow .why.down{color:var(--warn)}
+  .wbox{display:flex;align-items:center;gap:4px}
+  .wbox input{width:76px;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;font-family:var(--mono);text-align:right}
+  .wbox input.sug{border-color:var(--accent);background:var(--accent-soft)}
+  .wbox span{font-size:12px;color:var(--sub)}
+  .ck{width:26px;height:26px;accent-color:var(--accent)}
+  .done-tag{font-size:12px;font-weight:700;color:var(--good);background:var(--good-soft);border-radius:999px;padding:1px 9px;white-space:nowrap}
+  .sim{background:var(--warn-soft);border:1px dashed var(--warn);border-radius:14px;padding:12px 14px}
+  .sim .row button{font-size:13.5px;padding:7px 12px}
+  .tbl td.f{color:var(--sub);font-style:italic} .tbl td.r{font-weight:700}
+  .tbl td.u{color:var(--good);font-weight:700} .tbl td.dn{color:var(--warn);font-weight:700}
+  .sessmini{display:grid;gap:8px}
+  details.s{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+  details.s>summary{cursor:pointer;display:flex;justify-content:space-between;gap:8px;align-items:center;list-style:none}
+  details.s>summary::-webkit-details-marker{display:none}
+  details.fold>summary{cursor:pointer;font-size:13.5px;color:var(--accent);margin:6px 0 2px}
+  .timer{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:10px;padding:8px 10px;margin-top:8px}
+  .timer .t{font-family:var(--mono);font-size:22px;font-weight:600;min-width:64px}
+  .timer button{padding:6px 12px;font-size:13.5px}
+  .nudge{background:var(--accent-soft);border-radius:10px;padding:9px 12px;font-size:14px}
+  .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+  /* 처음 열 때 회원이 직접 고르는 화면 */
+  .setup{border:2px solid var(--accent)}
+  .setup h2{margin:0 0 2px}
+  .q{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+  .q:first-of-type{border-top:none}
+  .q>b{font-size:15px} .q .hint{margin:0}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opts label{position:relative;display:block;margin:0;font-size:15px;font-weight:500;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;background:var(--card);min-width:64px;text-align:center;line-height:1.35}
+  .opts label small{display:block;font-size:12px;color:var(--sub);font-weight:400}
+  .opts input{position:absolute;opacity:0;pointer-events:none}
+  .opts label.on{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+  .opts input:disabled+span{opacity:.45}
+  .nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+  .nums label{font-size:13px;color:var(--sub);display:grid;gap:3px}
+  .nums input{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;font-family:var(--mono);font-size:16px}
+  .err{color:var(--warn);font-size:13.5px;font-weight:700;min-height:1em}
+  .bigbtn{width:100%;padding:13px;font-size:16px}
+  .info{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
+  .info span b{color:var(--sub);font-weight:500;margin-right:4px}
+  textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-family:var(--mono);font-size:11.5px;padding:8px}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">TRIO GYM · 내 운동 일지</div>
+    <h1 id="hName">운동 일지</h1>
+    <p class="sub" id="hSub"></p>
+  </header>
+
+  <section class="panel grid" style="gap:8px" id="progPanel">
+    <div class="row" style="justify-content:space-between"><b id="progText"></b><span class="hint" id="nextText"></span></div>
+    <div class="bar"><i id="progBar" style="width:0"></i></div>
+    <span class="hint" id="syncText" aria-live="polite"></span>
+  </section>
+
+  <section class="panel setup" id="setupBox" hidden aria-label="내 정보 입력">
+    <h2 id="setupTitle">내 정보를 알려 주세요</h2>
+    <p class="hint" style="margin:0 0 4px">고른 정보에 맞춰 4주 운동 프로그램이 바로 만들어져요. 센터에서도 같이 보고 챙겨 드려요.</p>
+    <div class="q"><b>성별</b>
+      <div class="opts" data-name="sex"><label><input type="radio" name="sex" value="M"><span>남</span></label><label><input type="radio" name="sex" value="F"><span>여</span></label></div></div>
+    <div class="q"><b>나이</b>
+      <div class="nums" style="grid-template-columns:minmax(0,160px)"><label>만 나이<input id="sAge" type="number" inputmode="numeric" min="10" max="99" placeholder="예: 34"></label></div></div>
+    <div class="q"><b>일주일에 몇 번 운동할 수 있나요?</b>
+      <div class="opts" data-name="freq"><label><input type="radio" name="freq" value="2"><span>주 2회</span></label><label><input type="radio" name="freq" value="3"><span>주 3회</span></label><label><input type="radio" name="freq" value="4"><span>주 4회</span></label><label><input type="radio" name="freq" value="5"><span>주 5회</span></label></div>
+      <p class="hint">무리하지 않고 꾸준히 올 수 있는 횟수를 골라 주세요.</p></div>
+    <div class="q"><b>운동 목적</b>
+      <div class="opts" data-name="goal">
+        <label><input type="radio" name="goal" value="다이어트"><span>다이어트<small>체지방 줄이기</small></span></label>
+        <label><input type="radio" name="goal" value="기초체력"><span>기초체력<small>자세·체력 기르기</small></span></label>
+        <label><input type="radio" name="goal" value="근력증진"><span>근력증진<small>근육·힘 키우기</small></span></label></div></div>
+    <div class="q"><b>인바디 <span class="hint" style="font-weight:400">(있으면 적어 주세요)</span></b>
+      <p class="hint">인바디 결과지의 숫자를 적어 주세요. 아직 안 쟀으면 비워 두셔도 돼요. 오실 때 인포데스크에서 재 볼 수 있어요.</p>
+      <div class="nums">
+        <label>키 (cm)<input id="sH" type="number" inputmode="decimal" step="0.1" placeholder="예: 175"></label>
+        <label>체중 (kg)<input id="sW" type="number" inputmode="decimal" step="0.1" placeholder="예: 72.5"></label>
+        <label>골격근량 (kg)<input id="sM" type="number" inputmode="decimal" step="0.1" placeholder="예: 30.2"></label>
+        <label>체지방률 (%)<input id="sF" type="number" inputmode="decimal" step="0.1" placeholder="예: 24.8"></label>
+      </div></div>
+    <div class="err" id="setupErr" aria-live="polite"></div>
+    <button class="btn bigbtn" type="button" id="setupGo">내 4주 프로그램 만들기</button>
+    <button class="btn ghost bigbtn" type="button" id="setupCancel" style="margin-top:8px" hidden>그대로 두기</button>
+  </section>
+
+  <section class="sim grid" style="gap:8px" id="simBox" hidden aria-label="체험용 시뮬레이션">
+    <b>체험판 · 시뮬레이션</b>
+    <span class="hint" style="color:var(--ink)">회원이 운동을 마친 것처럼 눌러 보세요. 기록이 쌓이면 다음 주 무게가 어떻게 바뀌는지 바로 보여요. 실제 회원 링크에서는 이 칸이 안 보여요.</span>
+    <div class="row">
+      <button class="btn" type="button" id="simAll">오늘 회차: 모두 완료</button>
+      <button class="btn ghost" type="button" id="simMiss">오늘 회차: 1개 못 함</button>
+      <button class="btn ghost" type="button" id="simWeek">한 주 통째로 완료</button>
+      <button class="btn ghost" type="button" id="simReset">처음부터 다시</button>
+    </div>
+  </section>
+
+  <div id="out" class="grid" style="gap:12px"></div>
+
+  <details class="panel" id="infoBox" hidden>
+    <summary class="hint" style="cursor:pointer">내 정보 (나이·인바디·목적)</summary>
+    <div class="grid" style="gap:8px;margin-top:10px">
+      <div class="info" id="infoText"></div>
+      <p class="hint" style="margin:0" id="infoNote"></p>
+      <div class="row"><button class="btn ghost" type="button" id="infoEdit">정보 고치기</button></div>
+    </div>
+  </details>
+
+  <details class="panel" id="moveBox">
+    <summary class="hint" style="cursor:pointer">기록 옮기기 (휴대폰을 바꾸거나 인터넷 기록을 지우기 전에)</summary>
+    <div class="grid" style="gap:8px;margin-top:10px">
+      <p class="hint" style="margin:0">기록은 이 휴대폰에만 저장돼요. 아래 코드를 복사해 카톡 나에게 보내기 등에 보관했다가, 새 휴대폰에서 같은 링크를 열고 붙여넣으면 기록이 돌아와요.</p>
+      <textarea id="moveCode" aria-label="기록 코드"></textarea>
+      <div class="row"><button class="btn ghost" type="button" id="moveCopy">내 기록 코드 복사</button><button class="btn ghost" type="button" id="moveLoad">붙여넣은 코드 불러오기</button></div>
+    </div>
+  </details>
+
+  <details class="panel" id="demoForm" hidden>
+    <summary class="hint" style="cursor:pointer">회원 정보 바꾸기 (체험용)</summary>
+    <div class="grid g-form" style="margin-top:10px">
+      <div><label for="name">이름</label><input id="name" type="text"></div>
+      <div><label for="sex">성별 (M/F)</label><input id="sex" type="text"></div>
+      <div><label for="age">나이</label><input id="age" type="number"></div>
+      <div><label for="weight">체중</label><input id="weight" type="number" step="0.1"></div>
+      <div><label for="freq">주 횟수 (2~5)</label><input id="freq" type="number" min="2" max="5"></div>
+      <div><label for="goal">목적</label><input id="goal" type="text" placeholder="다이어트/기초체력/근력증진"></div>
+      <div><label for="start">시작일</label><input id="start" type="date"></div>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn" type="button" id="apply">이 정보로 새 일지</button></div>
+  </details>
+  <p class="hint" style="text-align:center">기구 사용법이 궁금하면 인포데스크에 편하게 물어봐 주세요.</p>
+</main>
+
+<script>
+// 트리오짐 신규회원 4주 운동 프로그램 생성기 v2
+// - 한달프로그램_만들기.html 에서 쓰고, 자동화 때는 바디코디 페이지에서 이 파일 내용을 그대로 실행해서 씁니다.
+// - 사용: TRIO_PROGRAM.make({ name, sex:"M"|"F", age, height, weight, smm, fat, freq:2~5, goal:"다이어트"|"기초체력"|"근력증진", start:"YYYY-MM-DD" })
+//         → 프로그램 객체.  TRIO_PROGRAM.sms(프로그램) → 문자 문구(LMS).  TRIO_PROGRAM.parseMemo("#4주프로그램 34세 ...") → 입력값
+// - 인바디 값(height, weight, smm, fat)과 나이·시작일은 없어도 됩니다. 있으면 더 자세해져요(칼로리, 심박수, 날짜, 예상 변화).
+(function (root) {
+  "use strict";
+
+  // 운동 사전. eq: machine/cable/db(덤벨)/body,  kind: time(초)/side(좌우 각 회)
+  // st: 덤벨 시작 무게 [여, 남]
+  const EX = {
+    legpress: { n: "레그프레스", part: "허벅지 앞·엉덩이", eq: "machine", cue: "발은 어깨너비, 무릎은 발끝 방향. 허리를 등받이에서 떼지 않고, 무릎을 끝까지 펴서 잠그지 않기", alt: "goblet" },
+    goblet: { n: "덤벨 고블릿 스쿼트", part: "허벅지 앞·엉덩이", eq: "db", st: ["4~6kg", "8~12kg"], cue: "덤벨을 가슴에 안고 의자에 앉듯이 엉덩이를 뒤로. 무릎이 안으로 모이지 않게", alt: "legpress" },
+    boxsq: { n: "벤치 스쿼트", part: "허벅지 앞·엉덩이", eq: "body", cue: "벤치에 살짝 앉았다가 발바닥 전체로 밀며 일어서기. 무릎이 안으로 모이지 않게", alt: "legpress" },
+    legext: { n: "레그익스텐션", part: "허벅지 앞", eq: "machine", cue: "끝까지 펴고 1초 멈춘 뒤 천천히 내리기. 엉덩이가 들리지 않게 손잡이 잡기", alt: "boxsq" },
+    legcurl: { n: "레그컬", part: "허벅지 뒤", eq: "machine", cue: "엉덩이가 들리지 않게 고정하고, 내릴 때 3초 천천히", alt: "bridge" },
+    rdl: { n: "덤벨 루마니안 데드리프트", part: "허벅지 뒤·엉덩이·허리", eq: "db", st: ["4~6kg", "8~12kg"], cue: "무릎은 살짝만 굽히고, 허리를 곧게 편 채 엉덩이를 뒤로 빼며 덤벨을 무릎 아래까지", alt: "backext" },
+    bridge: { n: "힙브릿지", part: "엉덩이", eq: "body", cue: "누워서 무릎 세우고, 엉덩이를 조이며 들어 올려 1초 멈추기. 허리로 들지 않기", alt: "abduct" },
+    abduct: { n: "힙어브덕션 머신", part: "엉덩이 옆", eq: "machine", cue: "상체를 등받이에 고정하고 바깥으로 천천히 벌린 뒤 3초 동안 모으기", alt: "bridge" },
+    lunge: { n: "제자리 런지", part: "허벅지·엉덩이·균형", eq: "body", cue: "다리를 앞뒤로 벌린 채 뒷무릎을 바닥 쪽으로. 앞무릎이 발끝을 많이 넘지 않게. 익숙해지면 덤벨 들기", alt: "legpress" },
+    calf: { n: "카프레이즈", part: "종아리", eq: "body", cue: "발뒤꿈치를 끝까지 들고 1초 멈춘 뒤 천천히 내리기. 벽이나 기구를 잡아도 돼요", alt: "legpress" },
+    backext: { n: "백익스텐션", part: "허리·엉덩이", eq: "body", cue: "몸이 일직선이 될 때까지만 올라오기. 허리를 과하게 젖히지 않기", alt: "bridge" },
+    chest: { n: "체스트프레스 머신", part: "가슴·팔 뒤", eq: "machine", cue: "손잡이는 가슴 중간 높이로 의자 맞추기. 어깨가 들리지 않게 가슴을 편 채 밀기", alt: "dbbench" },
+    dbbench: { n: "덤벨 벤치프레스", part: "가슴·팔 뒤", eq: "db", st: ["2~4kg", "6~10kg"], cue: "팔꿈치를 몸통에서 45도로 벌리고 가슴 옆까지 내렸다가 밀기", alt: "chest" },
+    pecdeck: { n: "펙덱 플라이", part: "가슴", eq: "machine", cue: "팔꿈치를 살짝 굽힌 채 가슴 앞으로 모으고 천천히 벌리기", alt: "chest" },
+    shoulder: { n: "숄더프레스 머신", part: "어깨", eq: "machine", cue: "허리를 등받이에 붙이고 귀 옆에서 위로 밀기. 허리가 뜨면 무게를 줄이기", alt: "lateral" },
+    lateral: { n: "사이드 레터럴 레이즈", part: "어깨 옆", eq: "db", st: ["1~2kg", "2~5kg"], cue: "가벼운 덤벨로 팔꿈치를 살짝 굽혀 어깨 높이까지만 들기", alt: "shoulder" },
+    latpull: { n: "랫풀다운", part: "등·팔 앞", eq: "machine", cue: "가슴을 펴고 바를 쇄골 쪽으로 당기기. 몸을 뒤로 많이 젖히지 않기", alt: "row" },
+    row: { n: "시티드 로우", part: "등 가운데", eq: "cable", cue: "허리 곧게 세우고 팔꿈치를 뒤로 보내며 날개뼈 모으기", alt: "dbrow" },
+    dbrow: { n: "원암 덤벨 로우", part: "등", eq: "db", st: ["4~6kg", "8~12kg"], cue: "벤치에 한 손과 무릎을 짚고 덤벨을 옆구리 쪽으로 당기기. 좌우 같은 횟수", alt: "row" },
+    curl: { n: "덤벨 컬", part: "팔 앞", eq: "db", st: ["2~3kg", "5~8kg"], cue: "팔꿈치를 몸통에 붙이고 반동 없이 올렸다가 천천히 내리기", alt: "row" },
+    pushdown: { n: "케이블 푸시다운", part: "팔 뒤", eq: "cable", cue: "팔꿈치를 옆구리에 고정하고 아래로 끝까지 펴기", alt: "kickback" },
+    kickback: { n: "덤벨 킥백", part: "팔 뒤", eq: "db", st: ["1~2kg", "3~5kg"], cue: "상체를 숙이고 팔꿈치를 옆구리에 붙인 채 뒤로 끝까지 펴기", alt: "pushdown" },
+    plank: { n: "플랭크", part: "복근·코어", eq: "body", kind: "time", cue: "팔꿈치는 어깨 아래, 머리부터 발끝까지 일직선. 엉덩이가 처지거나 들리지 않게", alt: "kneeplank" },
+    kneeplank: { n: "무릎 플랭크", part: "복근·코어", eq: "body", kind: "time", cue: "무릎을 대고 무릎부터 머리까지 일직선. 숨을 참지 않기", alt: "deadbug" },
+    sideplank: { n: "사이드 플랭크", part: "옆구리·코어", eq: "body", kind: "time", cue: "좌우 번갈아. 골반이 처지지 않게, 힘들면 무릎을 대고", alt: "birddog" },
+    deadbug: { n: "데드버그", part: "복근·코어", eq: "body", kind: "side", cue: "누워서 허리를 바닥에 붙인 채 반대쪽 팔다리를 번갈아 천천히 뻗기", alt: "kneeplank" },
+    birddog: { n: "버드독", part: "허리·코어·균형", eq: "body", kind: "side", cue: "네발 자세에서 반대쪽 팔다리를 뻗고 2초 멈추기. 허리가 꺾이지 않게", alt: "deadbug" },
+    // PT용 (선생님이 옆에서 보는 프리웨이트·서킷)
+    smithsq: { n: "스미스머신 스쿼트", part: "허벅지 앞·엉덩이", eq: "machine", cue: "바를 승모근 위에 얹고 발은 바보다 살짝 앞. 허벅지가 바닥과 수평까지", alt: "legpress" },
+    bbbench: { n: "바벨 벤치프레스", part: "가슴·팔 뒤", eq: "bar", cue: "날개뼈를 모아 벤치에 고정, 바를 명치 위로 내렸다가 밀기", alt: "dbbench" },
+    bbrdl: { n: "바벨 루마니안 데드리프트", part: "허벅지 뒤·엉덩이·허리", eq: "bar", cue: "바를 몸에 붙인 채 엉덩이를 뒤로 빼며 무릎 아래까지. 허리 중립", alt: "rdl" },
+    dbohp: { n: "덤벨 숄더프레스", part: "어깨", eq: "db", st: ["2~4kg", "6~10kg"], cue: "벤치에 앉아 귀 옆에서 머리 위로. 허리가 젖혀지지 않게", alt: "shoulder" },
+    stepup: { n: "벤치 스텝업", part: "허벅지·엉덩이·심폐", eq: "body", kind: "side", cue: "낮은 벤치에 한 발을 올리고 그 다리 힘으로 올라서기", alt: "boxsq" },
+    pushup: { n: "푸시업", part: "가슴·팔·코어", eq: "body", cue: "힘들면 무릎을 대고. 몸통이 일직선을 유지하는 범위까지만", alt: "chest" },
+    mountain: { n: "마운틴 클라이머", part: "코어·심폐", eq: "body", kind: "time", cue: "팔을 어깨 아래에 두고 무릎을 번갈아 가슴 쪽으로. 엉덩이가 들리지 않게", alt: "deadbug" },
+  };
+
+  const DAYS = {
+    F1: { t: "전신 A", type: "full", ex: ["legpress", "chest", "latpull", "legcurl", "plank"] },
+    F2: { t: "전신 B", type: "full", ex: ["goblet", "row", "shoulder", "bridge", "deadbug"] },
+    F3: { t: "전신 C", type: "full", ex: ["rdl", "dbbench", "dbrow", "lunge", "birddog"] },
+    U1: { t: "상체 A", type: "upper", ex: ["chest", "latpull", "shoulder", "row", "pushdown", "plank"] },
+    L1: { t: "하체 A", type: "lower", ex: ["legpress", "legcurl", "legext", "bridge", "calf", "deadbug"] },
+    U2: { t: "상체 B", type: "upper", ex: ["dbbench", "dbrow", "lateral", "pecdeck", "curl", "birddog"] },
+    L2: { t: "하체 B", type: "lower", ex: ["goblet", "rdl", "lunge", "abduct", "backext", "sideplank"] },
+    C1: { t: "유산소 + 코어", type: "core", ex: ["plank", "deadbug", "birddog", "sideplank"], cardioDay: true },
+  };
+  const SPLIT = { 2: ["F1", "F2"], 3: ["F1", "F2", "F3"], 4: ["U1", "L1", "U2", "L2"], 5: ["U1", "L1", "C1", "U2", "L2"], "5근력증진": ["U1", "L1", "U2", "L2", "F2"] };
+  const WEEKDAYS = { 2: [1, 4], 3: [1, 3, 5], 4: [1, 2, 4, 5], 5: [1, 2, 3, 4, 5] }; // 0=일
+  const WD = "일월화수목금토";
+  const SAFE = { goblet: ["boxsq", "legpress"], lunge: ["abduct", "legext"], rdl: ["bridge", "backext", "legcurl"], plank: ["kneeplank"], sideplank: ["birddog", "deadbug"] };
+
+  // 주차별 강도
+  const WEEKS = {
+  // up: 지난주에 다 해냈으면 이번 주에 무게를 한 칸 올리는 주 (운동 일지의 자동 무게 추천에 사용)
+    다이어트: [
+      { s: 2, r: "15", rest: "60초", load: "가벼운 무게 (3~4회는 더 할 수 있을 정도)", cmin: 20, chow: "대화할 수 있는 속도로 꾸준히" },
+      { up: true, s: 3, r: "15", rest: "60초", load: "1주보다 조금 무겁게", cmin: 25, chow: "숨이 약간 차는 속도" },
+      { up: true, s: 3, r: "12", rest: "45초", load: "한 칸 무겁게 (2회 정도 여유)", cmin: 30, chow: "1분 빠르게 + 2분 보통 반복", hard: true },
+      { s: 3, r: "12~15", rest: "30~45초", load: "3주와 같은 무게, 쉬는 시간을 줄여요", cmin: 30, chow: "1분 빠르게 + 1분 보통 반복", hard: true },
+    ],
+    기초체력: [
+      { s: 2, r: "12", rest: "60~90초", load: "가벼운 무게로 자세 익히기", cmin: 15, chow: "대화할 수 있는 속도" },
+      { s: 3, r: "12", rest: "60~90초", load: "1주와 같은 무게, 세트만 늘리기", cmin: 20, chow: "대화할 수 있는 속도" },
+      { up: true, s: 3, r: "12", rest: "60초", load: "한 칸 무겁게", cmin: 20, chow: "숨이 약간 차는 속도" },
+      { up: true, s: 3, r: "10~12", rest: "60초", load: "3주보다 조금 더 무겁게", cmin: 25, chow: "숨이 약간 차는 속도, 마지막 5분은 천천히" },
+    ],
+    근력증진: [
+      { s: 2, r: "12", rest: "90초", load: "가벼운 무게로 자세 익히기", cmin: 10, chow: "준비운동으로 가볍게" },
+      { up: true, s: 3, r: "10", rest: "90초", load: "10회가 꽤 힘든 무게 (2회 정도 여유)", cmin: 10, chow: "준비운동으로 가볍게" },
+      { up: true, s: 4, r: "8~10", rest: "90~120초", load: "한 칸 무겁게", cmin: 10, chow: "준비운동으로 가볍게" },
+      { up: true, s: 4, r: "8", rest: "2분", load: "3주보다 한 칸 더 (자세가 흔들리면 무게 유지)", cmin: 10, chow: "준비운동으로 가볍게" },
+    ],
+  };
+  const GOALS = Object.keys(WEEKS);
+
+  // 주차별 테마
+  const THEME = [
+    { t: "적응", what: "기구 위치와 자세를 익히고 내 시작 무게를 찾아요", check: "모든 운동을 자세가 흔들리지 않고 할 수 있나요?" },
+    { t: "운동량 늘리기", what: "세트를 늘려요. 무게는 크게 올리지 않아도 괜찮아요", check: "이번 주 계획한 횟수를 모두 왔나요?" },
+    { t: "강도 올리기", what: "무게를 한 칸 올리고, 유산소에 변화를 줘요", check: "1주 차보다 무게가 늘어난 운동이 있나요?" },
+    { t: "마무리·재측정", what: "같은 무게로 더 깔끔하게 하고, 마지막 날 인바디를 다시 재요", check: "인바디를 다시 재고 다음 달 목표를 정했나요?" },
+  ];
+
+  const r1 = (x, d = 1) => Math.round(x * 10 ** d) / 10 ** d;
+  const num = v => (v === "" || v == null || isNaN(+v) || +v <= 0) ? null : +v;
+  const pad = n => String(n).padStart(2, "0");
+  const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+
+  function analyze(p) {
+    const a = { notes: [] };
+    const h = num(p.height), w = num(p.weight), smm = num(p.smm), fat = num(p.fat);
+    if (h && w) {
+      const hm = h / 100;
+      a.bmi = r1(w / hm / hm);
+      a.stdW = r1((p.sex === "F" ? 21 : 22) * hm * hm);
+    }
+    if (fat) {
+      const [lo, hi] = p.sex === "F" ? [18, 28] : [10, 20];
+      a.fat = { v: fat, range: lo + "~" + hi + "%", level: fat < lo ? "낮음" : fat <= hi ? "표준" : fat <= hi + 5 ? "약간 높음" : "높음" };
+      if (w) { a.fatKg = r1(w * fat / 100); a.lbm = r1(w - a.fatKg); }
+    }
+    if (smm && a.stdW) {
+      // 표준 골격근량(대략): 표준체중 × 남 0.49 / 여 0.425, ±10%  ※ 인바디 결과지의 표준 범위가 있으면 그쪽이 정확해요
+      const ref = a.stdW * (p.sex === "F" ? 0.425 : 0.49);
+      a.muscle = { v: smm, range: r1(ref * 0.9) + "~" + r1(ref * 1.1) + "kg", level: smm < ref * 0.9 ? "부족" : smm <= ref * 1.1 ? "표준" : "많음" };
+    }
+    const F = a.fat && a.fat.level, M = a.muscle && a.muscle.level;
+    const fatHigh = F === "약간 높음" || F === "높음";
+    if (F && M) {
+      a.type = fatHigh && M === "부족" ? (a.bmi < 25 ? "근육은 적고 체지방이 많은 편 (마른 비만 경향)" : "체지방이 많고 근육이 부족한 편")
+        : fatHigh ? "근육은 충분, 체지방을 줄이면 좋은 몸"
+        : M === "부족" && F === "낮음" ? "근육·체지방 모두 적은 편 (체중이 가벼운 편)"
+        : M === "부족" ? "체지방은 괜찮고 근육이 부족한 편"
+        : M === "많음" ? "근육이 많은 편 (근육형)" : "근육과 체지방 모두 표준";
+    } else if (F) a.type = "체지방 " + F;
+    a.fatHigh = fatHigh; a.muscleLow = M === "부족";
+    return a;
+  }
+
+  // 시작일부터 추천 요일에 맞춰 회차 날짜 정하기
+  function sessionDates(start, freq) {
+    if (!start || !/^\d{4}-\d{2}-\d{2}$/.test(start)) return null;
+    const d = new Date(start + "T00:00:00"), want = WEEKDAYS[freq], out = [];
+    for (let i = 0; out.length < freq * 4 && i < 60; i++) {
+      if (want.includes(d.getDay())) out.push(ymd(d));
+      d.setDate(d.getDate() + 1);
+    }
+    return out;
+  }
+
+  function make(input) {
+    const p = Object.assign({}, input);
+    p.name = (p.name || "").trim() || "회원";
+    p.sex = p.sex === "F" || p.sex === "여" ? "F" : "M";
+    p.age = num(p.age);
+    p.freq = Math.min(5, Math.max(2, Math.round(num(p.freq) || 3)));
+    if (!GOALS.includes(p.goal)) p.goal = "기초체력";
+    const a = analyze(p);
+    const senior = (p.age || 0) >= 60;
+    const lowImpact = senior || (a.bmi || 0) >= 30;
+    const notes = a.notes;
+    const sx = p.sex === "F" ? 0 : 1;
+
+    // 주차별 강도 (나이·체성분에 맞게 조정)
+    const weeks = WEEKS[p.goal].map(w => Object.assign({}, w));
+    weeks.forEach((w, i) => {
+      if (senior) {
+        w.s = Math.min(w.s, 3);
+        if (p.goal === "근력증진" && i >= 2) w.r = "10~12";
+        if (/30|45초/.test(w.rest)) w.rest = "60초";
+        if (/쉬는 시간을 줄여요/.test(w.load)) w.load = "3주와 같은 무게로 자세 다듬기";
+        if (/빠르게/.test(w.chow)) w.chow = "2분 조금 빠르게 + 3분 보통 반복";
+      }
+      if (p.goal === "다이어트" && a.muscleLow && !a.fatHigh) w.cmin = Math.max(15, w.cmin - 5);
+      if (p.goal === "근력증진" && a.fatHigh) { w.cmin = i < 2 ? 15 : 20; w.chow = "근력운동 뒤 숨이 약간 차는 속도"; }
+      w.theme = THEME[i].t; w.what = THEME[i].what; w.check = THEME[i].check;
+    });
+    if (senior) notes.push("60세 이상이라 무게보다 바른 자세와 꾸준함에 맞췄어요. 세트는 최대 3세트, 균형 운동을 넣었어요.");
+    if ((a.bmi || 0) >= 30 && !senior) notes.push("무릎·허리 부담을 줄이려고 런지·플랭크 같은 동작을 쉬운 동작으로 바꾸고, 유산소는 자전거·경사 걷기로 했어요.");
+    if (p.goal === "다이어트" && a.muscleLow && !a.fatHigh) notes.push("체지방은 표준이고 근육이 부족한 편이에요. 체중을 빼기보다 근육을 늘리면 몸매가 더 좋아져요. 유산소를 조금 줄였어요.");
+    if (p.goal === "다이어트" && a.muscleLow && a.fatHigh) notes.push("근육이 부족한 상태로 굶으면 근육이 더 빠져요. 근력운동을 빼먹지 않는 게 핵심이에요.");
+    if (p.goal === "근력증진" && a.fatHigh) notes.push("체지방이 높은 편이라 근력운동 뒤 유산소를 15~20분 넣었어요.");
+    if (p.goal === "기초체력" && a.fatHigh) notes.push("체지방이 높은 편이에요. 체력이 붙는 3주 차부터 유산소 시간을 늘려 보세요.");
+
+    // 심박수 (Tanaka: 208 - 0.7×나이)
+    let hr = null;
+    if (p.age) {
+      const max = Math.round(208 - 0.7 * p.age);
+      const hi = senior ? [0.7, 0.8] : [0.75, 0.85];
+      hr = { max, easy: Math.round(max * 0.6) + "~" + Math.round(max * 0.7), hard: Math.round(max * hi[0]) + "~" + Math.round(max * hi[1]) };
+    }
+
+    // 유산소 기계 설정 (주차별)
+    const cardioSet = (() => {
+      if (lowImpact) return [
+        "실내 자전거 낮은 레벨(분당 60~70바퀴) 또는 러닝머신 4km/h·경사 4",
+        "자전거 같은 레벨로 시간만 늘리기 또는 4~4.5km/h·경사 6",
+        senior ? "2분은 자전거 레벨 1칸 올리기(또는 경사 8), 3분은 원래대로" : "1분은 자전거 레벨 2칸 올리기(또는 경사 10), 2분은 원래대로",
+        senior ? "3주와 같게, 힘들면 시간을 나눠서" : "1분 레벨 올리기 + 1분 원래대로",
+      ];
+      if (p.goal === "다이어트") return ["러닝머신 걷기 5.5~6km/h·경사 2~3", "걷기 6km/h·경사 4~5", "빠르게 7~8km/h(또는 경사 8 걷기) 1분 + 걷기 5.5km/h 2분", "빠르게 1분 + 걷기 1분"];
+      if (p.goal === "기초체력") return ["러닝머신 걷기 5~5.5km/h·경사 1~2", "걷기 5.5km/h·경사 3", "걷기 6km/h·경사 4", "걷기 6km/h·경사 4~5, 마지막 5분은 천천히"];
+      if (a.fatHigh) return ["러닝머신 5.5km/h로 10분 준비 + 운동 뒤 걷기 6km/h·경사 5 15분", "같게", "운동 뒤 걷기 6km/h·경사 6~8 20분", "같게"];
+      return ["러닝머신 걷기 5.5km/h 또는 자전거 낮은 레벨", "같게", "같게, 마지막 2분만 조금 빠르게", "같게"];
+    })();
+
+    // 루틴 구성
+    const split = SPLIT[p.freq === 5 && p.goal === "근력증진" ? "5근력증진" : p.freq];
+    const coreT = lowImpact ? [15, 20, 25, 30] : [20, 30, 40, 45];
+    const sideR = [8, 10, 12, 12];
+    const cardioWhat = lowImpact ? "실내 자전거 또는 러닝머신 경사 걷기 (무릎 부담이 적어요)"
+      : p.goal === "다이어트" ? "러닝머신 빠르게 걷기·가벼운 조깅, 스텝밀, 자전거 중 편한 것"
+      : "러닝머신, 자전거, 스텝밀 중 편한 것";
+    const startTip = e => e.eq === "machine" || e.eq === "cable" ? "가장 가벼운 칸에서 1세트 해보고, 쉬우면 한 칸씩 올리기"
+      : e.eq === "db" ? "덤벨 " + e.st[sx] + "에서 시작 (참고)" : e.kind ? "맨몸" : "맨몸으로 시작";
+    const days = split.map((key, di) => {
+      const D = DAYS[key];
+      let ids = D.ex.slice();
+      if (lowImpact) ids = ids.map(id => SAFE[id] ? (SAFE[id].find(alt => !ids.includes(alt) && !D.ex.includes(alt)) || SAFE[id][0]) : id);
+      ids = ids.filter((id, i) => ids.indexOf(id) === i);
+      const ex = ids.map(id => {
+        const e = EX[id];
+        const pres = weeks.map((w, i) => {
+          const s = Math.min(w.s, 3);
+          if (e.kind === "time") return s + "세트×" + coreT[i] + "초";
+          if (e.kind === "side") return s + "세트×좌우 " + sideR[i] + "회";
+          return w.s + "세트×" + w.r + "회";
+        });
+        let alt = EX[e.alt] ? e.alt : null;
+        if (lowImpact && SAFE[alt]) alt = SAFE[alt][0];
+        return { id, n: e.n, part: e.part, cue: e.cue, core: !!e.kind, eq: e.eq, start: startTip(e),
+          tempo: e.kind === "time" ? "숨은 참지 말고 고르게" : e.kind === "side" ? "한 번에 2초씩 천천히" : "2초 들고(밀고) 3초 내리기",
+          alt: alt && alt !== id ? EX[alt].n : "", pres };
+      });
+      let cardio;
+      if (D.cardioDay) {
+        const base = p.goal === "다이어트" ? [40, 45, 45, 50] : [30, 30, 35, 35];
+        cardio = weeks.map((w, i) => ({ min: base[i], how: i < 2 ? "대화할 수 있는 속도로 쉬지 않고" : w.chow, set: cardioSet[i] }));
+      } else cardio = weeks.map((w, i) => ({ min: w.cmin, how: w.chow, set: cardioSet[i] }));
+      return { no: di + 1, day: WD[WEEKDAYS[p.freq][di]], title: D.t, type: D.type, cardioDay: !!D.cardioDay, ex, cardio,
+        cardioFirst: p.goal === "근력증진" && !a.fatHigh };
+    });
+
+    // 준비운동·마무리 (부위별)
+    const WARM = {
+      full: [["고관절 돌리기", "좌우 10회"], [senior ? "의자 스쿼트" : "맨몸 스쿼트", "10회"], ["팔 크게 돌리기", "앞뒤 10회"]],
+      lower: [["고관절 돌리기", "좌우 10회"], [senior ? "의자 스쿼트" : "맨몸 스쿼트", "10회"], [senior ? "벽 잡고 다리 앞뒤 흔들기" : "런지 자세 스트레칭", "좌우 20초"]],
+      upper: [["팔 크게 돌리기", "앞뒤 10회"], ["벽 푸시업", "10회"], ["날개뼈 모으기", "10회"]],
+      core: [["고양이-소 자세", "10회"], ["고관절 돌리기", "좌우 10회"], ["몸통 비틀기", "좌우 10회"]],
+    };
+    const COOL = {
+      full: [["허벅지 앞 스트레칭", "좌우 30초"], ["허벅지 뒤 스트레칭", "좌우 30초"], ["가슴 스트레칭(벽 짚고)", "좌우 30초"], ["등 스트레칭(기둥 잡고)", "30초"]],
+      lower: [["허벅지 앞 스트레칭", "좌우 30초"], ["허벅지 뒤 스트레칭", "좌우 30초"], ["엉덩이 스트레칭(4자 자세)", "좌우 30초"], ["종아리 스트레칭", "좌우 20초"]],
+      upper: [["가슴 스트레칭(벽 짚고)", "좌우 30초"], ["등 스트레칭(기둥 잡고)", "30초"], ["어깨 스트레칭(팔 당기기)", "좌우 20초"], ["팔 뒤 스트레칭", "좌우 20초"]],
+      core: [["엎드려 상체 들기(코브라)", "20초"], ["아기 자세", "30초"], ["엉덩이 스트레칭(4자 자세)", "좌우 30초"]],
+    };
+    days.forEach(d => {
+      d.warm = [["러닝머신 또는 자전거 가볍게", "5분"]].concat(WARM[d.type]).concat(senior ? [["한 발 서기(벽 옆에서)", "좌우 20초"]] : []);
+      d.cool = COOL[d.type];
+    });
+
+    // 회차별 일지
+    const dates = sessionDates(p.start, p.freq);
+    const sessions = [];
+    weeks.forEach((w, wi) => days.forEach((d, di) => {
+      const idx = wi * days.length + di;
+      sessions.push({ idx: idx + 1, week: wi + 1, date: dates ? dates[idx] : "", day: dates ? WD[new Date(dates[idx] + "T00:00:00").getDay()] : d.day, dayNo: d.no, title: d.title,
+        ex: d.ex.map(e => ({ id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt })), warm: d.warm, cool: d.cool, rest: w.rest, load: w.load, cardio: d.cardio[wi], cardioDay: d.cardioDay,
+        flag: idx === 0 ? "첫날: 모든 운동을 가장 가벼운 무게로 해보고 시작 무게를 적어 두세요" : idx === days.length * 4 - 1 ? "마지막 날: 인바디 재측정" : (wi === 2 && di === 0 ? "오늘부터 무게 한 칸 올리기" : "") });
+    }));
+
+    // 시작일이 주 중간이면 일차별 요일을 실제 첫 주 날짜에 맞춤
+    if (dates) days.forEach((d, di) => { d.day = WD[new Date(dates[di] + "T00:00:00").getDay()]; });
+
+    // 식단 팁 (칼로리 계산 없이 쉽게 지킬 수 있는 것만)
+    const w = num(p.weight);
+    const proteinPerKg = p.goal === "근력증진" && !senior ? 1.6 : 1.2;
+    const wForProtein = w ? ((a.bmi || 0) >= 30 && a.stdW ? a.stdW * 1.1 : w) : null;
+    const protein = wForProtein ? Math.min(150, Math.round(wForProtein * proteinPerKg / 10) * 10) : null;
+    const foodTips = [(protein ? "단백질 하루 약 " + protein + "g" : "단백질 챙기기") + ": 매 끼 손바닥 크기의 고기·생선·달걀·두부"];
+    if (p.goal === "다이어트") foodTips.push("굶지 말고 세 끼를 챙기되, 저녁 밥·면을 평소의 2/3로 줄여요", "간식은 과자 대신 그릭요거트나 견과 한 줌", "달달한 음료 대신 물·아메리카노, 물은 하루 1.5~2L");
+    if (p.goal === "기초체력") foodTips.push("아침을 거르지 않아요 (밥 반 공기 + 달걀이면 충분)", "운동 1시간 전 바나나나 우유로 가볍게", "물은 하루 1.5L 이상");
+    if (p.goal === "근력증진") foodTips.push("운동 후 1시간 안에 단백질+탄수화물 (바나나+우유, 닭가슴살 김밥)", "끼니를 거르지 않아요. 밥도 충분히 먹어야 근육이 붙어요", "물은 하루 2L 정도");
+    if (a.muscleLow && p.goal === "다이어트") foodTips.push("근육이 부족한 편이라 단백질을 꼭 챙겨요. 너무 적게 먹으면 근육부터 빠져요");
+    // 4주 예상 변화 (참고)
+    let expect = null;
+    if (a.fatKg && w) {
+      const fx = p.goal === "다이어트" ? [1, 2] : p.goal === "기초체력" || a.fatHigh ? [0.5, 1] : [0, 0.5];
+      const mx = p.goal === "근력증진" ? [0.3, 0.8] : p.goal === "기초체력" ? [0, 0.3] : [0, 0.3];
+      const pct = d => r1((a.fatKg - d) / (w - d + (mx[0] + mx[1]) / 2) * 100);
+      expect = { fatKg: fx, smm: mx, fatPct: pct(fx[1]) + "~" + pct(fx[0]) + "%" };
+    }
+
+    const goal4w = {
+      다이어트: "주 " + p.freq + "회 빠짐없이 오기 · 체지방 1~2kg 줄이기",
+      기초체력: "주 " + p.freq + "회 운동 습관 만들기 · 유산소 " + weeks[3].cmin + "분을 쉬지 않고 하기",
+      근력증진: "모든 운동 자세 익히기 · 4주 차에 1주 차보다 무게 늘리기",
+    }[p.goal];
+
+    const tips = [];
+    if (p.goal === "다이어트") tips.push("근력운동을 먼저, 유산소는 그다음에 해야 지방이 더 잘 타요", "쉬는 날에도 많이 걸어요");
+    if (p.goal === "기초체력") tips.push("처음 2주는 정해진 요일에 오는 것만으로도 충분해요", "잠은 7시간 이상");
+    if (p.goal === "근력증진") tips.push("같은 부위를 이틀 연속 하지 않아요", "무게는 자세가 유지될 때만 올려요");
+    tips.push("관절이 찌릿하게 아프면 바로 멈추고 인포데스크에 말씀해 주세요");
+    const safety = ["힘을 줄 때 숨을 내쉬고, 숨을 참지 않아요" + (senior ? " (혈압이 오를 수 있어요)" : ""),
+      "근육이 뻐근한 건 괜찮지만, 관절이 찌릿하거나 아프면 바로 멈춰요",
+      "어지럽거나 가슴이 답답하면 운동을 멈추고 직원에게 알려 주세요",
+      "운동 전후로 물을 충분히 마셔요"];
+    const restDay = p.goal === "다이어트" ? "쉬는 날: 30분 걷기(7,000보 이상) + 스트레칭 10분" : p.goal === "근력증진" ? "쉬는 날: 푹 쉬기. 가벼운 산책과 스트레칭 정도만" : "쉬는 날: 20~30분 산책 + 스트레칭 10분";
+
+    return {
+      v: 2, made: ymd(new Date()), start: dates ? dates[0] : "", end: dates ? dates[dates.length - 1] : "",
+      member: { name: p.name, sex: p.sex, age: p.age, height: num(p.height), weight: num(p.weight), smm: num(p.smm), fat: num(p.fat), freq: p.freq, goal: p.goal, id: p.id || "",
+        token: /^[a-z0-9]{10,16}$/.test(p.token || "") ? p.token : newToken() },
+      analysis: a, senior, lowImpact, notes, weeks, days, sessions, cardioWhat, hr, foodTips, expect,
+      protein, goal4w, tips, safety, restDay,
+      minutes: p.goal === "근력증진" ? "약 60분" : "약 60~70분",
+    };
+  }
+
+  const md = s => s ? (+s.slice(5, 7)) + "/" + (+s.slice(8, 10)) : "";
+
+  // 회원 일지 링크. 구글 시트 일지(웹 앱)를 배포하면 그 주소(…/exec)로 이 줄만 바꾸면 돼요.
+  const LOG_URL = "https://triogymkangil-lang.github.io/"; // 회원 일지 주소 (GitHub Pages, 2026-11-11). 예전: 구글 웹 앱 …/exec 주소 (아이폰에서 구글 로그인 때문에 오류가 나서 바꿈)
+  // 기록을 저장하는 구글 웹 앱 주소 (별도 주소의 일지가 여기로 저장해요)
+  const API_URL = "https://script.google.com/macros/s/AKfycbyOpgcL7q9wx6jhP7RREXG_MfLzyf8yZsrZbsGHc5RnhPGVkKnPKMfYxuQ9h_tD8fXSfQ/exec";
+  // 회원마다 다른 비밀 키 (영문 소문자+숫자 12자리). 이 키를 아는 사람만 그 회원의 기록을 읽고 쓸 수 있어요.
+  function newToken() {
+    const A = "abcdefghijklmnopqrstuvwxyz0123456789"; let s = "";
+    try { const b = new Uint8Array(12); crypto.getRandomValues(b); b.forEach(x => s += A[x % 36]); }
+    catch (e) { for (let i = 0; i < 12; i++) s += A[Math.floor(Math.random() * 36)]; }
+    return s;
+  }
+  // 회원 정보 → 링크 코드 (영문·숫자·하이픈만):
+  // t2-이름(UTF-8 16진수)-성별-나이-키×10-체중×10-골격근×10-체지방×10-주횟수-목적번호-시작일-비밀키   (t1은 비밀키 없는 예전 형식)
+  function logCode(m, start) {
+    const hex = Array.from(new TextEncoder().encode(m.name || "")).map(b => b.toString(16).padStart(2, "0")).join("");
+    const n10 = v => v ? Math.round(v * 10) : "x";
+    const gi = GOALS.indexOf(m.goal);
+    return ["t2", hex || "x", m.sex === "F" ? "F" : "M", m.age || "x", n10(m.height), n10(m.weight), n10(m.smm), n10(m.fat),
+      +m.freq || "x", gi < 0 ? "x" : gi, (start || "").replace(/-/g, "") || "x", m.token || "x"].join("-");
+  }
+  // 회원이 직접 정보를 고르는 링크 (주 횟수·목적이 비어 있음 → 처음 열면 입력 화면이 나와요)
+  // m: { name, sex, start, token(없으면 새로 만듦) }  →  { link, token, code }
+  function setupLink(m) {
+    const token = /^[a-z0-9]{10,16}$/.test(m.token || "") ? m.token : newToken();
+    const code = logCode({ name: m.name, sex: m.sex === "F" || m.sex === "여" ? "F" : "M", token }, m.start || "");
+    return { link: LOG_URL + (/claude\.ai/.test(LOG_URL) ? "#" : "?m=") + code, token, code };
+  }
+  // 입력용 링크 문자 (정보성)
+  function smsSetup(name, link) {
+    return [
+      "[트리오짐] " + name + " 회원님, 등록해 주셔서 감사해요!",
+      "혼자서도 운동하실 수 있도록 트리오짐이 자체 4주 운동 프로그램을 만들었어요.",
+      "회원님들의 목표 달성을 위해 무료로 드리는 프로그램이니, 운동하시면서 목표를 이뤄 가는 성취감을 느껴 보세요.",
+      "",
+      "아래 링크를 열고 나이, 인바디, 운동 목적만 고르면 회원님께 맞춘 프로그램이 바로 만들어져요. (1분이면 돼요)",
+      "내 운동 일지: " + link,
+      "",
+      "일지에 무게를 적고 체크하면 다음 운동 무게가 자동으로 정해져요. 인바디를 아직 안 재셨다면 비워 두셔도 되고, 인포데스크에 문의하시고 재 보실 수 있어요."
+    ].join("\n");
+  }
+  // 바디코디 문자는 한글·영문·숫자·기본 문장부호만 보낼 수 있어요 (■ ▶ · → × ※ 등은 거절됨)
+  function smsSafe(t) {
+    return t.replace(/■ ?/g, "- ").replace(/▶ ?/g, "").replace(/\s*·\s*/g, ", ").replace(/\s*→\s*/g, " > ").replace(/×/g, "x").replace(/※/g, "*")
+      .replace(/[^\x09\x0A\x0D\x20-\x7E가-힣ㄱ-ㆎ]/g, "");
+  }
+  function parseLogCode(code) {
+    const f = String(code || "").replace(/^[#?]?(m=)?/, "").split("-");
+    if (!((f[0] === "t1" && f.length >= 11) || (f[0] === "t2" && f.length >= 12))) return null;
+    const v = x => x === "x" ? "" : x, d10 = x => x === "x" ? "" : +x / 10;
+    let name = "";
+    try { name = f[1] === "x" ? "" : new TextDecoder().decode(new Uint8Array(f[1].match(/../g).map(h => parseInt(h, 16)))); } catch (e) {}
+    const st = f[10] === "x" ? "" : f[10].slice(0, 4) + "-" + f[10].slice(4, 6) + "-" + f[10].slice(6, 8);
+    const token = f[0] === "t2" && /^[a-z0-9]{10,16}$/.test(f[11] || "") ? f[11] : "";
+    return { name, sex: f[2], age: v(f[3]), height: d10(f[4]), weight: d10(f[5]), smm: d10(f[6]), fat: d10(f[7]), freq: f[8] === "x" ? 0 : +f[8], goal: f[9] === "x" ? "" : (GOALS[+f[9]] || "기초체력"), start: st, token };
+  }
+  const logLink = pg => LOG_URL + (/claude\.ai/.test(LOG_URL) ? "#" : "?m=") + logCode(pg.member, pg.start);
+
+  // 문자(LMS) 문구.  opt.link === false 이면 일지 링크를 빼요
+  function sms(pg, opt) {
+    opt = opt || {};
+    const m = pg.member, a = pg.analysis, L = [];
+    L.push("[트리오짐] " + m.name + " 회원님 4주 운동 프로그램");
+    L.push("트리오짐 등록을 환영합니다! 회원님 정보에 맞춰 첫 한 달 운동 계획을 준비했어요.");
+    L.push("");
+    L.push("■ 목표: " + m.goal + " (주 " + m.freq + "회, 1회 " + pg.minutes + ")");
+    if (pg.start) L.push("■ 기간: " + md(pg.start) + " ~ " + md(pg.end) + " (" + md(pg.end) + " 인바디 재측정)");
+    const body = [];
+    if (a.fat) body.push("체지방률 " + a.fat.v + "%(" + a.fat.level + ")");
+    if (a.muscle) body.push("골격근 " + a.muscle.v + "kg(" + a.muscle.level + ")");
+    if (body.length) L.push("■ 내 몸: " + body.join(", "));
+    L.push("■ 4주 목표: " + pg.goal4w);
+    if (opt.link !== false) {
+      L.push("");
+      L.push("■ 내 운동 일지 (무게를 적으면 다음 무게를 알아서 정해줘요)");
+      L.push(logLink(pg));
+    }
+    L.push("");
+    L.push("■ 매번 순서");
+    L.push(pg.days[0].cardioFirst
+      ? "준비운동 10분(유산소 포함) → 근력운동 → 스트레칭 5분"
+      : "준비운동 10분 → 근력운동 → 유산소 → 스트레칭 5분");
+    L.push("");
+    pg.days.forEach(d => {
+      L.push("■ " + d.no + "일차(" + d.day + ") " + d.title);
+      if (d.cardioDay) L.push("유산소 " + d.cardio[0].min + "~" + d.cardio[3].min + "분 + 코어 " + d.ex.map(e => e.n).join("·"));
+      else L.push(d.ex.map(e => e.n).join("·"));
+    });
+    L.push("");
+    L.push("■ 주차별 강도 (근력운동 / 유산소)");
+    pg.weeks.forEach((w, i) => {
+      L.push((i + 1) + "주 " + w.theme + ": " + w.s + "세트×" + w.r + "회, " + w.load + " / " + w.cmin + "분");
+    });
+    L.push("세트 사이 휴식 " + pg.weeks[0].rest + (pg.weeks[3].rest !== pg.weeks[0].rest ? " → 4주 " + pg.weeks[3].rest : ""));
+    if (pg.hr && !pg.days[0].cardioFirst) L.push("유산소 목표 심박수 " + pg.hr.easy + " (빠르게 구간 " + pg.hr.hard + ")");
+    L.push("");
+    L.push("■ 식단 팁");
+    pg.foodTips.slice(0, 3).forEach(t => L.push("- " + t));
+    L.push("");
+    L.push("기구 사용법이 궁금하시면 인포데스크에 편하게 물어봐 주세요. 한 달 뒤 달라진 모습 기대할게요!");
+    return smsSafe(L.join("\n"));
+  }
+
+  // ================= PT 회원용 =================
+  // makePT({ ...make와 같은 값, coach:"선생님 이름", ptWeek:1~3, selfWeek:0~4, ptTotal:등록 PT 횟수(선택) })
+  const PT_THEME = {
+    EVAL: { t: "첫 만남 · 몸 평가", eval: true, ex: { all: ["goblet", "chest", "latpull", "plank"] },
+      focus: ["통증·부상 이력과 생활 패턴 듣기", "인바디 결과 설명하고 4주 목표 함께 정하기", "평가표 항목 측정 (자세·가동성·기초 체력)", "남는 시간에 기본 동작 가볍게 맛보기"],
+      hw: "개인운동 날에는 유산소와 오늘 맛본 동작을 가볍게" },
+    SQUAT: { t: "하체 기본 · 스쿼트", ex: { early: ["goblet", "legpress", "legcurl", "plank"], late: ["smithsq", "legpress", "lunge", "plank"] },
+      focus: ["무릎이 발끝 방향으로 가는지", "발뒤꿈치가 뜨지 않는지", "허리가 말리지 않는 깊이까지만"], hw: "고블릿 스쿼트·레그프레스를 PT보다 한 칸 가볍게 복습" },
+    PUSHPULL: { t: "상체 기본 · 밀기와 당기기", ex: { early: ["chest", "latpull", "row", "shoulder"], late: ["bbbench", "latpull", "dbrow", "dbohp"] },
+      focus: ["어깨가 으쓱 올라가지 않는지", "당길 때 날개뼈를 모으는지", "밀 때 팔꿈치가 몸통에서 45도인지"], hw: "랫풀다운·시티드 로우·체스트프레스 복습" },
+    HINGE: { t: "엉덩이·허리 · 힙힌지", ex: { early: ["bridge", "rdl", "backext", "deadbug"], late: ["bbrdl", "bridge", "legcurl", "birddog"] },
+      focus: ["허리가 둥글게 말리지 않는지", "무릎보다 엉덩이를 뒤로 빼는지", "햄스트링 유연성에 맞는 범위인지"], hw: "힙브릿지 3세트 + 덤벨 루마니안 데드리프트 가볍게" },
+    FULLA: { t: "전신 A · 스쿼트와 밀기", ex: { early: ["goblet", "chest", "row", "plank"], late: ["smithsq", "dbbench", "row", "plank"] },
+      focus: ["스쿼트 무릎·발끝 정렬", "밀기 동작에서 어깨 고정", "세트마다 쓴 무게 기록"], hw: "오늘 한 동작을 한 칸 가볍게 복습" },
+    FULLB: { t: "전신 B · 힙힌지와 당기기", ex: { early: ["rdl", "latpull", "shoulder", "deadbug"], late: ["bbrdl", "latpull", "dbohp", "deadbug"] },
+      focus: ["힙힌지 허리 중립", "당길 때 날개뼈 모으기", "1주 차보다 무게가 늘었는지"], hw: "오늘 한 동작을 한 칸 가볍게 복습" },
+    REVIEW: { t: "4주 복습 · 자세 점검", ex: { all: ["goblet", "dbbench", "rdl", "latpull"] },
+      focus: ["1주 차와 무게 비교", "자세를 영상으로 찍어 함께 보기", "혼자 할 때 어려운 동작 다시 짚기"], hw: "다음 달 혼자 할 루틴 정리" },
+    REEVAL: { t: "재평가 · 다음 달 계획", eval: true, ex: { all: ["goblet", "latpull", "plank"] },
+      focus: ["인바디 다시 재기", "첫 평가표 항목 다시 측정하고 비교", "다음 4주 목표와 PT 일정 정하기"], hw: "" },
+  };
+  const PT_FINISH = {
+    다이어트: { t: "서킷 트레이닝", circuit: true, ex: ["stepup", "pushup", "mountain", "row"], focus: ["목표 심박 구간을 유지하는지", "자세가 무너지면 바로 쉬게 하기", "바퀴 사이 휴식 1~2분"], hw: "개인운동 날 유산소에 1분 빠르게 구간 넣기" },
+    기초체력: { t: "코어 · 균형", ex: ["birddog", "sideplank", "lunge", "calf"], focus: ["몸통이 흔들리지 않는지", "좌우 차이 확인", "호흡을 참지 않는지"], hw: "버드독·사이드 플랭크를 매번 마무리로" },
+    근력증진: { t: "복합운동 무게 기록", ex: ["smithsq", "bbbench", "bbrdl", "latpull"], focus: ["세트마다 무게·횟수 기록", "마지막 세트도 2회 여유(힘듦 8/10)", "1주 차 무게와 비교"], hw: "기록한 무게의 한 칸 아래로 복습" },
+  };
+  const PT_SEQ = {
+    1: [["EVAL"], ["FULLA"], ["FULLB"], ["REEVAL"]],
+    2: [["EVAL", "SQUAT"], ["PUSHPULL", "HINGE"], ["SQUAT", "FINISH"], ["REVIEW", "REEVAL"]],
+    3: [["EVAL", "SQUAT", "PUSHPULL"], ["HINGE", "SQUAT", "PUSHPULL"], ["HINGE", "FINISH", "PUSHPULL"], ["SQUAT", "REVIEW", "REEVAL"]],
+  };
+  const PT_WEEK = [
+    { t: "평가 · 기본 동작", what: "몸 상태를 평가하고 스쿼트·밀기·당기기 기본 동작을 배워요" },
+    { t: "동작 익히기", what: "배운 동작에 무게를 싣고, 혼자서도 할 수 있게 연습해요" },
+    { t: "프리웨이트 · 강도 올리기", what: "선생님과 함께 바벨·덤벨 운동을 시작하고 무게를 올려요" },
+    { t: "복습 · 재평가", what: "4주 동안 배운 동작을 점검하고 인바디와 평가표를 다시 재요" },
+  ];
+
+  function makePT(input) {
+    const p = Object.assign({}, input);
+    const ptWeek = Math.min(3, Math.max(1, Math.round(num(p.ptWeek) || 2)));
+    let selfWeek = Math.min(4, Math.max(0, Math.round(+p.selfWeek || 0)));
+    if (ptWeek + selfWeek > 5) selfWeek = 5 - ptWeek;
+    const base = make(Object.assign({}, p, { freq: Math.max(2, ptWeek + selfWeek), start: "" }));
+    const a = base.analysis, senior = base.senior, lowImpact = base.lowImpact, W = base.weeks, sx = base.member.sex === "F" ? 0 : 1;
+    const coach = (p.coach || "").trim() || "담당";
+    const SAFE_PT = Object.assign({ lunge: ["abduct", "legext"], mountain: ["deadbug"] },
+      senior ? { smithsq: ["goblet", "legpress"], bbbench: ["chest"], bbrdl: ["rdl"], plank: ["kneeplank"], sideplank: ["birddog"], stepup: ["boxsq"] } : {});
+    const coreT = lowImpact ? [15, 20, 25, 30] : [20, 30, 40, 45];
+    const startOf = e => e.eq === "bar" ? "빈 바부터 시작해 선생님과 무게 정하기" : e.eq === "db" ? "덤벨 " + e.st[sx] + " (선생님과 조정)" : e.eq === "body" ? "맨몸" : "선생님과 첫 세트에서 정하기";
+    const exList = (ids, wi, circuit) => {
+      let L = ids.map(id => lowImpact && SAFE_PT[id] ? (SAFE_PT[id].find(x => !ids.includes(x)) || SAFE_PT[id][0]) : id);
+      L = L.filter((id, i) => L.indexOf(id) === i);
+      const w = W[wi];
+      return L.map(id => {
+        const e = EX[id];
+        let pres = e.kind === "time" ? Math.min(w.s, 3) + "세트×" + coreT[wi] + "초" : e.kind === "side" ? Math.min(w.s, 3) + "세트×좌우 " + [8, 10, 12, 12][wi] + "회" : w.s + "세트×" + w.r + "회";
+        if (circuit) pres = (wi < 3 ? 3 : 4) + "바퀴×" + (senior ? "30초 운동/30초 휴식" : "40초 운동/20초 휴식");
+        return { id, n: e.n, part: e.part, cue: e.cue, core: !!e.kind, pres, start: startOf(e) };
+      });
+    };
+
+    // 날짜: PT와 개인운동을 한 주에 고르게 섞기
+    const total = ptWeek + selfWeek;
+    const pattern = { 1: [2], 2: [1, 4], 3: [1, 3, 5], 4: [1, 2, 4, 5], 5: [1, 2, 3, 4, 5] }[total];
+    const ptPos = new Set(Array.from({ length: ptWeek }, (_, i) => Math.round(i * total / ptWeek)));
+    const slots = pattern.map((wd, i) => ({ wd, kind: ptPos.has(i) ? "PT" : "개인" }));
+    let dates = null;
+    if (p.start && /^\d{4}-\d{2}-\d{2}$/.test(p.start)) {
+      dates = []; const d = new Date(p.start + "T00:00:00");
+      for (let i = 0; dates.length < total * 4 && i < 60; i++) { if (pattern.includes(d.getDay())) dates.push(ymd(d)); d.setDate(d.getDate() + 1); }
+    }
+
+    // PT 회차
+    const pts = [], selfs = [], all = [];
+    let ptNo = 0, selfNo = 0;
+    for (let wi = 0; wi < 4; wi++) {
+      const seq = PT_SEQ[ptWeek][wi];
+      let k = 0;
+      const weekPT = [];
+      slots.forEach((sl, si) => {
+        const idx = wi * total + si;
+        const date = dates ? dates[idx] : "";
+        const day = date ? WD[new Date(date + "T00:00:00").getDay()] : WD[sl.wd];
+        if (sl.kind === "PT") {
+          const key = seq[k++];
+          const T = key === "FINISH" ? PT_FINISH[base.member.goal] : PT_THEME[key];
+          const ids = T.ex.all || (Array.isArray(T.ex) ? T.ex : (wi >= 2 ? T.ex.late : T.ex.early));
+          const s = { kind: "PT", no: ++ptNo, week: wi + 1, date, day, key, title: T.t, eval: !!T.eval, circuit: !!T.circuit,
+            ex: exList(ids, wi, T.circuit), focus: T.focus, hw: T.hw, cardio: base.days[0].cardio[wi] };
+          pts.push(s); weekPT.push(s); all.push(s);
+        } else all.push({ kind: "개인", week: wi + 1, date, day, placeholder: true });
+      });
+    }
+    // 개인운동: 그날 이전에 PT에서 배운 동작 복습 (같은 주 PT 우선, 없으면 바로 전 PT) + 유산소
+    all.forEach((x, xi) => {
+      if (!x.placeholder) return;
+      const wi = x.week - 1;
+      const before = all.slice(0, xi).filter(y => y.kind === "PT");
+      let src = before.filter(y => y.week === x.week);
+      if (!src.length) src = before.slice(-1);
+      if (!src.length) src = pts.slice(0, 1); // 첫 PT 전이면 첫 PT 동작을 미리 가볍게
+      const ids = [];
+      src.forEach(s => s.ex.forEach(e => { const id = /^bb/.test(e.id) ? EX[e.id].alt : e.id; if (!ids.includes(id)) ids.push(id); }));
+      const strength = ids.filter(id => !EX[id].kind).slice(0, 5), core = ids.filter(id => EX[id].kind).slice(0, 1);
+      delete x.placeholder; x.no = ++selfNo; x.title = "개인운동 · PT 복습";
+      x.from = src.map(s => "PT " + s.no).join(", ");
+      x.ex = exList(strength.concat(core), wi).map(e => Object.assign(e, { pres: e.core ? e.pres : Math.min(W[wi].s, 3) + "세트×" + W[wi].r + "회" }));
+      x.cardio = { min: Math.max(20, base.weeks[wi].cmin), how: base.weeks[wi].chow, set: base.days[0].cardio[wi].set };
+      selfs.push(x);
+    });
+    const EVAL_ITEMS = [
+      ["건강 확인", "통증·부상·수술 이력, 혈압·복용약"],
+      ["자세", "어깨 높이 · 골반 기울기 · 거북목/굽은 어깨"],
+      ["오버헤드 스쿼트", "발뒤꿈치 뜸 · 무릎 모임 · 상체 숙임"],
+      ["어깨 가동성", "팔을 귀 옆까지 올릴 수 있는지 (좌/우)"],
+      ["햄스트링 유연성", "다리 펴고 앞으로 숙이기 (손끝 위치)"],
+      [senior ? "의자 일어서기" : "푸시업 최대", senior ? "30초 동안 몇 회" : "무릎 대고 해도 됨 · 몇 회"],
+      ["플랭크 최대", senior ? "무릎 플랭크 · 몇 초" : "몇 초"],
+      ["인바디", "체중 · 골격근 · 체지방률"],
+    ];
+    const used = ptWeek * 4, ptTotal = num(p.ptTotal);
+    const goal4w = {
+      다이어트: "주 " + total + "회 운동 지키기 · 체지방 1~2kg 줄이기 · 배운 동작 혼자 하기",
+      기초체력: "운동 습관 만들기 · 스쿼트·힙힌지·밀기·당기기 기본 동작 익히기",
+      근력증진: "기본 동작 자세 완성 · 바벨 운동 시작 · 4주 차에 1주 차보다 무게 늘리기",
+    }[base.member.goal];
+
+    return Object.assign({}, base, {
+      v: 2, pt: true, coach, ptWeek, selfWeek, total, ptUsed: used, ptLeft: ptTotal ? Math.max(0, ptTotal - used) : null, ptTotal,
+      ptWeeks: PT_WEEK.map((x, i) => Object.assign({}, x, { s: W[i].s, r: W[i].r, rest: W[i].rest })),
+      pts, selfs, schedule: all, evalItems: EVAL_ITEMS, goal4w,
+      start: dates ? dates[0] : "", end: dates ? dates[dates.length - 1] : "",
+      member: Object.assign({}, base.member, { freq: total }),
+    });
+  }
+
+  function smsPT(pg) {
+    const m = pg.member, a = pg.analysis, L = [];
+    L.push("[트리오짐] " + m.name + " 회원님 4주 PT 계획");
+    L.push("PT 등록을 환영합니다! " + pg.coach + " 선생님과 함께할 첫 한 달 계획이에요.");
+    L.push("");
+    L.push("■ 목표: " + m.goal + " · PT 주 " + pg.ptWeek + "회" + (pg.selfWeek ? " + 개인운동 주 " + pg.selfWeek + "회" : ""));
+    if (pg.start) L.push("■ 기간: " + md(pg.start) + " ~ " + md(pg.end) + " (마지막 PT에 재평가)");
+    const body = [];
+    if (a.fat) body.push("체지방률 " + a.fat.v + "%(" + a.fat.level + ")");
+    if (a.muscle) body.push("골격근 " + a.muscle.v + "kg(" + a.muscle.level + ")");
+    if (body.length) L.push("■ 내 몸: " + body.join(", "));
+    L.push("■ 4주 목표: " + pg.goal4w);
+    L.push("");
+    L.push("■ PT 일정");
+    for (let w = 1; w <= 4; w++) L.push(w + "주: " + pg.pts.filter(s => s.week === w).map(s => (s.date ? md(s.date) + " " : "") + s.title).join(" / "));
+    if (pg.selfWeek) {
+      L.push("");
+      L.push("■ 개인운동 날 (혼자)");
+      L.push("그 주 PT에서 배운 동작을 한 칸 가벼운 무게로 " + Math.min(pg.weeks[0].s, 3) + "~3세트 + 유산소 " + Math.max(20, pg.weeks[0].cmin) + "분");
+      L.push("이번 주 예: " + pg.selfs[0].ex.map(e => e.n).join("·"));
+    }
+    if (pg.hr) L.push("유산소 목표 심박수 " + pg.hr.easy);
+    L.push("");
+    L.push("■ 식단 팁");
+    pg.foodTips.slice(0, 3).forEach(t => L.push("- " + t));
+    L.push("");
+    L.push("궁금한 점은 " + pg.coach + " 선생님께 편하게 물어봐 주세요. 한 달 뒤 달라진 모습 기대할게요!");
+    return smsSafe(L.join("\n"));
+  }
+
+  // 문자 길이 (한글 2바이트). LMS는 2,000바이트까지
+  const bytes = s => [...s].reduce((n, c) => n + (c.charCodeAt(0) > 127 ? 2 : 1), 0);
+
+  // 바디코디 메모 → 입력값.  예) "#4주프로그램 34세 남 키175 체중80 골격근35 체지방25 주3회 다이어트"
+  function parseMemo(memo) {
+    const s = String(memo || "");
+    if (!/#\s*4주/.test(s)) return null;
+    const line = s.slice(s.search(/#\s*4주/)).split(/\n/)[0];
+    const g = re => { const m = line.match(re); return m ? +m[1] : null; };
+    const o = {
+      age: g(/(?:나이\s*)?(\d{2})\s*세/) || g(/나이\s*(\d{2})/),
+      height: g(/키\s*(\d{3}(?:\.\d)?)/),
+      weight: g(/(?:체중|몸무게)\s*(\d{2,3}(?:\.\d)?)/),
+      smm: g(/골격근(?:량)?\s*(\d{2}(?:\.\d)?)/),
+      fat: g(/체지방(?:률)?\s*(\d{1,2}(?:\.\d)?)/),
+      freq: g(/주\s*([2-5])\s*회?/),
+      goal: /다이어트|감량/.test(line) ? "다이어트" : /근력|근육|벌크/.test(line) ? "근력증진" : /체력|기초/.test(line) ? "기초체력" : null,
+    };
+    if (/(^|\s)(여|여자|여성)(\s|$)/.test(line)) o.sex = "F";
+    else if (/(^|\s)(남|남자|남성)(\s|$)/.test(line)) o.sex = "M";
+    // PT 회원: "#4주PT ... PT주2회 개인주1회 김민수선생님"
+    o.pt = /#\s*4주\s*PT/i.test(line);
+    if (o.pt) {
+      o.ptWeek = g(/PT\s*주\s*([1-3])/i);
+      o.selfWeek = g(/개인(?:운동)?\s*주\s*([0-4])/);
+      const c = line.match(/(\S+?)\s*(?:선생님|쌤|코치)/); if (c) o.coach = c[1];
+      o.missing = ["ptWeek", "goal"].filter(k => !o[k]);
+    } else o.missing = ["freq", "goal"].filter(k => !o[k]);
+    return o;
+  }
+
+  root.TRIO_PROGRAM = { make, sms, makePT, smsPT, bytes, parseMemo, analyze, logCode, parseLogCode, logLink, setupLink, smsSetup, smsSafe, newToken, LOG_URL, API_URL, EX, GOALS };
+})(typeof window !== "undefined" ? window : this);
+
+</script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const md = s => s ? (+s.slice(5, 7)) + "/" + (+s.slice(8, 10)) : "";
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const today = ymd(new Date());
+const dayDiff = (a, b) => Math.round((new Date(a + "T00:00:00") - new Date(b + "T00:00:00")) / 864e5);
+
+// 회원 링크로 열면 회원 모드, 아니면 체험판.
+// 구글 웹 앱에서는 서버가 window.MEMBER_CODE 를 넣어 주고, 별도 주소(GitHub)에서는 주소의 ?m=코드, 미리보기에서는 #코드를 읽어요.
+let QS = ""; try { QS = new URLSearchParams(location.search).get("m") || ""; } catch (e) {}
+const CODE_IN = window.MEMBER_CODE || QS || location.hash;
+const fromLink = TRIO_PROGRAM.parseLogCode(CODE_IN);
+const DEMO = !fromLink;
+// 센터 시트 연결: 구글 웹 앱 안이면 google.script.run, 별도 주소면 웹 앱 주소로 직접 (구글 로그인 쿠키 없이)
+const GSR = !!(window.google && google.script && google.script.run);
+const API = GSR ? "" : (window.TRIO_API || TRIO_PROGRAM.API_URL || "");
+const SERVER = !DEMO && (GSR || !!API) && !!(fromLink && fromLink.token);
+const srv = {
+  load: code => GSR
+    ? new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no).loadLog(code))
+    : fetch(API + "?api=load&m=" + encodeURIComponent(code), { credentials: "omit" }).then(r => r.json()).then(d => { if (d && d.error) throw new Error(d.error); return d; }),
+  save: (code, R, flat, meta) => GSR
+    ? new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no).saveLog(code, R, flat, meta))
+    : fetch(API, { method: "POST", credentials: "omit", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "save", code, R, flat, meta }) })
+        .then(r => r.json()).then(d => { if (!d || d.error) throw new Error((d && d.error) || "저장 실패"); return d; })
+};
+let P = fromLink ? Object.assign({}, fromLink) : { name: "홍길동", sex: "M", age: 34, height: 175, weight: 82, smm: 32.5, fat: 27.5, freq: 3, goal: "다이어트", start: today, token: "demo00000000" };
+let pg = null, R = {}, openIdx = null, mem = {}, timer = null, saveT = null;
+// 회원이 직접 고른 정보는 기록 안의 R._p 에 저장돼요 (센터 시트에도 같이 올라가요)
+const PROF = ["sex", "age", "height", "weight", "smm", "fat", "freq", "goal", "start"];
+const applyProfile = p => { if (p) PROF.forEach(k => { if (p[k] !== undefined && p[k] !== "" && p[k] !== null) P[k] = p[k]; }); };
+const myCode = () => pg ? TRIO_PROGRAM.logCode(Object.assign({}, pg.member), pg.start) : String(CODE_IN).replace(/^[#?]?(m=)?/, "");
+const key = () => (DEMO ? "trio_demo_" : "trio_log_") + (P.token || TRIO_PROGRAM.logCode(Object.assign({}, P, { freq: +P.freq }), P.start));
+const load = () => { try { const v = localStorage.getItem(key()); return v ? JSON.parse(v) : (mem[key()] || {}); } catch (e) { return mem[key()] || {}; } };
+const sync = t => { const el = $("syncText"); if (el) el.textContent = t; };
+const save = () => {
+  mem[key()] = R; try { localStorage.setItem(key(), JSON.stringify(R)); } catch (e) {}
+  if (!SERVER) return;
+  clearTimeout(saveT); sync("저장 중…");
+  saveT = setTimeout(pushServer, 1200);
+};
+// 센터 시트에 저장: 원본 기록 + 사람이 보기 쉬운 표(운동 한 개당 한 줄)
+function pushServer() {
+  const flat = [];
+  pg.sessions.forEach(s => { const S = R[s.idx]; if (!S || !S.ex) return; s.ex.forEach(e => { const r = S.ex[e.id]; if (r && (r.w !== undefined || r.d !== undefined)) flat.push([s.idx, s.week, S.at || "", e.n, e.core ? "" : (r.w ?? ""), !!r.d]); }); });
+  const doneS = pg.sessions.filter(s => R[s.idx] && R[s.idx].done);
+  const m = pg.member;
+  const meta = { name: m.name, start: pg.start, freq: m.freq, goal: m.goal, done: doneS.length, total: pg.sessions.length, lastAt: doneS.length ? (R[doneS.at(-1).idx].at || "") : "",
+    p: { sex: m.sex, age: m.age || "", height: m.height || "", weight: m.weight || "", smm: m.smm || "", fat: m.fat || "" }, pAt: R._p ? R._p.at || "" : "" };
+  srv.save(myCode(), R, flat, meta).then(() => sync("센터에 저장됨 ✓"), () => sync("연결이 안 돼서 휴대폰에 임시 저장했어요"));
+}
+const doneCount = X => Object.values(X || {}).filter(v => v && v.done).length;
+function toast(t) { document.querySelectorAll(".toast").forEach(x => x.remove()); const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
+
+// 무게 한 칸 (가벼울 때는 작게): 레그프레스 80kg 미만 5kg·이상 10kg, 머신·케이블 30kg 미만 2.5kg·이상 5kg,
+// 덤벨 10kg 미만 1kg·이상 2kg, 바벨 2.5kg
+const step = (e, w) => e.id === "legpress" ? (w < 80 ? 5 : 10) : e.eq === "db" || e.eq === "body" ? (w < 10 ? 1 : 2) : e.eq === "bar" ? 2.5 : (w < 30 ? 2.5 : 5);
+const fmt = w => w == null || w === "" ? "" : (Math.round(w * 10) / 10).toString();
+const restSec = r => { const m = /(\d+)\s*분/.exec(r); if (m) return +m[1] * 60; const s = /(\d+)/.exec(r); return s ? +s[1] : 60; };
+
+// 모든 회차를 순서대로 훑어서, 기록이 없는 칸의 추천 무게를 계산
+//  - 무게를 올리는 주(계획)에 지난번 무게를 다 해냈으면 한 칸 올림
+//  - 다 못 했으면 같은 무게, 두 번 연속 못 했으면 한 칸 내림
+function plan() {
+  const last = {}, out = {};
+  pg.sessions.forEach(s => {
+    const S = R[s.idx] || {}, cells = {};
+    s.ex.forEach(e => {
+      if (e.core) { cells[e.id] = { core: true }; return; }
+      const prev = last[e.id], rec = S.ex && S.ex[e.id];
+      let sug = null, why = "", tone = "";
+      if (!prev) why = "첫 기록 · " + (e.start || "가볍게 시작해서 적어 두세요");
+      else if (prev.w == null || prev.w === "") why = prev.est ? "첫 기록 무게를 적으면 자동으로 정해져요" : (e.eq === "body" ? "맨몸 · 익숙해지면 덤벨을 들어도 돼요" : "지난번 무게를 적지 않았어요");
+      else {
+        const up = pg.weeks[s.week - 1].up && s.week > prev.wk;
+        if (!prev.d && prev.fails >= 2) { sug = Math.max(0, prev.w - step(e, prev.w)); why = "두 번 연속 다 못 해서 한 칸 내렸어요"; tone = "down"; }
+        else if (!prev.d) { sug = prev.w; why = "지난번 " + fmt(prev.w) + "kg를 다 못 해서 같은 무게로"; tone = "down"; }
+        else if (up) { sug = prev.w + step(e, prev.w); why = "지난번 " + fmt(prev.w) + "kg 완료 → 한 칸 올렸어요"; tone = "up"; }
+        else { sug = prev.w; why = s.week === prev.wk ? "같은 주라 같은 무게" : "이번 주는 같은 무게로 (세트·쉬는 시간이 바뀌어요)"; }
+      }
+      cells[e.id] = { sug, why, tone, est: prev ? prev.est : false, rec };
+      if (S.done) {
+        const w = rec && rec.w !== "" && rec.w != null ? +rec.w : sug;
+        const ok = !!(rec && rec.d);
+        last[e.id] = { w, d: ok, fails: ok ? 0 : ((prev && prev.fails) || 0) + 1, wk: s.week, est: false };
+      } else last[e.id] = { w: rec && rec.w ? +rec.w : sug, d: true, fails: 0, wk: s.week, est: true };
+    });
+    out[s.idx] = cells;
+  });
+  return out;
+}
+
+function build() {
+  pg = TRIO_PROGRAM.make(P);
+  if (DEMO) ["name", "sex", "age", "weight", "freq", "goal", "start"].forEach(k => $(k).value = P[k] ?? "");
+  $("hName").textContent = pg.member.name + " 회원님 운동 일지";
+  $("hSub").textContent = pg.member.goal + " · 주 " + pg.member.freq + "회 · " + (pg.start ? md(pg.start) + " ~ " + md(pg.end) : "4주") + (DEMO ? " · 체험판" : "");
+  $("setupBox").hidden = true; $("progPanel").hidden = false; $("out").hidden = false;
+  $("simBox").hidden = !DEMO; $("demoForm").hidden = !DEMO; $("moveBox").hidden = SERVER; $("infoBox").hidden = DEMO;
+  openIdx = null;
+  render(); renderInfo();
+}
+
+// 처음 열 때: 휴대폰 기록 → 센터 기록을 합친 뒤, 주 횟수·목적이 있으면 일지, 없으면 입력 화면
+function boot() {
+  R = load();
+  if (!SERVER) return ready();
+  $("hName").textContent = (P.name || "") + " 회원님";
+  $("progPanel").hidden = true; sync("센터 기록 불러오는 중…");
+  $("out").innerHTML = `<div class="panel hint">불러오는 중…</div>`;
+  srv.load(myCode()).then(res => {
+    const S = res && res.R ? res.R : null;
+    let push = false;
+    if (S && doneCount(S) >= doneCount(R) && (S._p || !R._p)) { R = S; try { localStorage.setItem(key(), JSON.stringify(R)); } catch (e) {} }
+    else if (doneCount(R) > 0 || R._p) push = true;   // 휴대폰에만 있던 기록을 센터로 올림
+    ready(); sync("센터와 연결됨 ✓");
+    if (push && pg) pushServer();
+  }, () => { ready(); sync("센터 연결이 안 돼요. 휴대폰에 임시 저장해요"); });
+}
+function ready() { applyProfile(R._p); if (+P.freq && P.goal) build(); else showSetup(false); }
+
+// ---------- 내 정보 입력 ----------
+const SEX = { M: "남", F: "여" };
+function setChip(name, val) { document.querySelectorAll(`input[name=${name}]`).forEach(i => { i.checked = String(i.value) === String(val); i.parentElement.classList.toggle("on", i.checked); }); }
+function chipVal(name) { const i = document.querySelector(`input[name=${name}]:checked`); return i ? i.value : ""; }
+function showSetup(edit) {
+  const locked = edit && doneCount(R) > 0;
+  $("setupBox").hidden = false; $("out").hidden = true; $("progPanel").hidden = true;
+  ["simBox", "demoForm", "moveBox", "infoBox"].forEach(id => $(id).hidden = true);
+  $("hName").textContent = (P.name || "") + " 회원님, 반가워요!";
+  $("hSub").textContent = edit ? "내 정보 고치기" : "4주 운동 프로그램 만들기";
+  $("setupTitle").textContent = edit ? "내 정보 고치기" : "내 정보를 알려 주세요";
+  setChip("sex", P.sex === "F" ? "F" : P.sex === "M" ? "M" : "");
+  setChip("freq", +P.freq || ""); setChip("goal", P.goal || "");
+  $("sAge").value = P.age || ""; $("sH").value = P.height || ""; $("sW").value = P.weight || ""; $("sM").value = P.smm || ""; $("sF").value = P.fat || "";
+  document.querySelectorAll("input[name=freq],input[name=goal]").forEach(i => i.disabled = locked);
+  $("setupErr").textContent = locked ? "운동을 시작한 뒤라 주 횟수와 목적은 그대로예요. 바꾸고 싶으면 인포데스크에 말씀해 주세요." : "";
+  $("setupGo").textContent = edit ? "저장하기" : "내 4주 프로그램 만들기";
+  $("setupCancel").hidden = !edit;
+  window.scrollTo({ top: 0 });
+}
+document.querySelectorAll(".opts").forEach(c => c.addEventListener("change", e => { if (e.target.name) setChip(e.target.name, e.target.value); }));
+const numIn = (id, lo, hi) => { const v = $(id).value.trim(); if (v === "") return ""; const n = +v; return n >= lo && n <= hi ? Math.round(n * 10) / 10 : null; };
+$("setupGo").onclick = () => {
+  const sex = chipVal("sex"), freq = +chipVal("freq"), goal = chipVal("goal");
+  const age = numIn("sAge", 10, 99), height = numIn("sH", 100, 230), weight = numIn("sW", 25, 250), smm = numIn("sM", 5, 80), fat = numIn("sF", 3, 70);
+  const miss = [!sex && "성별", (age === "" || age === null) && "나이", !freq && "주 몇 회", !goal && "운동 목적"].filter(Boolean);
+  if (miss.length) { $("setupErr").textContent = miss.join(", ") + "을(를) 골라 주세요."; return; }
+  const bad = [height === null && "키", weight === null && "체중", smm === null && "골격근량", fat === null && "체지방률"].filter(Boolean);
+  if (bad.length) { $("setupErr").textContent = bad.join(", ") + " 숫자를 다시 확인해 주세요."; return; }
+  const first = !(+P.freq && P.goal);
+  const now = new Date(), at = today + " " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  R._p = { sex, age: Math.round(age), height, weight, smm, fat, freq, goal, start: (R._p && R._p.start) || (first ? today : P.start) || today, at };
+  applyProfile(R._p);
+  ["height", "weight", "smm", "fat"].forEach(k => { if (R._p[k] === "") P[k] = ""; });
+  build(); save(); window.scrollTo({ top: 0 });
+  toast(first ? "내 4주 프로그램이 만들어졌어요!" : "정보를 저장했어요");
+};
+$("setupCancel").onclick = () => build();
+$("infoEdit").onclick = () => showSetup(true);
+function renderInfo() {
+  const m = pg.member, a = pg.analysis || {};
+  const items = [["성별", SEX[m.sex] || ""], ["나이", m.age ? m.age + "세" : ""], ["키", m.height ? m.height + "cm" : ""], ["체중", m.weight ? m.weight + "kg" : ""],
+    ["골격근량", m.smm ? m.smm + "kg" + (a.muscle ? " (" + a.muscle.level + ")" : "") : ""], ["체지방률", m.fat ? m.fat + "%" + (a.fat ? " (" + a.fat.level + ")" : "") : ""],
+    ["목적", m.goal], ["주 횟수", "주 " + m.freq + "회"]];
+  $("infoText").innerHTML = items.filter(x => x[1]).map(x => `<span><b>${x[0]}</b>${esc(x[1])}</span>`).join("");
+  $("infoNote").textContent = doneCount(R) > 0 ? "인바디 숫자는 언제든 고칠 수 있어요. 주 횟수·목적은 운동을 시작한 뒤에는 인포데스크에서 바꿔 드려요." : "첫 운동 전까지는 무엇이든 고칠 수 있어요.";
+}
+const current = () => pg.sessions.find(s => !(R[s.idx] && R[s.idx].done));
+const lastDone = () => pg.sessions.filter(s => R[s.idx] && R[s.idx].done).at(-1);
+
+function howto(e) {
+  return `<div class="howto"><span><b>부위</b> ${esc(e.part)}</span><span><b>요령</b> ${esc(e.cue)}</span>${e.tempo ? `<span><b>속도</b> ${esc(e.tempo)}</span>` : ""}${e.alt ? `<span><b>기구가 없으면</b> ${esc(e.alt)}</span>` : ""}</div>`;
+}
+function rowsHtml(s, cells, editable) {
+  return s.ex.map(e => {
+    const c = cells[e.id], rec = c.rec || {};
+    const name = `<details><summary>${esc(e.n)}</summary>${howto(e)}</details><div class="ps">${esc(e.pres)}</div>`;
+    if (c.core) {
+      const d = R[s.idx] && R[s.idx].ex && R[s.idx].ex[e.id] && R[s.idx].ex[e.id].d;
+      return `<div class="exrow"><div>${name}</div><span class="hint">맨몸</span>
+        <input class="ck" type="checkbox" data-s="${s.idx}" data-e="${e.id}" ${d ? "checked" : ""} ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 완료"></div>`;
+    }
+    const has = rec.w !== undefined && rec.w !== "";
+    const val = has ? rec.w : fmt(c.sug);
+    return `<div class="exrow"><div>${name}</div>
+      <div class="wbox"><input type="number" inputmode="decimal" step="0.5" min="0" data-s="${s.idx}" data-e="${e.id}" class="${!has && c.sug != null ? "sug" : ""}" value="${esc(val)}" placeholder="${e.eq === "body" ? "맨몸" : "kg"}" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 무게"><span>kg</span></div>
+      <input class="ck" type="checkbox" data-s="${s.idx}" data-e="${e.id}" ${rec.d ? "checked" : ""} ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 세트 모두 완료">
+      <div class="why ${c.tone}">${!has && c.sug != null ? "추천 " + fmt(c.sug) + "kg · " : ""}${esc(c.why)}${c.est ? " (예상)" : ""}</div></div>`;
+  }).join("");
+}
+const listHtml = L => `<ol style="margin:4px 0 0;padding-left:20px;font-size:13.5px">${L.map(x => `<li>${esc(x[0])} <span class="num hint">${esc(x[1])}</span></li>`).join("")}</ol>`;
+
+function sessionCard(s, cells, isToday) {
+  const S = R[s.idx] || {};
+  return `<section class="panel ${isToday ? "today" : ""}">
+    <div class="row" style="justify-content:space-between"><span><span class="eyebrow">${isToday ? "오늘 할 운동 · " : ""}${s.idx}회차 · ${s.week}주 ${esc(pg.weeks[s.week - 1].theme)}</span><h2 style="margin:2px 0 0">${esc(s.title)}</h2></span>
+      <span class="num hint">${S.done && S.at ? md(S.at) + " 완료" : s.date ? md(s.date) + "(" + s.day + ") 예정" : s.day + "요일"}</span></div>
+    <p class="hint" style="margin:4px 0 0">${esc(s.load)} · 세트 사이 휴식 ${esc(s.rest)}</p>
+    ${s.flag ? `<div class="flag">${esc(s.flag)}</div>` : ""}
+    ${isToday ? `<details class="fold"><summary>준비운동 10분 보기</summary>${listHtml(s.warm)}</details>` : ""}
+    <div style="margin-top:4px">${rowsHtml(s, cells, !S.done)}</div>
+    ${isToday ? `<div class="timer"><span class="hint">휴식</span><span class="t" id="tm">${restSec(s.rest)}초</span><button class="btn ghost" type="button" id="tmBtn" data-sec="${restSec(s.rest)}">시작</button></div>` : ""}
+    <div class="cardio">유산소 ${s.cardio.min}분 · ${esc(s.cardio.set)}</div>
+    ${isToday ? `<details class="fold"><summary>마무리 스트레칭 5분 보기</summary>${listHtml(s.cool)}</details>` : ""}
+    <div class="row" style="margin-top:10px;justify-content:space-between">
+      <span class="hint">세트를 모두 해냈으면 체크, 못 했으면 비워 두세요.</span>
+      ${S.done ? `<span class="row"><span class="done-tag">완료</span><button class="btn ghost" type="button" data-undo="${s.idx}">다시 고치기</button></span>` : `<button class="btn" type="button" data-finish="${s.idx}">운동 마침</button>`}
+    </div></section>`;
+}
+
+function render() {
+  const cells = plan(), cur = current(), ld = lastDone();
+  const doneN = pg.sessions.filter(s => R[s.idx] && R[s.idx].done).length;
+  $("progText").textContent = doneN + " / " + pg.sessions.length + "회 완료";
+  $("progBar").style.width = (doneN / pg.sessions.length * 100) + "%";
+  $("nextText").textContent = cur ? "다음: " + cur.idx + "회차 " + cur.title : "4주 완주!";
+  let h = "";
+  // 오래 쉬었을 때 한 줄 안내 (체험판에서는 날짜를 따지지 않음)
+  if (!DEMO && cur) {
+    const gap = ld && ld.idx && R[ld.idx].at ? dayDiff(today, R[ld.idx].at) : (pg.start ? dayDiff(today, pg.start) : 0);
+    if (gap >= 5) h += `<div class="nudge">마지막 운동 뒤 ${gap}일이 지났어요. 오늘은 무게를 그대로 두고 가볍게 다시 시작해 보세요.</div>`;
+  }
+  if (cur) h += sessionCard(cur, cells[cur.idx], true);
+  else h += `<section class="panel today"><h2 style="margin:0">4주 완주를 축하해요!</h2><p class="sub">이제 인바디를 다시 재 볼 차례예요. 인포데스크에 말씀해 주세요. 아래 무게 변화표에서 한 달 동안 늘어난 무게를 확인해 보세요.</p></section>`;
+
+  // 무게 변화표
+  const hasW = id => pg.sessions.some(s => { const r = R[s.idx] && R[s.idx].ex && R[s.idx].ex[id]; return r && r.w !== undefined && r.w !== ""; });
+  const exs = []; pg.sessions.forEach(s => s.ex.forEach(e => { if (!e.core && (e.eq !== "body" || hasW(e.id)) && !exs.find(x => x.id === e.id)) exs.push(e); }));
+  h += `<h2>무게 변화</h2><p class="hint" style="margin:0">진한 글씨는 내 기록, 기울어진 글씨는 앞으로의 예상이에요. 초록은 올린 주, 주황은 유지하거나 내린 주, ✕는 다 못 한 날이에요.</p>
+    <div class="tbl"><table style="min-width:420px"><tr><th>운동</th>${pg.weeks.map((w, i) => `<th>${i + 1}주</th>`).join("")}</tr>
+    ${exs.map(e => `<tr><td><b>${esc(e.n)}</b></td>${pg.weeks.map((w, i) => {
+      const s = pg.sessions.find(x => x.week === i + 1 && x.ex.some(y => y.id === e.id));
+      if (!s) return "<td></td>";
+      const c = cells[s.idx][e.id], S = R[s.idx] || {}, rec = S.ex && S.ex[e.id];
+      const real = S.done ? (rec && rec.w !== "" && rec.w != null ? +rec.w : c.sug) : null;
+      const v = real != null ? real : c.sug;
+      const cls = real != null ? (c.tone === "up" ? "r u" : c.tone === "down" ? "r dn" : "r") : "f";
+      return `<td class="num ${cls}">${v == null ? "-" : fmt(v) + "kg"}${S.done && rec && !rec.d ? " ✕" : ""}</td>`;
+    }).join("")}</tr>`).join("")}</table></div>`;
+
+  // 전체 회차
+  h += `<h2>전체 회차</h2><div class="sessmini">`;
+  pg.sessions.forEach(s => {
+    if (cur && s.idx === cur.idx) return;
+    const S = R[s.idx] || {};
+    h += `<details class="s" ${openIdx === s.idx ? "open" : ""} data-det="${s.idx}"><summary><span><b class="num">${s.idx}회차</b> · ${esc(s.title)} <span class="hint">${S.done && S.at ? md(S.at) : s.date ? md(s.date) + "(" + s.day + ")" : ""}</span></span>${S.done ? '<span class="done-tag">완료</span>' : '<span class="hint">예정</span>'}</summary>
+      <div style="margin-top:8px">${sessionCard(s, cells[s.idx], false)}</div></details>`;
+  });
+  h += `</div>`;
+  $("out").innerHTML = h;
+  try { $("moveCode").value = btoa(unescape(encodeURIComponent(JSON.stringify(R)))); } catch (e) {}
+}
+
+// 입력 저장
+$("out").addEventListener("change", e => {
+  const t = e.target, si = t.dataset.s, ei = t.dataset.e; if (!si) return;
+  R[si] = R[si] || {}; R[si].ex = R[si].ex || {}; const r = R[si].ex[ei] = R[si].ex[ei] || {};
+  if (t.type === "checkbox") { r.d = t.checked; const inp = t.parentElement.querySelector('input[type=number]'); if (inp && (r.w === undefined || r.w === "") && inp.value !== "") r.w = inp.value; }
+  else r.w = t.value;
+  save(); render();
+});
+$("out").addEventListener("toggle", e => { const d = e.target.dataset && e.target.dataset.det; if (d) openIdx = e.target.open ? +d : (openIdx === +d ? null : openIdx); }, true);
+$("out").addEventListener("click", e => {
+  const f = e.target.dataset.finish, u = e.target.dataset.undo;
+  if (f) { finish(+f); const n = current(); toast(n ? f + "회차 완료! 다음 " + n.idx + "회차 무게가 정해졌어요" : "4주 완주! 수고 많으셨어요"); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  if (u) { R[u] = R[u] || {}; R[u].done = false; save(); render(); }
+  if (e.target.id === "tmBtn") startTimer(+e.target.dataset.sec);
+});
+function startTimer(sec) {
+  clearInterval(timer); let left = sec;
+  const tick = () => { const el = $("tm"), b = $("tmBtn"); if (!el) { clearInterval(timer); return; } el.textContent = left + "초"; if (b) b.textContent = "다시"; if (left <= 0) { clearInterval(timer); el.textContent = "다음 세트!"; try { navigator.vibrate && navigator.vibrate(300); } catch (e) {} } left--; };
+  tick(); timer = setInterval(tick, 1000);
+}
+function finish(idx, at) {
+  const s = pg.sessions.find(x => x.idx === idx), cells = plan()[idx];
+  R[idx] = R[idx] || {}; R[idx].ex = R[idx].ex || {};
+  s.ex.forEach(e => { const r = R[idx].ex[e.id] = R[idx].ex[e.id] || {}; if (!e.core && (r.w === undefined || r.w === "") && cells[e.id].sug != null) r.w = fmt(cells[e.id].sug); });
+  R[idx].done = true; R[idx].at = at || today; save(); render();
+}
+
+// 기록 옮기기
+$("moveCopy").onclick = () => { const v = $("moveCode").value; try { navigator.clipboard.writeText(v).then(() => toast("기록 코드를 복사했어요"), () => { $("moveCode").select(); toast("코드를 길게 눌러 복사해 주세요"); }); } catch (e) { $("moveCode").select(); } };
+$("moveLoad").onclick = () => { try { const o = JSON.parse(decodeURIComponent(escape(atob($("moveCode").value.trim())))); if (typeof o !== "object") throw 0; R = o; save(); render(); toast("기록을 불러왔어요"); } catch (e) { toast("코드가 올바르지 않아요. 전체를 다시 붙여넣어 주세요"); } };
+
+// 체험판 시뮬레이션: 첫 기록이 없으면 그럴듯한 시작 무게로 채움
+function simStart(e) {
+  const m = /(\d+)~/.exec(e.start || ""); if (m) return +m[1];
+  if (e.eq === "body") return "";
+  const F = pg.member.sex === "F";
+  return e.id === "legpress" ? (F ? 30 : 50) : (F ? 10 : 20);
+}
+function simulate(idx, missOne) {
+  const s = pg.sessions.find(x => x.idx === idx), cells = plan()[idx];
+  R[idx] = { ex: {}, done: false };
+  const strength = s.ex.filter(e => !e.core);
+  s.ex.forEach(e => {
+    const c = cells[e.id];
+    R[idx].ex[e.id] = e.core ? { d: true } : { w: fmt(c.sug != null ? c.sug : simStart(e)), d: !(missOne && e === strength[strength.length - 1]) };
+  });
+  finish(idx, s.date || today);
+}
+$("simAll").onclick = () => { const c = current(); if (c) { simulate(c.idx, false); toast(c.idx + "회차를 모두 완료했어요"); } };
+$("simMiss").onclick = () => { const c = current(); if (c) { simulate(c.idx, true); toast(c.idx + "회차: 마지막 운동을 다 못 했어요"); } };
+$("simWeek").onclick = () => { const c = current(); if (!c) return; pg.sessions.filter(s => s.week === c.week && !(R[s.idx] && R[s.idx].done)).forEach(s => simulate(s.idx, false)); toast(c.week + "주를 모두 완료했어요"); };
+$("simReset").onclick = () => { R = {}; save(); render(); toast("기록을 모두 지웠어요"); };
+$("apply").onclick = () => { ["name", "sex", "age", "weight", "freq", "goal", "start"].forEach(k => P[k] = $(k).value); build(); };
+boot();
+</script>
+</body>
+</html>
