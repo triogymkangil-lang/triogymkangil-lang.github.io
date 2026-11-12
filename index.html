@@ -132,6 +132,8 @@
   .exrow summary::after{content:" ⓘ";color:var(--accent);font-weight:400;font-size:13px}
   .howto{font-size:12.5px;background:var(--soft);border-radius:8px;padding:7px 9px;margin-top:5px;display:grid;gap:2px}
   .howto b{color:var(--sub);font-weight:500}
+  .exname{display:flex;gap:10px;align-items:flex-start;min-width:0}
+  .exThumb{width:64px;height:64px;flex:none;object-fit:cover;border-radius:8px;background:var(--line);cursor:pointer}
   .exImg{width:100%;max-width:320px;max-height:240px;object-fit:cover;border-radius:8px;margin-bottom:4px;background:var(--line)}
   .exrow .why{grid-column:1/-1;font-size:12px;color:var(--sub);margin-top:-2px}
   .exrow .why.up{color:var(--good)} .exrow .why.down{color:var(--warn)}
@@ -1072,14 +1074,17 @@ function renderInfo() {
 const current = () => pg.sessions.find(s => !(R[s.idx] && R[s.idx].done));
 const lastDone = () => pg.sessions.filter(s => R[s.idx] && R[s.idx].done).at(-1);
 
+const imgSrc = e => /^https?:/.test(e.img) ? e.img : TRIO_PROGRAM.LOG_URL + "img/" + e.img;
+// 운동 이름 왼쪽에 기구 사진을 항상 보여 줌 (누르면 설명이 펼쳐짐)
+const thumbHtml = e => e.img ? `<img class="exThumb" src="${esc(imgSrc(e))}" alt="${esc(e.n)} 사진" loading="lazy" onclick="this.parentNode.querySelector('details').toggleAttribute('open')" onerror="this.remove()">` : "";
 function howto(e) {
-  const img = e.img ? `<img class="exImg" src="${esc(/^https?:/.test(e.img) ? e.img : TRIO_PROGRAM.LOG_URL + "img/" + e.img)}" alt="${esc(e.n)}" loading="lazy" onerror="this.remove()">` : "";
+  const img = e.img ? `<img class="exImg" src="${esc(imgSrc(e))}" alt="${esc(e.n)}" loading="lazy" onerror="this.remove()">` : "";
   return `<div class="howto">${img}<span><b>부위</b> ${esc(e.part)}</span><span><b>요령</b> ${esc(e.cue)}</span>${e.tempo ? `<span><b>속도</b> ${esc(e.tempo)}</span>` : ""}${e.more ? `<span><b>자리가 없으면</b> ${esc(e.more)} (같은 운동)</span>` : ""}${e.alt ? `<span><b>기구를 못 쓰면</b> ${esc(e.alt)}</span>` : ""}</div>`;
 }
 function rowsHtml(s, cells, editable) {
   return s.ex.map(e => {
     const c = cells[e.id], rec = c.rec || {};
-    const name = `<details><summary>${esc(e.n)}</summary>${howto(e)}</details><div class="ps">${esc(e.pres)}</div>`;
+    const name = `<div class="exname">${thumbHtml(e)}<div style="min-width:0"><details><summary>${esc(e.n)}</summary>${howto(e)}</details><div class="ps">${esc(e.pres)}</div></div></div>`;
     if (c.core) {
       const d = R[s.idx] && R[s.idx].ex && R[s.idx].ex[e.id] && R[s.idx].ex[e.id].d;
       return `<div class="exrow"><div>${name}</div><span class="hint">맨몸</span>
