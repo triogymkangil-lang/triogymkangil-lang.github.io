@@ -132,6 +132,7 @@
   .exrow summary::after{content:" ⓘ";color:var(--accent);font-weight:400;font-size:13px}
   .howto{font-size:12.5px;background:var(--soft);border-radius:8px;padding:7px 9px;margin-top:5px;display:grid;gap:2px}
   .howto b{color:var(--sub);font-weight:500}
+  .exImg{width:100%;max-width:320px;max-height:240px;object-fit:cover;border-radius:8px;margin-bottom:4px;background:var(--line)}
   .exrow .why{grid-column:1/-1;font-size:12px;color:var(--sub);margin-top:-2px}
   .exrow .why.up{color:var(--good)} .exrow .why.down{color:var(--warn)}
   .wbox{display:flex;align-items:center;gap:4px}
@@ -277,26 +278,35 @@
   // 운동 사전. eq: machine/cable/db(덤벨)/body,  kind: time(초)/side(좌우 각 회)
   // st: 덤벨 시작 무게 [여, 남]
   const EX = {
-    legpress: { n: "레그프레스", part: "허벅지 앞·엉덩이", eq: "machine", cue: "발은 어깨너비, 무릎은 발끝 방향. 허리를 등받이에서 떼지 않고, 무릎을 끝까지 펴서 잠그지 않기", alt: "goblet" },
+    // 트리오짐 기구로 짠 운동 (n: 일지에 나오는 대표 기구, more: 사람이 많을 때 쓸 수 있는 같은 운동 기구) — 센터_기구목록.md
+    legpress: { n: "싸이벡스 파워레그프레스", part: "허벅지 앞·엉덩이", eq: "plate", more: "짐80 파워레그프레스, 뉴텍 핵프레스", cue: "발은 어깨너비, 무릎은 발끝 방향. 허리를 등받이에서 떼지 않고, 무릎을 끝까지 펴서 잠그지 않기", alt: "pendulum" },
+    pendulum: { n: "짐80 펜듈럼스쿼트", part: "허벅지 앞·엉덩이", eq: "plate", more: "짐80 스쿼트프레스", cue: "어깨패드에 몸을 붙이고 발은 발판 가운데. 무릎이 발끝 방향으로 가게 천천히 앉았다가 발바닥 전체로 밀기", alt: "legpress" },
+    hacksq: { n: "짐80 핵스쿼트", part: "허벅지 앞·엉덩이", eq: "plate", more: "싸이벡스 핵스쿼트", cue: "등과 엉덩이를 패드에 붙이고, 허벅지가 수평이 될 때까지 앉기. 무릎이 안으로 모이지 않게", alt: "legpress" },
+    hipthrust: { n: "부티빌더 힙쓰러스트", part: "엉덩이", eq: "plate", more: "몬스터글루트", cue: "등 윗부분을 패드에 대고 엉덩이를 조이며 올려 1초 멈추기. 허리를 꺾지 말고 엉덩이 힘으로", alt: "bridge" },
+    adduct: { n: "짐80 시그넘 힙어덕션", part: "허벅지 안쪽", eq: "machine", more: "싸이벡스·왓슨 힙어브덕션&어덕션(모으는 쪽)", cue: "등을 붙이고 다리를 안쪽으로 모은 뒤 3초 동안 천천히 벌리기", alt: "abduct" },
+    incline: { n: "너틸러스 니트로 인클라인체스트프레스", part: "윗가슴·어깨 앞", eq: "machine", more: "해머스트랭스 MTS 시티드 인클라인체스트프레스", cue: "손잡이가 가슴 윗부분에 오게 의자 맞추기. 어깨를 내리고 비스듬히 위로 밀기", alt: "chest" },
+    highrow: { n: "너틸러스 니트로 하이로우", part: "등 위·넓은 등", eq: "machine", more: "해머스트랭스 하이로우, 짐80 듀얼 롱풀", cue: "가슴을 패드에 대고 팔꿈치를 아래 뒤로 당기기. 어깨가 귀 쪽으로 올라가지 않게", alt: "latpull" },
+    reardelt: { n: "싸이벡스 펙덱 (리어델토이드)", part: "어깨 뒤", eq: "machine", more: "이카리안 펙덱플라이&리어델토이드", cue: "기구를 마주 보고 앉아 팔을 옆으로 벌리기. 팔꿈치 높이는 어깨와 같게, 날개뼈는 모으지 않고 어깨 뒤로만", alt: "row" },
     goblet: { n: "덤벨 고블릿 스쿼트", part: "허벅지 앞·엉덩이", eq: "db", st: ["4~6kg", "8~12kg"], cue: "덤벨을 가슴에 안고 의자에 앉듯이 엉덩이를 뒤로. 무릎이 안으로 모이지 않게", alt: "legpress" },
     boxsq: { n: "벤치 스쿼트", part: "허벅지 앞·엉덩이", eq: "body", cue: "벤치에 살짝 앉았다가 발바닥 전체로 밀며 일어서기. 무릎이 안으로 모이지 않게", alt: "legpress" },
-    legext: { n: "레그익스텐션", part: "허벅지 앞", eq: "machine", cue: "끝까지 펴고 1초 멈춘 뒤 천천히 내리기. 엉덩이가 들리지 않게 손잡이 잡기", alt: "boxsq" },
-    legcurl: { n: "레그컬", part: "허벅지 뒤", eq: "machine", cue: "엉덩이가 들리지 않게 고정하고, 내릴 때 3초 천천히", alt: "bridge" },
+    legext: { n: "짐80 시그넘 레그익스텐션", part: "허벅지 앞", eq: "machine", more: "싸이벡스 프레스티지 레그익스텐션", cue: "끝까지 펴고 1초 멈춘 뒤 천천히 내리기. 엉덩이가 들리지 않게 손잡이 잡기", alt: "boxsq" },
+    legcurl: { n: "짐80 시그넘 시티드레그컬", part: "허벅지 뒤", eq: "machine", more: "짐80 라잉레그컬, 싸이벡스 라잉레그컬", cue: "엉덩이가 들리지 않게 고정하고, 내릴 때 3초 천천히", alt: "bridge" },
     rdl: { n: "덤벨 루마니안 데드리프트", part: "허벅지 뒤·엉덩이·허리", eq: "db", st: ["4~6kg", "8~12kg"], cue: "무릎은 살짝만 굽히고, 허리를 곧게 편 채 엉덩이를 뒤로 빼며 덤벨을 무릎 아래까지", alt: "backext" },
     bridge: { n: "힙브릿지", part: "엉덩이", eq: "body", cue: "누워서 무릎 세우고, 엉덩이를 조이며 들어 올려 1초 멈추기. 허리로 들지 않기", alt: "abduct" },
-    abduct: { n: "힙어브덕션 머신", part: "엉덩이 옆", eq: "machine", cue: "상체를 등받이에 고정하고 바깥으로 천천히 벌린 뒤 3초 동안 모으기", alt: "bridge" },
+    abduct: { n: "싸이벡스 힙어브덕션", part: "엉덩이 옆", eq: "machine", more: "왓슨 힙어브덕션&어덕션, 부티빌더 스탠딩 힙어브덕션", cue: "상체를 등받이에 고정하고 바깥으로 천천히 벌린 뒤 3초 동안 모으기", alt: "bridge" },
     lunge: { n: "제자리 런지", part: "허벅지·엉덩이·균형", eq: "body", cue: "다리를 앞뒤로 벌린 채 뒷무릎을 바닥 쪽으로. 앞무릎이 발끝을 많이 넘지 않게. 익숙해지면 덤벨 들기", alt: "legpress" },
     calf: { n: "카프레이즈", part: "종아리", eq: "body", cue: "발뒤꿈치를 끝까지 들고 1초 멈춘 뒤 천천히 내리기. 벽이나 기구를 잡아도 돼요", alt: "legpress" },
     backext: { n: "백익스텐션", part: "허리·엉덩이", eq: "body", cue: "몸이 일직선이 될 때까지만 올라오기. 허리를 과하게 젖히지 않기", alt: "bridge" },
-    chest: { n: "체스트프레스 머신", part: "가슴·팔 뒤", eq: "machine", cue: "손잡이는 가슴 중간 높이로 의자 맞추기. 어깨가 들리지 않게 가슴을 편 채 밀기", alt: "dbbench" },
+    chest: { n: "싸이벡스 체스트프레스", part: "가슴·팔 뒤", eq: "machine", more: "너틸러스 니트로 시티드 체스트프레스, 아틀란티스·짐레코 시티드 체스트프레스", cue: "손잡이는 가슴 중간 높이로 의자 맞추기. 어깨가 들리지 않게 가슴을 편 채 밀기", alt: "dbbench" },
     dbbench: { n: "덤벨 벤치프레스", part: "가슴·팔 뒤", eq: "db", st: ["2~4kg", "6~10kg"], cue: "팔꿈치를 몸통에서 45도로 벌리고 가슴 옆까지 내렸다가 밀기", alt: "chest" },
-    pecdeck: { n: "펙덱 플라이", part: "가슴", eq: "machine", cue: "팔꿈치를 살짝 굽힌 채 가슴 앞으로 모으고 천천히 벌리기", alt: "chest" },
-    shoulder: { n: "숄더프레스 머신", part: "어깨", eq: "machine", cue: "허리를 등받이에 붙이고 귀 옆에서 위로 밀기. 허리가 뜨면 무게를 줄이기", alt: "lateral" },
-    lateral: { n: "사이드 레터럴 레이즈", part: "어깨 옆", eq: "db", st: ["1~2kg", "2~5kg"], cue: "가벼운 덤벨로 팔꿈치를 살짝 굽혀 어깨 높이까지만 들기", alt: "shoulder" },
-    latpull: { n: "랫풀다운", part: "등·팔 앞", eq: "machine", cue: "가슴을 펴고 바를 쇄골 쪽으로 당기기. 몸을 뒤로 많이 젖히지 않기", alt: "row" },
-    row: { n: "시티드 로우", part: "등 가운데", eq: "cable", cue: "허리 곧게 세우고 팔꿈치를 뒤로 보내며 날개뼈 모으기", alt: "dbrow" },
+    pecdeck: { n: "싸이벡스 펙덱플라이", part: "가슴", eq: "machine", more: "이카리안 펙덱플라이&리어델토이드", cue: "팔꿈치를 살짝 굽힌 채 가슴 앞으로 모으고 천천히 벌리기", alt: "chest" },
+    shoulder: { n: "싸이벡스 숄더프레스", part: "어깨", eq: "machine", more: "너틸러스 니트로 숄더프레스, 아스날 숄더프레스", cue: "허리를 등받이에 붙이고 귀 옆에서 위로 밀기. 허리가 뜨면 무게를 줄이기", alt: "lateral" },
+    lateral: { n: "싸이벡스 사이드레터럴레이즈", part: "어깨 옆", eq: "machine", more: "짐80 사이드레터럴 레이즈머신", cue: "패드에 팔꿈치 바깥쪽을 대고 어깨 높이까지만 들기. 어깨가 귀 쪽으로 올라가지 않게", alt: "shoulder" },
+    latpull: { n: "싸이벡스 프레스티지 렛풀다운", part: "등·팔 앞", eq: "machine", more: "라이프휘트니스·짐80 렛풀다운, 해머스트랭스 프론트풀다운, 파나타 써큘러풀다운", cue: "가슴을 펴고 바를 쇄골 쪽으로 당기기. 몸을 뒤로 많이 젖히지 않기", alt: "row" },
+    row: { n: "싸이벡스 프레스티지 시티드로우", part: "등 가운데", eq: "machine", more: "싸이벡스 시티드 로우, 싸이벡스 VR1 멀티로우, 짐80 미드로우", cue: "허리 곧게 세우고 팔꿈치를 뒤로 보내며 날개뼈 모으기", alt: "dbrow" },
     dbrow: { n: "원암 덤벨 로우", part: "등", eq: "db", st: ["4~6kg", "8~12kg"], cue: "벤치에 한 손과 무릎을 짚고 덤벨을 옆구리 쪽으로 당기기. 좌우 같은 횟수", alt: "row" },
-    curl: { n: "덤벨 컬", part: "팔 앞", eq: "db", st: ["2~3kg", "5~8kg"], cue: "팔꿈치를 몸통에 붙이고 반동 없이 올렸다가 천천히 내리기", alt: "row" },
+    curl: { n: "스트라이브 프리처컬", part: "팔 앞", eq: "machine", cue: "겨드랑이를 패드 끝에 붙이고 팔꿈치를 고정한 채 올렸다가 3초 동안 내리기", alt: "dbcurl" },
+    dbcurl: { n: "덤벨 컬", part: "팔 앞", eq: "db", st: ["2~3kg", "5~8kg"], cue: "팔꿈치를 몸통에 붙이고 반동 없이 올렸다가 천천히 내리기", alt: "row" },
     pushdown: { n: "케이블 푸시다운", part: "팔 뒤", eq: "cable", cue: "팔꿈치를 옆구리에 고정하고 아래로 끝까지 펴기", alt: "kickback" },
     kickback: { n: "덤벨 킥백", part: "팔 뒤", eq: "db", st: ["1~2kg", "3~5kg"], cue: "상체를 숙이고 팔꿈치를 옆구리에 붙인 채 뒤로 끝까지 펴기", alt: "pushdown" },
     plank: { n: "플랭크", part: "복근·코어", eq: "body", kind: "time", cue: "팔꿈치는 어깨 아래, 머리부터 발끝까지 일직선. 엉덩이가 처지거나 들리지 않게", alt: "kneeplank" },
@@ -314,20 +324,23 @@
     mountain: { n: "마운틴 클라이머", part: "코어·심폐", eq: "body", kind: "time", cue: "팔을 어깨 아래에 두고 무릎을 번갈아 가슴 쪽으로. 엉덩이가 들리지 않게", alt: "deadbug" },
   };
 
+  // 기구 사진: GitHub 저장소 img 폴더에 올린 파일 이름 (운동 코드: 파일). 사진이 없는 운동은 글로만 나와요.
+  const PHOTO = {};
+
   const DAYS = {
     F1: { t: "전신 A", type: "full", ex: ["legpress", "chest", "latpull", "legcurl", "plank"] },
-    F2: { t: "전신 B", type: "full", ex: ["goblet", "row", "shoulder", "bridge", "deadbug"] },
-    F3: { t: "전신 C", type: "full", ex: ["rdl", "dbbench", "dbrow", "lunge", "birddog"] },
+    F2: { t: "전신 B", type: "full", ex: ["pendulum", "row", "shoulder", "hipthrust", "deadbug"] },
+    F3: { t: "전신 C", type: "full", ex: ["legext", "incline", "highrow", "abduct", "birddog"] },
     U1: { t: "상체 A", type: "upper", ex: ["chest", "latpull", "shoulder", "row", "pushdown", "plank"] },
-    L1: { t: "하체 A", type: "lower", ex: ["legpress", "legcurl", "legext", "bridge", "calf", "deadbug"] },
-    U2: { t: "상체 B", type: "upper", ex: ["dbbench", "dbrow", "lateral", "pecdeck", "curl", "birddog"] },
-    L2: { t: "하체 B", type: "lower", ex: ["goblet", "rdl", "lunge", "abduct", "backext", "sideplank"] },
+    L1: { t: "하체 A", type: "lower", ex: ["legpress", "legcurl", "legext", "hipthrust", "calf", "deadbug"] },
+    U2: { t: "상체 B", type: "upper", ex: ["incline", "highrow", "lateral", "pecdeck", "curl", "birddog"] },
+    L2: { t: "하체 B", type: "lower", ex: ["pendulum", "rdl", "abduct", "adduct", "backext", "sideplank"] },
     C1: { t: "유산소 + 코어", type: "core", ex: ["plank", "deadbug", "birddog", "sideplank"], cardioDay: true },
   };
   const SPLIT = { 2: ["F1", "F2"], 3: ["F1", "F2", "F3"], 4: ["U1", "L1", "U2", "L2"], 5: ["U1", "L1", "C1", "U2", "L2"], "5근력증진": ["U1", "L1", "U2", "L2", "F2"] };
   const WEEKDAYS = { 2: [1, 4], 3: [1, 3, 5], 4: [1, 2, 4, 5], 5: [1, 2, 3, 4, 5] }; // 0=일
   const WD = "일월화수목금토";
-  const SAFE = { goblet: ["boxsq", "legpress"], lunge: ["abduct", "legext"], rdl: ["bridge", "backext", "legcurl"], plank: ["kneeplank"], sideplank: ["birddog", "deadbug"] };
+  const SAFE = { goblet: ["boxsq", "legpress"], lunge: ["abduct", "legext"], rdl: ["hipthrust", "legcurl", "bridge"], plank: ["kneeplank"], sideplank: ["birddog", "deadbug"] };
 
   // 주차별 강도
   const WEEKS = {
@@ -471,7 +484,8 @@
     const cardioWhat = lowImpact ? "실내 자전거 또는 러닝머신 경사 걷기 (무릎 부담이 적어요)"
       : p.goal === "다이어트" ? "러닝머신 빠르게 걷기·가벼운 조깅, 스텝밀, 자전거 중 편한 것"
       : "러닝머신, 자전거, 스텝밀 중 편한 것";
-    const startTip = e => e.eq === "machine" || e.eq === "cable" ? "가장 가벼운 칸에서 1세트 해보고, 쉬우면 한 칸씩 올리기"
+    const startTip = e => e.eq === "plate" ? "원판 없이 기구만으로 1세트 해보고, 쉬우면 양쪽에 5kg씩 끼우기 (적을 때는 원판 무게 합계)"
+      : e.eq === "machine" || e.eq === "cable" ? "가장 가벼운 칸에서 1세트 해보고, 쉬우면 한 칸씩 올리기"
       : e.eq === "db" ? "덤벨 " + e.st[sx] + "에서 시작 (참고)" : e.kind ? "맨몸" : "맨몸으로 시작";
     const days = split.map((key, di) => {
       const D = DAYS[key];
@@ -488,7 +502,7 @@
         });
         let alt = EX[e.alt] ? e.alt : null;
         if (lowImpact && SAFE[alt]) alt = SAFE[alt][0];
-        return { id, n: e.n, part: e.part, cue: e.cue, core: !!e.kind, eq: e.eq, start: startTip(e),
+        return { id, n: e.n, part: e.part, cue: e.cue, core: !!e.kind, eq: e.eq, start: startTip(e), more: e.more || "", img: PHOTO[id] || "",
           tempo: e.kind === "time" ? "숨은 참지 말고 고르게" : e.kind === "side" ? "한 번에 2초씩 천천히" : "2초 들고(밀고) 3초 내리기",
           alt: alt && alt !== id ? EX[alt].n : "", pres };
       });
@@ -525,7 +539,7 @@
     weeks.forEach((w, wi) => days.forEach((d, di) => {
       const idx = wi * days.length + di;
       sessions.push({ idx: idx + 1, week: wi + 1, date: dates ? dates[idx] : "", day: dates ? WD[new Date(dates[idx] + "T00:00:00").getDay()] : d.day, dayNo: d.no, title: d.title,
-        ex: d.ex.map(e => ({ id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt })), warm: d.warm, cool: d.cool, rest: w.rest, load: w.load, cardio: d.cardio[wi], cardioDay: d.cardioDay,
+        ex: d.ex.map(e => ({ id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt, more: e.more, img: e.img })), warm: d.warm, cool: d.cool, rest: w.rest, load: w.load, cardio: d.cardio[wi], cardioDay: d.cardioDay,
         flag: idx === 0 ? "첫날: 모든 운동을 가장 가벼운 무게로 해보고 시작 무게를 적어 두세요" : idx === days.length * 4 - 1 ? "마지막 날: 인바디 재측정" : (wi === 2 && di === 0 ? "오늘부터 무게 한 칸 올리기" : "") });
     }));
 
@@ -942,7 +956,7 @@ function toast(t) { document.querySelectorAll(".toast").forEach(x => x.remove())
 
 // 무게 한 칸 (가벼울 때는 작게): 레그프레스 80kg 미만 5kg·이상 10kg, 머신·케이블 30kg 미만 2.5kg·이상 5kg,
 // 덤벨 10kg 미만 1kg·이상 2kg, 바벨 2.5kg
-const step = (e, w) => e.id === "legpress" ? (w < 80 ? 5 : 10) : e.eq === "db" || e.eq === "body" ? (w < 10 ? 1 : 2) : e.eq === "bar" ? 2.5 : (w < 30 ? 2.5 : 5);
+const step = (e, w) => e.eq === "plate" ? (w < 60 ? 5 : 10) : e.eq === "db" || e.eq === "body" ? (w < 10 ? 1 : 2) : e.eq === "bar" ? 2.5 : (w < 30 ? 2.5 : 5);
 const fmt = w => w == null || w === "" ? "" : (Math.round(w * 10) / 10).toString();
 const restSec = r => { const m = /(\d+)\s*분/.exec(r); if (m) return +m[1] * 60; const s = /(\d+)/.exec(r); return s ? +s[1] : 60; };
 
@@ -1058,7 +1072,8 @@ const current = () => pg.sessions.find(s => !(R[s.idx] && R[s.idx].done));
 const lastDone = () => pg.sessions.filter(s => R[s.idx] && R[s.idx].done).at(-1);
 
 function howto(e) {
-  return `<div class="howto"><span><b>부위</b> ${esc(e.part)}</span><span><b>요령</b> ${esc(e.cue)}</span>${e.tempo ? `<span><b>속도</b> ${esc(e.tempo)}</span>` : ""}${e.alt ? `<span><b>기구가 없으면</b> ${esc(e.alt)}</span>` : ""}</div>`;
+  const img = e.img ? `<img class="exImg" src="${esc(/^https?:/.test(e.img) ? e.img : TRIO_PROGRAM.LOG_URL + "img/" + e.img)}" alt="${esc(e.n)}" loading="lazy" onerror="this.remove()">` : "";
+  return `<div class="howto">${img}<span><b>부위</b> ${esc(e.part)}</span><span><b>요령</b> ${esc(e.cue)}</span>${e.tempo ? `<span><b>속도</b> ${esc(e.tempo)}</span>` : ""}${e.more ? `<span><b>자리가 없으면</b> ${esc(e.more)} (같은 운동)</span>` : ""}${e.alt ? `<span><b>기구를 못 쓰면</b> ${esc(e.alt)}</span>` : ""}</div>`;
 }
 function rowsHtml(s, cells, editable) {
   return s.ex.map(e => {
@@ -1176,7 +1191,7 @@ function simStart(e) {
   const m = /(\d+)~/.exec(e.start || ""); if (m) return +m[1];
   if (e.eq === "body") return "";
   const F = pg.member.sex === "F";
-  return e.id === "legpress" ? (F ? 30 : 50) : (F ? 10 : 20);
+  return F ? 10 : 20;
 }
 function simulate(idx, missOne) {
   const s = pg.sessions.find(x => x.idx === idx), cells = plan()[idx];
