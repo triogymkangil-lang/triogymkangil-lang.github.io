@@ -330,6 +330,22 @@
   const PHOTO = { legpress: "legpress.jpg", pendulum: "pendulum.jpg", hipthrust: "hipthrust.jpg", legext: "legext.jpg", abduct: "abduct.jpg", chest: "chest.jpg", incline: "incline.jpg",
     pecdeck: "pecdeck.jpg", reardelt: "pecdeck.jpg", shoulder: "shoulder.jpg", lateral: "lateral.jpg", latpull: "latpull.jpg", row: "row.jpg", curl: "curl.jpg", legcurl: "legcurl.jpg", adduct: "adduct.jpg", highrow: "highrow.jpg", backext: "backext.jpg" };
 
+  // 3·4주차에는 같은 운동을 센터의 다른 기구로 바꿔서 해요 (자극을 새롭게, 센터 기구를 더 많이 써 보게).
+  // 기록·무게 추천은 기구별로 따로 해요(id 뒤에 _b). stand: 한 발로 서서 하는 기구라 60세 이상·무릎 부담이 큰 회원은 바꾸지 않아요.
+  const WEEK34 = {
+    chest: { n: "짐레코 시티드 체스트프레스", eq: "machine", img: "chest_b.jpg" },
+    incline: { n: "해머스트랭스 MTS 인클라인체스트프레스", eq: "machine", img: "incline_b.jpg" },
+    shoulder: { n: "너틸러스 니트로 숄더프레스", eq: "machine", img: "shoulder_b.jpg" },
+    latpull: { n: "라이프휘트니스 렛풀다운", eq: "machine", img: "latpull_b.jpg" },
+    row: { n: "싸이벡스 VR1 멀티로우", eq: "machine", img: "row_b.jpg" },
+    highrow: { n: "너틸러스 니트로 풀다운", eq: "machine", img: "highrow_b.jpg", cue: "무릎 패드로 다리를 고정하고 가슴을 편 채 손잡이를 쇄골 쪽으로 당기기. 몸을 뒤로 많이 젖히지 않기" },
+    legpress: { n: "짐80 파워레그프레스", eq: "plate", img: "legpress_b.jpg" },
+    pendulum: { n: "짐80 스쿼트프레스", eq: "plate", img: "pendulum_b.jpg", cue: "등을 패드에 붙이고 발은 발판 가운데. 무릎이 발끝 방향으로 가게 앉았다가 발바닥 전체로 밀기" },
+    legext: { n: "짐80 시그넘 레그익스텐션", eq: "machine", img: "legext_b.jpg" },
+    legcurl: { n: "짐80 스탠딩싱글레그컬", eq: "plate", img: "legcurl_b.jpg", side: true, stand: true, cue: "한 다리씩. 손잡이를 잡고 서서 발뒤꿈치를 엉덩이 쪽으로 당긴 뒤 3초 동안 내리기. 허리가 꺾이지 않게" },
+    abduct: { n: "부티빌더 스탠딩 힙어브덕션", eq: "plate", img: "abduct_b.jpg", side: true, stand: true, cue: "패드에 골반 옆을 대고 서서 한 다리씩 옆으로 밀어내기. 상체가 기울지 않게" },
+  };
+
   const DAYS = {
     F1: { t: "전신 A", type: "full", ex: ["legpress", "chest", "latpull", "legcurl", "plank"] },
     F2: { t: "전신 B", type: "full", ex: ["pendulum", "row", "shoulder", "hipthrust", "deadbug"] },
@@ -373,7 +389,7 @@
   const THEME = [
     { t: "적응", what: "기구 위치와 자세를 익히고 내 시작 무게를 찾아요", check: "모든 운동을 자세가 흔들리지 않고 할 수 있나요?" },
     { t: "운동량 늘리기", what: "세트를 늘려요. 무게는 크게 올리지 않아도 괜찮아요", check: "이번 주 계획한 횟수를 모두 왔나요?" },
-    { t: "강도 올리기", what: "무게를 한 칸 올리고, 유산소에 변화를 줘요", check: "1주 차보다 무게가 늘어난 운동이 있나요?" },
+    { t: "기구 바꾸기", what: "같은 운동을 센터의 다른 기구로 바꿔 새로운 자극을 주고, 유산소에 변화를 줘요", check: "새 기구의 자세와 무게를 찾았나요?" },
     { t: "마무리·재측정", what: "같은 무게로 더 깔끔하게 하고, 마지막 날 인바디를 다시 재요", check: "인바디를 다시 재고 다음 달 목표를 정했나요?" },
   ];
 
@@ -542,8 +558,14 @@
     weeks.forEach((w, wi) => days.forEach((d, di) => {
       const idx = wi * days.length + di;
       sessions.push({ idx: idx + 1, week: wi + 1, date: dates ? dates[idx] : "", day: dates ? WD[new Date(dates[idx] + "T00:00:00").getDay()] : d.day, dayNo: d.no, title: d.title,
-        ex: d.ex.map(e => ({ id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt, more: e.more, img: e.img })), warm: d.warm, cool: d.cool, rest: w.rest, load: w.load, cardio: d.cardio[wi], cardioDay: d.cardioDay,
-        flag: idx === 0 ? "첫날: 모든 운동을 가장 가벼운 무게로 해보고 시작 무게를 적어 두세요" : idx === days.length * 4 - 1 ? "마지막 날: 인바디 재측정" : (wi === 2 && di === 0 ? "오늘부터 무게 한 칸 올리기" : "") });
+        ex: d.ex.map(e => {
+          const s = { id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt, more: e.more, img: e.img };
+          const B = wi >= 2 && WEEK34[e.id];
+          if (B && !(lowImpact && B.stand)) Object.assign(s, { id: e.id + "_b", n: B.n, eq: B.eq, img: B.img, cue: B.cue || e.cue, start: startTip(B),
+            more: e.n + "(1·2주차 기구)" + (e.more ? ", " + e.more : ""), pres: B.side ? s.pres + " (좌우 각각)" : s.pres });
+          return s;
+        }), warm: d.warm, cool: d.cool, rest: w.rest, load: w.load, cardio: d.cardio[wi], cardioDay: d.cardioDay,
+        flag: idx === 0 ? "첫날: 모든 운동을 가장 가벼운 무게로 해보고 시작 무게를 적어 두세요" : idx === days.length * 4 - 1 ? "마지막 날: 인바디 재측정" : (wi === 2 && di === 0 ? "3주차부터 같은 운동을 센터의 다른 기구로 바꿔요. 처음 하는 기구는 가볍게 해 보고 무게를 적어 두세요" : "") });
     }));
 
     // 시작일이 주 중간이면 일차별 요일을 실제 첫 주 날짜에 맞춤
