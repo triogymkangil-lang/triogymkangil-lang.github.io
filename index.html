@@ -134,6 +134,9 @@
   .howto b{color:var(--sub);font-weight:500}
   .exname{display:flex;gap:10px;align-items:flex-start;min-width:0}
   .exThumb{width:64px;height:64px;flex:none;object-fit:cover;border-radius:8px;background:var(--line);cursor:pointer}
+  .vbadge{font-size:11px;font-weight:600;color:#fff;background:#e5322d;border-radius:4px;padding:1px 5px;vertical-align:2px}
+  .vbtn{justify-self:start;margin:2px 0 4px;padding:7px 12px;border:none;border-radius:8px;background:#e5322d;color:#fff;font:600 13px/1.2 inherit;cursor:pointer}
+  .vframe{width:100%;max-width:300px;aspect-ratio:9/16;border:0;border-radius:10px;margin:2px 0 4px;background:#000}
   .exImg{width:100%;max-width:320px;max-height:240px;object-fit:cover;border-radius:8px;margin-bottom:4px;background:var(--line)}
   .exrow .why{grid-column:1/-1;font-size:12px;color:var(--sub);margin-top:-2px}
   .exrow .why.up{color:var(--good)} .exrow .why.down{color:var(--warn)}
@@ -330,6 +333,14 @@
   const PHOTO = { legpress: "legpress.jpg", pendulum: "pendulum.jpg", hipthrust: "hipthrust.jpg", legext: "legext.jpg", abduct: "abduct.jpg", chest: "chest.jpg", incline: "incline.jpg",
     pecdeck: "pecdeck.jpg", reardelt: "pecdeck.jpg", shoulder: "shoulder.jpg", lateral: "lateral.jpg", latpull: "latpull.jpg", row: "row.jpg", curl: "curl.jpg", legcurl: "legcurl.jpg", adduct: "adduct.jpg", highrow: "highrow.jpg", backext: "backext.jpg" };
 
+  // 트리오짐 유튜브(@트리오짐) 기구 사용법 쇼츠: 운동 코드 → 영상 ID. 3·4주차 기구는 코드 뒤에 _b.
+  // 확실: 제목에 기구 이름이 있는 것. 나머지는 같은 동작 설명 영상으로 넣어 둠(원장님 확인 후 고치기).
+  const VIDEO = {
+    pendulum: "4Vibt2QdJgs", pendulum_b: "TiTC-YATeys", abduct: "4z7CSDQwAaw", abduct_b: "_QH-44skT1s", adduct: "H-bPrfbrAbo",
+    highrow: "gI_o26yKwV4", lateral: "ckOQ_-oASEA", legext: "vDPHjTNrflY", legext_b: "sAT7TAORifY", legcurl: "ouc-8G46td8",
+    legpress: "CNT5Wt2pIms", shoulder: "XMsPwngG83o", row: "37AGacXhHbU", incline: "_pgZq7S0uOY", latpull: "-L5fo4LXvKc", chest: "sBaKB063GH0",
+  };
+
   // 3·4주차에는 같은 운동을 센터의 다른 기구로 바꿔서 해요 (자극을 새롭게, 센터 기구를 더 많이 써 보게).
   // 기록·무게 추천은 기구별로 따로 해요(id 뒤에 _b). stand: 한 발로 서서 하는 기구라 60세 이상·무릎 부담이 큰 회원은 바꾸지 않아요.
   const WEEK34 = {
@@ -521,7 +532,7 @@
         });
         let alt = EX[e.alt] ? e.alt : null;
         if (lowImpact && SAFE[alt]) alt = SAFE[alt][0];
-        return { id, n: e.n, part: e.part, cue: e.cue, core: !!e.kind, eq: e.eq, start: startTip(e), more: e.more || "", img: PHOTO[id] || "",
+        return { id, n: e.n, part: e.part, cue: e.cue, core: !!e.kind, eq: e.eq, start: startTip(e), more: e.more || "", img: PHOTO[id] || "", vid: VIDEO[id] || "",
           tempo: e.kind === "time" ? "숨은 참지 말고 고르게" : e.kind === "side" ? "한 번에 2초씩 천천히" : "2초 들고(밀고) 3초 내리기",
           alt: alt && alt !== id ? EX[alt].n : "", pres };
       });
@@ -559,9 +570,9 @@
       const idx = wi * days.length + di;
       sessions.push({ idx: idx + 1, week: wi + 1, date: dates ? dates[idx] : "", day: dates ? WD[new Date(dates[idx] + "T00:00:00").getDay()] : d.day, dayNo: d.no, title: d.title,
         ex: d.ex.map(e => {
-          const s = { id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt, more: e.more, img: e.img };
+          const s = { id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt, more: e.more, img: e.img, vid: e.vid };
           const B = wi >= 2 && WEEK34[e.id];
-          if (B && !(lowImpact && B.stand)) Object.assign(s, { id: e.id + "_b", n: B.n, eq: B.eq, img: B.img, cue: B.cue || e.cue, start: startTip(B),
+          if (B && !(lowImpact && B.stand)) Object.assign(s, { id: e.id + "_b", n: B.n, eq: B.eq, img: B.img, vid: VIDEO[e.id + "_b"] || "", cue: B.cue || e.cue, start: startTip(B),
             more: e.n + "(1·2주차 기구)" + (e.more ? ", " + e.more : ""), pres: B.side ? s.pres + " (좌우 각각)" : s.pres });
           return s;
         }), warm: d.warm, cool: d.cool, rest: w.rest, load: w.load, cardio: d.cardio[wi], cardioDay: d.cardioDay,
@@ -1096,17 +1107,27 @@ function renderInfo() {
 const current = () => pg.sessions.find(s => !(R[s.idx] && R[s.idx].done));
 const lastDone = () => pg.sessions.filter(s => R[s.idx] && R[s.idx].done).at(-1);
 
+// 사용법 영상: 버튼을 누를 때만 유튜브를 불러와요 (데이터 절약)
+document.addEventListener("click", ev => {
+  const b = ev.target.closest && ev.target.closest(".vbtn"); if (!b) return;
+  const f = document.createElement("iframe");
+  f.referrerPolicy = "strict-origin-when-cross-origin"; // 유튜브는 주소(도메인)만 받아요. 회원 링크 코드는 안 넘어가요
+  f.className = "vframe"; f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+  f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(b.dataset.vid) + "?autoplay=1&playsinline=1&rel=0";
+  b.replaceWith(f);
+});
 const imgSrc = e => /^https?:/.test(e.img) ? e.img : TRIO_PROGRAM.LOG_URL + "img/" + e.img;
 // 운동 이름 왼쪽에 기구 사진을 항상 보여 줌 (누르면 설명이 펼쳐짐)
 const thumbHtml = e => e.img ? `<img class="exThumb" src="${esc(imgSrc(e))}" alt="${esc(e.n)} 사진" loading="lazy" onclick="this.parentNode.querySelector('details').toggleAttribute('open')" onerror="this.remove()">` : "";
 function howto(e) {
   const img = e.img ? `<img class="exImg" src="${esc(imgSrc(e))}" alt="${esc(e.n)}" loading="lazy" onerror="this.remove()">` : "";
-  return `<div class="howto">${img}<span><b>부위</b> ${esc(e.part)}</span><span><b>요령</b> ${esc(e.cue)}</span>${e.tempo ? `<span><b>속도</b> ${esc(e.tempo)}</span>` : ""}${e.more ? `<span><b>자리가 없으면</b> ${esc(e.more)} (같은 운동)</span>` : ""}${e.alt ? `<span><b>기구를 못 쓰면</b> ${esc(e.alt)}</span>` : ""}</div>`;
+  const vid = e.vid ? `<button type="button" class="vbtn" data-vid="${esc(e.vid)}">▶ 트리오짐 사용법 영상 보기</button>` : "";
+  return `<div class="howto">${img}${vid}<span><b>부위</b> ${esc(e.part)}</span><span><b>요령</b> ${esc(e.cue)}</span>${e.tempo ? `<span><b>속도</b> ${esc(e.tempo)}</span>` : ""}${e.more ? `<span><b>자리가 없으면</b> ${esc(e.more)} (같은 운동)</span>` : ""}${e.alt ? `<span><b>기구를 못 쓰면</b> ${esc(e.alt)}</span>` : ""}</div>`;
 }
 function rowsHtml(s, cells, editable) {
   return s.ex.map(e => {
     const c = cells[e.id], rec = c.rec || {};
-    const name = `<div class="exname">${thumbHtml(e)}<div style="min-width:0"><details><summary>${esc(e.n)}</summary>${howto(e)}</details><div class="ps">${esc(e.pres)}</div></div></div>`;
+    const name = `<div class="exname">${thumbHtml(e)}<div style="min-width:0"><details><summary>${esc(e.n)}${e.vid ? ` <span class="vbadge">▶영상</span>` : ""}</summary>${howto(e)}</details><div class="ps">${esc(e.pres)}</div></div></div>`;
     if (c.core) {
       const d = R[s.idx] && R[s.idx].ex && R[s.idx].ex[e.id] && R[s.idx].ex[e.id].d;
       return `<div class="exrow"><div>${name}</div><span class="hint">맨몸</span>
