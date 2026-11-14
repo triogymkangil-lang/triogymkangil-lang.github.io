@@ -204,9 +204,9 @@
       <div class="opts" data-name="sex"><label><input type="radio" name="sex" value="M"><span>남</span></label><label><input type="radio" name="sex" value="F"><span>여</span></label></div></div>
     <div class="q"><b>나이</b>
       <div class="nums" style="grid-template-columns:minmax(0,160px)"><label>만 나이<input id="sAge" type="number" inputmode="numeric" min="10" max="99" placeholder="예: 34"></label></div></div>
-    <div class="q"><b>운동 경력</b>
-      <div class="opts" data-name="exp"><label><input type="radio" name="exp" value="0"><span>처음이에요</span></label><label><input type="radio" name="exp" value="1"><span>1년 미만</span></label><label><input type="radio" name="exp" value="2"><span>1년 이상</span></label></div>
-      <p class="hint">1년 이상이면 세트 수와 무게를 직접 정할 수 있어요. 1년 미만은 센터가 세트 수를 정해 드려요.</p></div>
+    <div class="q"><b>운동 수준</b>
+      <div class="opts" data-name="exp"><label><input type="radio" name="exp" value="0"><span>초보<small>1년 미만</small></span></label><label><input type="radio" name="exp" value="1"><span>중급<small>1~3년</small></span></label><label><input type="radio" name="exp" value="2"><span>상급<small>3년 이상</small></span></label></div>
+      <p class="hint">초보는 센터가 세트 수와 횟수를 정해 드려요. 중급·상급은 운동마다 세트 수와 횟수를 직접 정할 수 있어요.</p></div>
     <div class="q"><b>일주일에 몇 번 운동할 수 있나요?</b>
       <div class="opts" data-name="freq"><label><input type="radio" name="freq" value="2"><span>주 2회</span></label><label><input type="radio" name="freq" value="3"><span>주 3회</span></label><label><input type="radio" name="freq" value="4"><span>주 4회</span></label><label><input type="radio" name="freq" value="5"><span>주 5회</span></label></div>
       <p class="hint">무리하지 않고 꾸준히 올 수 있는 횟수를 골라 주세요.</p></div>
@@ -418,7 +418,21 @@
   ];
   const GOALS = Object.keys(WEEKS); // 순서가 링크 코드에 쓰여요. 새 목적은 항상 뒤에 붙이기
   const STRONG = g => g === "근력증진" || g === "벌크업" || g === "린매스업";
-  const EXP = { "0": "처음이에요", "1": "1년 미만", "2": "1년 이상" };
+  const EXP = { "0": "초보 (1년 미만)", "1": "중급 (1~3년)", "2": "상급 (3년 이상)" };
+  // 2개월차부터 같은 운동을 돌려 쓰는 센터 기구 (0번 = 기본 기구, WEEK34 = 1개월차 3·4주 기구, 그다음 = 아래 목록 순서)
+  // 달마다 2주씩 다음 기구로 넘어가요. 같은 기구가 다시 나오면 그 기구의 지난 무게부터 이어서 해요.
+  const EXTRA = {
+    chest: [{ n: "짐레코 시티드 체스트프레스", eq: "machine", img: "chest_b.jpg" }, { n: "아틀란티스 시티드 체스트프레스", eq: "machine", vid: "cisPEjSKttM" }],
+    shoulder: [{ n: "아스날 숄더프레스", eq: "plate", vid: "diOz3cPq-50" }],
+    latpull: [{ n: "해머스트랭스 프론트풀다운", eq: "machine", img: "latpull_x1.jpg", vid: "rKhhew0JmXA" }, { n: "짐80 렛풀다운", eq: "machine", vid: "dSssep5WOZs" }],
+    row: [{ n: "해머스트랭스 레터럴로우", eq: "plate", img: "row_x1.jpg", vid: "T8iHHEUvm8g" }, { n: "짐80 로우로우", eq: "machine", vid: "37AGacXhHbU" }],
+    highrow: [{ n: "짐80 듀얼 롱풀", eq: "plate", vid: "4edrrKGuorA" }],
+    legpress: [{ n: "싸이벡스 수직레그프레스", eq: "plate", img: "legpress_x1.jpg", vid: "zeyVjYm3gtk", cue: "등을 패드에 붙이고 누워서 발판을 위로 밀기. 무릎이 가슴 쪽으로 너무 많이 오지 않게, 허리가 뜨지 않는 데까지만" }],
+    pendulum: [{ n: "싸이벡스 핵스쿼트", eq: "plate", img: "pendulum_x1.jpg", stand: true, cue: "등과 엉덩이를 패드에 붙이고 허벅지가 수평이 될 때까지 앉기. 무릎이 안으로 모이지 않게" }],
+    hipthrust: [{ n: "몬스터글루트", eq: "plate", img: "hipthrust_x1.jpg", vid: "iXSBsWFHu10", cue: "앉아서 패드를 골반에 대고, 엉덩이를 조이며 밀어 올린 뒤 1초 멈추기. 허리로 밀지 않기" }],
+    lateral: [{ n: "싸이벡스 사이드레터럴레이즈머신", eq: "machine" }],
+    pecdeck: [{ n: "싸이벡스 프레스티지 펙덱플라이", eq: "machine" }],
+  };
 
   // 주차별 테마
   const THEME = [
@@ -475,6 +489,12 @@
     return out;
   }
 
+  function variants(id) {
+    const L = [{ id }];
+    if (WEEK34[id]) L.push(Object.assign({ id: id + "_b" }, WEEK34[id]));
+    (EXTRA[id] || []).forEach((x, j) => L.push(Object.assign({ id: id + "_x" + (j + 1) }, x)));
+    return L;
+  }
   function make(input) {
     const p = Object.assign({}, input);
     p.name = (p.name || "").trim() || "회원";
@@ -483,7 +503,9 @@
     p.freq = Math.min(5, Math.max(2, Math.round(num(p.freq) || 3)));
     if (!GOALS.includes(p.goal)) p.goal = "기초체력";
     p.exp = EXP[p.exp] ? String(p.exp) : "";
-    const strong = STRONG(p.goal), adv = p.exp === "2";
+    const strong = STRONG(p.goal), adv = p.exp === "1" || p.exp === "2", pro = p.exp === "2";
+    p.month = Math.max(1, Math.min(60, Math.round(num(p.month) || 1)));
+    const M = p.month;
     const a = analyze(p);
     const senior = (p.age || 0) >= 60;
     const lowImpact = senior || (a.bmi || 0) >= 30;
@@ -502,7 +524,9 @@
       }
       if (p.goal === "다이어트" && a.muscleLow && !a.fatHigh) w.cmin = Math.max(15, w.cmin - 5);
       if ((p.goal === "근력증진" || p.goal === "벌크업") && a.fatHigh) { w.cmin = i < 2 ? 15 : 20; w.chow = "근력운동 뒤 숨이 약간 차는 속도"; }
-      if (p.exp === "0" && i === 0) { w.s = Math.min(w.s, 2); w.load = "가벼운 무게로 자세 익히기 (운동이 처음이라 1주는 2세트)"; }
+      if (M === 1 && p.exp === "0" && i === 0) { w.s = Math.min(w.s, 2); w.load = "가벼운 무게로 자세 익히기 (초보라 1주는 2세트)"; }
+      if (pro && i >= 1 && !senior) w.s = Math.min(5, w.s + 1);
+      if (M >= 2 && i === 0) { if (!senior) w.s = Math.max(w.s, 3); w.load = "지난달에 다 해낸 무게부터 이어서 (처음 쓰는 기구는 가볍게 해 보고 적기)"; }
       w.theme = THEME[i].t; w.what = THEME[i].what; w.check = THEME[i].check;
     });
     if (senior) notes.push("60세 이상이라 무게보다 바른 자세와 꾸준함에 맞췄어요. 세트는 최대 3세트, 균형 운동을 넣었어요.");
@@ -512,8 +536,9 @@
     if ((p.goal === "근력증진" || p.goal === "벌크업") && a.fatHigh) notes.push("체지방이 높은 편이라 근력운동 뒤 유산소를 15~20분 넣었어요.");
     if (p.goal === "벌크업" && a.fatHigh && !senior) notes.push("체지방이 높은 편이라 무리하게 많이 먹기보다 단백질 위주로 챙기고, 체지방이 더 늘면 린매스업으로 바꿔 보세요.");
     if (p.goal === "벌크업" && senior) notes.push("60세 이상이라 무게를 크게 올리기보다 근육량을 지키는 데 맞췄어요.");
-    if (adv) notes.push("운동 경력 1년 이상이라 세트 수와 무게를 직접 정할 수 있어요. 일지의 세트 칸에서 바꾸면 돼요.");
-    else if (p.exp) notes.push("세트 수는 센터가 정해 드려요. 무게는 기록할 때마다 다음 무게가 자동으로 정해져요.");
+    if (adv) notes.push((pro ? "상급" : "중급") + "이라 운동마다 세트 수와 횟수를 직접 정할 수 있어요. 일지의 세트·횟수 칸에서 바꾸면 돼요." + (pro ? " 2주차부터 세트를 하나씩 더 넣었어요." : ""));
+    else if (p.exp) notes.push("초보라 세트 수와 횟수는 센터가 정해 드려요. 무게는 기록할 때마다 다음 무게가 자동으로 정해져요.");
+    if (M >= 2) notes.push(M + "개월차예요. 같은 운동을 센터의 다른 기구로 바꿔 새 자극을 주고, 지난달 무게를 이어서 써요.");
     if (p.goal === "기초체력" && a.fatHigh) notes.push("체지방이 높은 편이에요. 체력이 붙는 3주 차부터 유산소 시간을 늘려 보세요.");
 
     // 심박수 (Tanaka: 208 - 0.7×나이)
@@ -602,12 +627,14 @@
       sessions.push({ idx: idx + 1, week: wi + 1, date: dates ? dates[idx] : "", day: dates ? WD[new Date(dates[idx] + "T00:00:00").getDay()] : d.day, dayNo: d.no, title: d.title,
         ex: d.ex.map(e => {
           const s = { id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt, more: e.more, img: e.img, vid: e.vid };
-          const B = wi >= 2 && WEEK34[e.id];
-          if (B && !(lowImpact && B.stand)) Object.assign(s, { id: e.id + "_b", n: B.n, eq: B.eq, img: B.img, vid: VIDEO[e.id + "_b"] || "", cue: B.cue || e.cue, start: startTip(B),
-            more: e.n + "(1·2주차 기구)" + (e.more ? ", " + e.more : ""), pres: B.side ? s.pres + " (좌우 각각)" : s.pres });
+          // 기구 고르기: 1개월차는 1·2주 기본 기구, 3·4주 WEEK34. 2개월차부터는 목록을 2주씩 돌려 가며.
+          const V = variants(e.id), k = M === 1 ? (wi >= 2 && WEEK34[e.id] ? 1 : 0) : (2 * (M - 1) + (wi >= 2 ? 1 : 0)) % V.length;
+          const B = k > 0 ? V[k] : null;
+          if (B && !(lowImpact && B.stand)) Object.assign(s, { id: B.id, n: B.n, eq: B.eq, img: B.img || "", vid: VIDEO[B.id] || B.vid || "", cue: B.cue || e.cue, start: startTip(B),
+            more: e.n + (M === 1 ? "(1·2주차 기구)" : "(같은 운동)") + (e.more ? ", " + e.more : ""), pres: B.side ? s.pres + " (좌우 각각)" : s.pres });
           return s;
         }), warm: d.warm, cool: d.cool, rest: w.rest, load: w.load, cardio: d.cardio[wi], cardioDay: d.cardioDay,
-        flag: idx === 0 ? "첫날: 모든 운동을 가장 가벼운 무게로 해보고 시작 무게를 적어 두세요" : idx === days.length * 4 - 1 ? "마지막 날: 인바디 재측정" : (wi === 2 && di === 0 ? "3주차부터 같은 운동을 센터의 다른 기구로 바꿔요. 처음 하는 기구는 가볍게 해 보고 무게를 적어 두세요" : "") });
+        flag: idx === 0 ? (M === 1 ? "첫날: 모든 운동을 가장 가벼운 무게로 해보고 시작 무게를 적어 두세요" : M + "개월차 첫날: 지난달 무게를 이어서 쓰고, 처음 쓰는 기구는 가볍게 해 보고 적어 두세요") : idx === days.length * 4 - 1 ? "마지막 날: 인바디 재측정" : (wi === 2 && di === 0 ? "3주차부터 같은 운동을 센터의 다른 기구로 바꿔요. 처음 하는 기구는 가볍게 해 보고 무게를 적어 두세요" : "") });
     }));
 
     // 시작일이 주 중간이면 일차별 요일을 실제 첫 주 날짜에 맞춤
@@ -657,9 +684,10 @@
 
     return {
       v: 2, made: ymd(new Date()), start: dates ? dates[0] : "", end: dates ? dates[dates.length - 1] : "",
-      member: { name: p.name, sex: p.sex, age: p.age, height: num(p.height), weight: num(p.weight), smm: num(p.smm), fat: num(p.fat), freq: p.freq, goal: p.goal, exp: p.exp, id: p.id || "",
+      month: M,
+      member: { name: p.name, sex: p.sex, age: p.age, height: num(p.height), weight: num(p.weight), smm: num(p.smm), fat: num(p.fat), freq: p.freq, goal: p.goal, exp: p.exp, month: M, id: p.id || "",
         token: /^[a-z0-9]{10,16}$/.test(p.token || "") ? p.token : newToken() },
-      analysis: a, senior, lowImpact, adv, notes, weeks, days, sessions, cardioWhat, hr, foodTips, expect,
+      analysis: a, senior, lowImpact, adv, pro, notes, weeks, days, sessions, cardioWhat, hr, foodTips, expect,
       protein, goal4w, tips, safety, restDay,
       minutes: strong ? "약 60분" : "약 60~70분",
     };
@@ -1002,7 +1030,8 @@ const srv = {
 let P = fromLink ? Object.assign({}, fromLink) : { name: "홍길동", sex: "M", age: 34, height: 175, weight: 82, smm: 32.5, fat: 27.5, freq: 3, goal: "다이어트", start: today, token: "demo00000000" };
 let pg = null, R = {}, openIdx = null, mem = {}, timer = null, saveT = null;
 // 회원이 직접 고른 정보는 기록 안의 R._p 에 저장돼요 (센터 시트에도 같이 올라가요)
-const PROF = ["sex", "age", "height", "weight", "smm", "fat", "freq", "goal", "exp", "start"];
+const PROF = ["sex", "age", "height", "weight", "smm", "fat", "freq", "goal", "exp", "month", "start"];
+const THRESH = 0.7; // 다음 달 프로그램을 여는 출석 기준 (계획한 회차의 70%)
 const applyProfile = p => { if (p) PROF.forEach(k => { if (p[k] !== undefined && p[k] !== "" && p[k] !== null) P[k] = p[k]; }); };
 const myCode = () => pg ? TRIO_PROGRAM.logCode(Object.assign({}, pg.member), pg.start) : String(CODE_IN).replace(/^[#?]?(m=)?/, "");
 const key = () => (DEMO ? "trio_demo_" : "trio_log_") + (P.token || TRIO_PROGRAM.logCode(Object.assign({}, P, { freq: +P.freq }), P.start));
@@ -1017,12 +1046,13 @@ const save = () => {
 // 센터 시트에 저장: 원본 기록 + 사람이 보기 쉬운 표(운동 한 개당 한 줄)
 function pushServer() {
   const flat = [];
-  pg.sessions.forEach(s => { const S = R[s.idx]; if (!S || !S.ex) return; s.ex.forEach(e => { const r = S.ex[e.id]; if (r && (r.w !== undefined || r.d !== undefined)) flat.push([s.idx, s.week, S.at || "", e.n + (r.s ? " (" + r.s + "세트)" : ""), e.core ? "" : (r.w ?? ""), !!r.d]); }); });
+  pg.sessions.forEach(s => { const S = R[s.idx]; if (!S || !S.ex) return; s.ex.forEach(e => { const r = S.ex[e.id]; if (r && (r.w !== undefined || r.d !== undefined)) flat.push([s.idx, s.week, S.at || "", e.n + (r.s || r.r ? " (" + (r.s ? r.s + "세트" : "") + (r.r ? "×" + r.r + "회" : "") + ")" : ""), e.core ? "" : (r.w ?? ""), !!r.d, pg.month]); }); });
   const doneS = pg.sessions.filter(s => R[s.idx] && R[s.idx].done);
   const m = pg.member;
-  const meta = { name: m.name, start: pg.start, freq: m.freq, goal: m.goal, done: doneS.length, total: pg.sessions.length, lastAt: doneS.length ? (R[doneS.at(-1).idx].at || "") : "",
+  const ms = monthState();
+  const meta = { name: m.name, start: pg.start, freq: m.freq, goal: m.goal, month: pg.month, rate: Math.round(ms.rate * 100), status: ms.status, done: doneS.length, total: pg.sessions.length, lastAt: doneS.length ? (R[doneS.at(-1).idx].at || "") : "",
     p: { sex: m.sex, age: m.age || "", exp: m.exp || "", height: m.height || "", weight: m.weight || "", smm: m.smm || "", fat: m.fat || "" }, pAt: R._p ? R._p.at || "" : "" };
-  srv.save(myCode(), R, flat, meta).then(() => sync("센터에 저장됨 ✓"), () => sync("연결이 안 돼서 휴대폰에 임시 저장했어요"));
+  srv.save(myCode(), R, flat, meta).then(() => sync("센터에 저장됨 ✓"), err => isBlocked(err) ? blocked() : sync("연결이 안 돼서 휴대폰에 임시 저장했어요"));
 }
 const doneCount = X => Object.values(X || {}).filter(v => v && v.done).length;
 function toast(t) { document.querySelectorAll(".toast").forEach(x => x.remove()); const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
@@ -1038,6 +1068,8 @@ const restSec = r => { const m = /(\d+)\s*분/.exec(r); if (m) return +m[1] * 60
 //  - 다 못 했으면 같은 무게, 두 번 연속 못 했으면 한 칸 내림
 function plan() {
   const last = {}, out = {};
+  // 지난달까지 기구별 마지막 무게 (같은 기구가 다시 나오면 이어서)
+  (R.hist || []).forEach(h => Object.entries(h.last || {}).forEach(([id, w]) => { last[id] = { w: +w, d: true, fails: 0, wk: 0, est: false, carry: true }; }));
   pg.sessions.forEach(s => {
     const S = R[s.idx] || {}, cells = {};
     s.ex.forEach(e => {
@@ -1046,6 +1078,7 @@ function plan() {
       let sug = null, why = "", tone = "";
       if (!prev) why = "첫 기록 · " + (e.start || "가볍게 시작해서 적어 두세요");
       else if (prev.w == null || prev.w === "") why = prev.est ? "첫 기록 무게를 적으면 자동으로 정해져요" : (e.eq === "body" ? "맨몸 · 익숙해지면 덤벨을 들어도 돼요" : "지난번 무게를 적지 않았어요");
+      else if (prev.carry) { sug = prev.w; why = "지난달 마지막 무게 " + fmt(prev.w) + "kg에서 이어서"; }
       else {
         const up = pg.weeks[s.week - 1].up && s.week > prev.wk;
         if (!prev.d && prev.fails >= 2) { sug = Math.max(0, prev.w - step(e, prev.w)); why = "두 번 연속 다 못 해서 한 칸 내렸어요"; tone = "down"; }
@@ -1065,11 +1098,44 @@ function plan() {
   return out;
 }
 
+// 이번 달 상태: 기간이 끝났거나 다 했으면 출석률로 다음 달을 열지 정해요
+function monthState() {
+  const total = pg.sessions.length, done = pg.sessions.filter(s => R[s.idx] && R[s.idx].done).length, rate = total ? done / total : 0;
+  const over = done >= total || (!!pg.end && today > pg.end);
+  const unlock = rate >= THRESH || (R._p && +R._p.unlock === pg.month);
+  return { total, done, rate, over, unlock, status: !over ? "진행 중" : unlock ? (rate >= THRESH ? "완주" : "상담 후 다음 달 열림") : "상담 필요" };
+}
+// 기구별 마지막 무게 (다음 달로 넘겨줌)
+function lastWeights() {
+  const L = {};
+  pg.sessions.forEach(s => { const S = R[s.idx]; if (!S || !S.done || !S.ex) return; s.ex.forEach(e => { const r = S.ex[e.id]; if (!e.core && r && r.w !== undefined && r.w !== "" && r.d) L[e.id] = +r.w; }); });
+  return L;
+}
+function startNextMonth() {
+  const ms = monthState();
+  R.hist = (R.hist || []).concat([{ m: pg.month, start: pg.start, end: pg.end, done: ms.done, total: ms.total, rate: Math.round(ms.rate * 100), goal: pg.member.goal, freq: pg.member.freq, last: lastWeights() }]);
+  Object.keys(R).forEach(k => { if (/^\d+$/.test(k)) delete R[k]; });
+  const now = new Date();
+  R._p = Object.assign({}, R._p, { month: pg.month + 1, start: today, unlock: undefined, at: today + " " + pad(now.getHours()) + ":" + pad(now.getMinutes()) });
+  applyProfile(R._p);
+}
+// 회원권이 끝난 회원: 일지를 닫고, 이 휴대폰에 남은 기록도 지워요 (센터 시트에는 그대로 남아요)
+function blocked() {
+  try { localStorage.removeItem(key()); } catch (e) {}
+  R = {}; mem = {}; pg = null;
+  ["setupBox", "progPanel", "simBox", "demoForm", "moveBox", "infoBox"].forEach(id => { const el = $(id); if (el) el.hidden = true; });
+  $("hName").textContent = (P.name || "") + " 회원님";
+  $("hSub").textContent = "운동 일지";
+  $("out").hidden = false;
+  $("out").innerHTML = `<section class="panel today"><h2 style="margin:0">회원권 기간이 끝나서 일지를 열 수 없어요</h2>
+    <p class="sub">회원권을 다시 등록하시면 그동안의 기록과 함께 이어서 쓰실 수 있어요. 인포데스크에 편하게 문의해 주세요.</p></section>`;
+}
+const isBlocked = x => !!x && (x.blocked || /blocked/.test(String(x.message || x.error || x)));
 function build() {
   pg = TRIO_PROGRAM.make(P);
   if (DEMO) ["name", "sex", "age", "weight", "freq", "goal", "start"].forEach(k => $(k).value = P[k] ?? "");
   $("hName").textContent = pg.member.name + " 회원님 운동 일지";
-  $("hSub").textContent = pg.member.goal + " · 주 " + pg.member.freq + "회 · " + (pg.start ? md(pg.start) + " ~ " + md(pg.end) : "4주") + (DEMO ? " · 체험판" : "");
+  $("hSub").textContent = (pg.month > 1 ? pg.month + "개월차 · " : "") + pg.member.goal + " · 주 " + pg.member.freq + "회 · " + (pg.start ? md(pg.start) + " ~ " + md(pg.end) : "4주") + (DEMO ? " · 체험판" : "");
   $("setupBox").hidden = true; $("progPanel").hidden = false; $("out").hidden = false;
   $("simBox").hidden = !DEMO; $("demoForm").hidden = !DEMO; $("moveBox").hidden = SERVER; $("infoBox").hidden = DEMO;
   openIdx = null;
@@ -1084,13 +1150,14 @@ function boot() {
   $("progPanel").hidden = true; sync("센터 기록 불러오는 중…");
   $("out").innerHTML = `<div class="panel hint">불러오는 중…</div>`;
   srv.load(myCode()).then(res => {
+    if (isBlocked(res)) return blocked();
     const S = res && res.R ? res.R : null;
     let push = false;
     if (S && doneCount(S) >= doneCount(R) && (S._p || !R._p)) { R = S; try { localStorage.setItem(key(), JSON.stringify(R)); } catch (e) {} }
     else if (doneCount(R) > 0 || R._p) push = true;   // 휴대폰에만 있던 기록을 센터로 올림
     ready(); sync("센터와 연결됨 ✓");
     if (push && pg) pushServer();
-  }, () => { ready(); sync("센터 연결이 안 돼요. 휴대폰에 임시 저장해요"); });
+  }, err => { if (isBlocked(err)) return blocked(); ready(); sync("센터 연결이 안 돼요. 휴대폰에 임시 저장해요"); });
 }
 function ready() { applyProfile(R._p); if (+P.freq && P.goal) build(); else showSetup(false); }
 
@@ -1098,19 +1165,22 @@ function ready() { applyProfile(R._p); if (+P.freq && P.goal) build(); else show
 const SEX = { M: "남", F: "여" };
 function setChip(name, val) { document.querySelectorAll(`input[name=${name}]`).forEach(i => { i.checked = String(i.value) === String(val); i.parentElement.classList.toggle("on", i.checked); }); }
 function chipVal(name) { const i = document.querySelector(`input[name=${name}]:checked`); return i ? i.value : ""; }
-function showSetup(edit) {
-  const locked = edit && doneCount(R) > 0;
+let NEXT = false;
+function showSetup(edit, next) {
+  NEXT = !!next;
+  const locked = edit && !next && doneCount(R) > 0;
   $("setupBox").hidden = false; $("out").hidden = true; $("progPanel").hidden = true;
   ["simBox", "demoForm", "moveBox", "infoBox"].forEach(id => $(id).hidden = true);
   $("hName").textContent = (P.name || "") + " 회원님, 반가워요!";
-  $("hSub").textContent = edit ? "내 정보 고치기" : "4주 운동 프로그램 만들기";
-  $("setupTitle").textContent = edit ? "내 정보 고치기" : "내 정보를 알려 주세요";
+  $("hSub").textContent = next ? (pg.month + 1) + "개월차 프로그램 만들기" : edit ? "내 정보 고치기" : "4주 운동 프로그램 만들기";
+  $("setupTitle").textContent = next ? (pg.month + 1) + "개월차 시작 전에 정보를 확인해 주세요" : edit ? "내 정보 고치기" : "내 정보를 알려 주세요";
   setChip("sex", P.sex === "F" ? "F" : P.sex === "M" ? "M" : "");
   setChip("freq", +P.freq || ""); setChip("goal", P.goal || ""); setChip("exp", P.exp ?? "");
   $("sAge").value = P.age || ""; $("sH").value = P.height || ""; $("sW").value = P.weight || ""; $("sM").value = P.smm || ""; $("sF").value = P.fat || "";
   document.querySelectorAll("input[name=freq],input[name=goal]").forEach(i => i.disabled = locked);
   $("setupErr").textContent = locked ? "운동을 시작한 뒤라 주 횟수와 목적은 그대로예요. 바꾸고 싶으면 인포데스크에 말씀해 주세요." : "";
-  $("setupGo").textContent = edit ? "저장하기" : "내 4주 프로그램 만들기";
+  $("setupGo").textContent = next ? (pg.month + 1) + "개월차 프로그램 만들기" : edit ? "저장하기" : "내 4주 프로그램 만들기";
+  if (next) $("setupErr").textContent = "인바디를 새로 쟀으면 숫자를 바꿔 주세요. 목적·주 횟수·운동 수준도 바꿀 수 있어요.";
   $("setupCancel").hidden = !edit;
   window.scrollTo({ top: 0 });
 }
@@ -1119,17 +1189,19 @@ const numIn = (id, lo, hi) => { const v = $(id).value.trim(); if (v === "") retu
 $("setupGo").onclick = () => {
   const sex = chipVal("sex"), freq = +chipVal("freq"), goal = chipVal("goal"), exp = chipVal("exp");
   const age = numIn("sAge", 10, 99), height = numIn("sH", 100, 230), weight = numIn("sW", 25, 250), smm = numIn("sM", 5, 80), fat = numIn("sF", 3, 70);
-  const miss = [!sex && "성별", (age === "" || age === null) && "나이", !exp && "운동 경력", !freq && "주 몇 회", !goal && "운동 목적"].filter(Boolean);
+  const miss = [!sex && "성별", (age === "" || age === null) && "나이", !exp && "운동 수준", !freq && "주 몇 회", !goal && "운동 목적"].filter(Boolean);
   if (miss.length) { $("setupErr").textContent = miss.join(", ") + "을(를) 골라 주세요."; return; }
   const bad = [height === null && "키", weight === null && "체중", smm === null && "골격근량", fat === null && "체지방률"].filter(Boolean);
   if (bad.length) { $("setupErr").textContent = bad.join(", ") + " 숫자를 다시 확인해 주세요."; return; }
   const first = !(+P.freq && P.goal);
   const now = new Date(), at = today + " " + pad(now.getHours()) + ":" + pad(now.getMinutes());
-  R._p = { sex, age: Math.round(age), height, weight, smm, fat, freq, goal, exp, start: (R._p && R._p.start) || (first ? today : P.start) || today, at };
+  R._p = Object.assign({}, R._p || {}, { sex, age: Math.round(age), height, weight, smm, fat, freq, goal, exp, start: (R._p && R._p.start) || (first ? today : P.start) || today, at });
   applyProfile(R._p);
   ["height", "weight", "smm", "fat"].forEach(k => { if (R._p[k] === "") P[k] = ""; });
+  if (NEXT) startNextMonth();
   build(); save(); window.scrollTo({ top: 0 });
-  toast(first ? "내 4주 프로그램이 만들어졌어요!" : "정보를 저장했어요");
+  toast(NEXT ? pg.month + "개월차 프로그램이 만들어졌어요!" : first ? "내 4주 프로그램이 만들어졌어요!" : "정보를 저장했어요");
+  NEXT = false;
 };
 $("setupCancel").onclick = () => build();
 $("infoEdit").onclick = () => showSetup(true);
@@ -1137,9 +1209,9 @@ function renderInfo() {
   const m = pg.member, a = pg.analysis || {};
   const items = [["성별", SEX[m.sex] || ""], ["나이", m.age ? m.age + "세" : ""], ["키", m.height ? m.height + "cm" : ""], ["체중", m.weight ? m.weight + "kg" : ""],
     ["골격근량", m.smm ? m.smm + "kg" + (a.muscle ? " (" + a.muscle.level + ")" : "") : ""], ["체지방률", m.fat ? m.fat + "%" + (a.fat ? " (" + a.fat.level + ")" : "") : ""],
-    ["목적", m.goal], ["주 횟수", "주 " + m.freq + "회"], ["운동 경력", TRIO_PROGRAM.EXP[m.exp] || ""]];
+    ["목적", m.goal], ["주 횟수", "주 " + m.freq + "회"], ["운동 수준", TRIO_PROGRAM.EXP[m.exp] || ""]];
   $("infoText").innerHTML = items.filter(x => x[1]).map(x => `<span><b>${x[0]}</b>${esc(x[1])}</span>`).join("");
-  $("infoNote").textContent = doneCount(R) > 0 ? "인바디 숫자와 운동 경력은 언제든 고칠 수 있어요. 주 횟수·목적은 운동을 시작한 뒤에는 인포데스크에서 바꿔 드려요." : "첫 운동 전까지는 무엇이든 고칠 수 있어요.";
+  $("infoNote").textContent = doneCount(R) > 0 ? "인바디 숫자와 운동 수준은 언제든 고칠 수 있어요. 주 횟수·목적은 운동을 시작한 뒤에는 인포데스크에서 바꿔 드려요." : "첫 운동 전까지는 무엇이든 고칠 수 있어요.";
 }
 const current = () => pg.sessions.find(s => !(R[s.idx] && R[s.idx].done));
 const lastDone = () => pg.sessions.filter(s => R[s.idx] && R[s.idx].done).at(-1);
@@ -1164,9 +1236,12 @@ function howto(e) {
 function rowsHtml(s, cells, editable) {
   return s.ex.map(e => {
     const c = cells[e.id], rec = c.rec || {};
-    const myS = !c.core && pg.adv && rec.s ? +rec.s : 0;
-    const pres = myS ? String(e.pres).replace(/^\d+세트/, myS + "세트") : e.pres;
-    const setSel = !c.core && pg.adv ? ` <label class="setsel">세트 <select data-s="${s.idx}" data-e="${e.id}" data-k="s" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 세트 수">${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}" ${n === (myS || +(/^(\d+)세트/.exec(e.pres) || [0, 3])[1]) ? "selected" : ""}>${n}</option>`).join("")}</select></label>` : "";
+    const myS = !c.core && pg.adv && rec.s ? +rec.s : 0, myR = !c.core && pg.adv && rec.r ? +rec.r : 0;
+    let pres = myS ? String(e.pres).replace(/^\d+세트/, myS + "세트") : e.pres;
+    if (myR) pres = String(pres).replace(/×[\d~]+회/, "×" + myR + "회");
+    const defS = +(/^(\d+)세트/.exec(e.pres) || [0, 3])[1], defR = +(/×(\d+)/.exec(e.pres) || [0, 12])[1];
+    const opt = (L, v) => L.map(n => `<option value="${n}" ${n === v ? "selected" : ""}>${n}</option>`).join("");
+    const setSel = !c.core && pg.adv ? ` <label class="setsel">세트 <select data-s="${s.idx}" data-e="${e.id}" data-k="s" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 세트 수">${opt([1, 2, 3, 4, 5, 6], myS || defS)}</select></label><label class="setsel">횟수 <select data-s="${s.idx}" data-e="${e.id}" data-k="r" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 횟수">${opt([3, 4, 5, 6, 8, 10, 12, 15, 20], myR || ([3, 4, 5, 6, 8, 10, 12, 15, 20].includes(defR) ? defR : 12))}</select></label>` : "";
     const name = `<div class="exname">${thumbHtml(e)}<div style="min-width:0"><details><summary>${esc(e.n)}${e.vid ? ` <span class="vbadge">▶영상</span>` : ""}</summary>${howto(e)}</details><div class="ps">${esc(pres)}${setSel}</div></div></div>`;
     if (c.core) {
       const d = R[s.idx] && R[s.idx].ex && R[s.idx].ex[e.id] && R[s.idx].ex[e.id].d;
@@ -1206,15 +1281,24 @@ function render() {
   const doneN = pg.sessions.filter(s => R[s.idx] && R[s.idx].done).length;
   $("progText").textContent = doneN + " / " + pg.sessions.length + "회 완료";
   $("progBar").style.width = (doneN / pg.sessions.length * 100) + "%";
-  $("nextText").textContent = cur ? "다음: " + cur.idx + "회차 " + cur.title : "4주 완주!";
+  $("nextText").textContent = cur ? "다음: " + cur.idx + "회차 " + cur.title : pg.month + "개월차 완주!";
   let h = "";
   // 오래 쉬었을 때 한 줄 안내 (체험판에서는 날짜를 따지지 않음)
   if (!DEMO && cur) {
     const gap = ld && ld.idx && R[ld.idx].at ? dayDiff(today, R[ld.idx].at) : (pg.start ? dayDiff(today, pg.start) : 0);
     if (gap >= 5) h += `<div class="nudge">마지막 운동 뒤 ${gap}일이 지났어요. 오늘은 무게를 그대로 두고 가볍게 다시 시작해 보세요.</div>`;
   }
+  const ms = monthState(), pct = Math.round(ms.rate * 100), nm = pg.month + 1;
+  if (ms.over && !DEMO || (DEMO && !cur)) {
+    if (ms.unlock) h += `<section class="panel today"><h2 style="margin:0">${pg.month}개월차 ${ms.done >= ms.total ? "완주" : "마무리"}를 축하해요!</h2>
+      <p class="sub">출석률 ${pct}% (${ms.done}/${ms.total}회). 다음 달 프로그램을 시작할 수 있어요. 지난달 무게를 이어서 쓰고, 기구도 새로 바뀌어요.</p>
+      <p class="hint" style="margin:0">시작하기 전에 인바디를 다시 재면 목적과 식단도 새로 맞춰 드려요. 인포데스크에 말씀해 주세요.</p>
+      <button class="btn bigbtn" type="button" data-next="1" style="margin-top:10px">${nm}개월차 시작하기</button></section>`;
+    else h += `<section class="panel today"><h2 style="margin:0">${pg.month}개월차가 끝났어요</h2>
+      <p class="sub">출석률 ${pct}% (${ms.done}/${ms.total}회)예요. 다음 달 프로그램은 출석 ${Math.round(THRESH * 100)}% 이상일 때 열려요.</p>
+      <p class="hint" style="margin:0">센터에 알려 드렸어요. 인포데스크에서 운동 시간과 횟수를 같이 맞춰 보는 상담을 도와드릴게요. 상담 뒤에 다음 달을 열어 드려요.</p></section>`;
+  }
   if (cur) h += sessionCard(cur, cells[cur.idx], true);
-  else h += `<section class="panel today"><h2 style="margin:0">4주 완주를 축하해요!</h2><p class="sub">이제 인바디를 다시 재 볼 차례예요. 인포데스크에 말씀해 주세요. 아래 무게 변화표에서 한 달 동안 늘어난 무게를 확인해 보세요.</p></section>`;
 
   // 무게 변화표
   const hasW = id => pg.sessions.some(s => { const r = R[s.idx] && R[s.idx].ex && R[s.idx].ex[id]; return r && r.w !== undefined && r.w !== ""; });
@@ -1250,14 +1334,16 @@ $("out").addEventListener("change", e => {
   R[si] = R[si] || {}; R[si].ex = R[si].ex || {}; const r = R[si].ex[ei] = R[si].ex[ei] || {};
   if (t.type === "checkbox") { r.d = t.checked; const inp = t.parentElement.querySelector('input[type=number]'); if (inp && (r.w === undefined || r.w === "") && inp.value !== "") r.w = inp.value; }
   else if (t.dataset.k === "s") r.s = +t.value;
+  else if (t.dataset.k === "r") r.r = +t.value;
   else r.w = t.value;
   save(); render();
 });
 $("out").addEventListener("toggle", e => { const d = e.target.dataset && e.target.dataset.det; if (d) openIdx = e.target.open ? +d : (openIdx === +d ? null : openIdx); }, true);
 $("out").addEventListener("click", e => {
   const f = e.target.dataset.finish, u = e.target.dataset.undo;
-  if (f) { finish(+f); const n = current(); toast(n ? f + "회차 완료! 다음 " + n.idx + "회차 무게가 정해졌어요" : "4주 완주! 수고 많으셨어요"); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  if (f) { finish(+f); const n = current(); toast(n ? f + "회차 완료! 다음 " + n.idx + "회차 무게가 정해졌어요" : pg.month + "개월차 완주! 수고 많으셨어요"); window.scrollTo({ top: 0, behavior: "smooth" }); }
   if (u) { R[u] = R[u] || {}; R[u].done = false; save(); render(); }
+  if (e.target.dataset.next) showSetup(true, true);
   if (e.target.id === "tmBtn") startTimer(+e.target.dataset.sec);
 });
 function startTimer(sec) {
