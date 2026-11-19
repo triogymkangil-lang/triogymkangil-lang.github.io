@@ -318,6 +318,14 @@
     dbrow: { n: "원암 덤벨 로우", part: "등", eq: "db", st: ["4~6kg", "8~12kg"], cue: "벤치에 한 손과 무릎을 짚고 덤벨을 옆구리 쪽으로 당기기. 좌우 같은 횟수", alt: "row" },
     curl: { n: "스트라이브 프리처컬", part: "팔 앞", eq: "machine", cue: "겨드랑이를 패드 끝에 붙이고 팔꿈치를 고정한 채 올렸다가 3초 동안 내리기", alt: "dbcurl" },
     dbcurl: { n: "덤벨 컬", part: "팔 앞", eq: "db", st: ["2~3kg", "5~8kg"], cue: "팔꿈치를 몸통에 붙이고 반동 없이 올렸다가 천천히 내리기", alt: "row" },
+    // 중급·상급 부위별 루틴에 쓰는 기구 (2026-11-16)
+    decline: { n: "파나타 디클라인체스트프레스", part: "아랫가슴·팔 뒤", eq: "plate", cue: "등을 붙이고 손잡이를 가슴 아래쪽에서 비스듬히 앞으로 밀기. 어깨가 들리지 않게", alt: "chest" },
+    innerchest: { n: "짐80 이너체스트프레스", part: "가슴 안쪽", eq: "machine", cue: "손잡이를 몸 가운데로 모으듯 밀고, 끝에서 가슴을 1초 조이기", alt: "pecdeck" },
+    flatbench: { n: "프라임 플렛벤치프레스", part: "가슴·팔 뒤·어깨 앞", eq: "plate", cue: "벤치에 누워 날개뼈를 모으고, 손잡이를 가슴 높이에서 위로 밀기. 팔꿈치는 몸통에서 45도", alt: "chest" },
+    tbar: { n: "짐80 T바로우", part: "등 가운데·두께", eq: "plate", cue: "허리를 곧게 편 채 팔꿈치를 뒤로 당겨 날개뼈 모으기. 허리 반동으로 당기지 않기", alt: "row" },
+    assist: { n: "싸이벡스 어시스트 스탠딩풀업", part: "등·팔 앞", eq: "machine", cue: "보조 무게가 클수록 쉬워요. 가슴을 펴고 턱이 손잡이 높이까지 오게 당겨 올라가기", alt: "latpull" },
+    neckpress: { n: "짐80 넥프레스", part: "어깨", eq: "plate", cue: "허리를 등받이에 붙이고 귀 옆에서 위로 밀기. 어깨가 불편하면 범위를 줄이거나 숄더프레스로 바꾸기", alt: "shoulder" },
+    pullover: { n: "짐80 풀오버", part: "넓은 등·가슴", eq: "machine", cue: "팔꿈치를 살짝 굽힌 채 머리 위에서 배 쪽으로 큰 원을 그리듯 당기기", alt: "latpull" },
     pushdown: { n: "케이블 푸시다운", part: "팔 뒤", eq: "cable", cue: "팔꿈치를 옆구리에 고정하고 아래로 끝까지 펴기", alt: "kickback" },
     kickback: { n: "덤벨 킥백", part: "팔 뒤", eq: "db", st: ["1~2kg", "3~5kg"], cue: "상체를 숙이고 팔꿈치를 옆구리에 붙인 채 뒤로 끝까지 펴기", alt: "pushdown" },
     plank: { n: "플랭크", part: "복근·코어", eq: "body", kind: "time", cue: "팔꿈치는 어깨 아래, 머리부터 발끝까지 일직선. 엉덩이가 처지거나 들리지 않게", alt: "kneeplank" },
@@ -337,7 +345,8 @@
 
   // 기구 사진: GitHub 저장소 img 폴더에 올린 파일 이름 (운동 코드: 파일). 사진이 없는 운동은 글로만 나와요.
   const PHOTO = { legpress: "legpress.jpg", pendulum: "pendulum.jpg", hipthrust: "hipthrust.jpg", legext: "legext.jpg", abduct: "abduct.jpg", chest: "chest_nitro.jpg", incline: "incline_b.jpg",
-    pecdeck: "pecdeck.jpg", reardelt: "pecdeck.jpg", shoulder: "shoulder.jpg", lateral: "lateral.jpg", latpull: "latpull.jpg", row: "row.jpg", curl: "curl.jpg", legcurl: "legcurl.jpg", adduct: "adduct.jpg", highrow: "highrow.jpg", backext: "backext.jpg" };
+    pecdeck: "pecdeck.jpg", reardelt: "pecdeck.jpg", shoulder: "shoulder.jpg", lateral: "lateral.jpg", latpull: "latpull.jpg", row: "row.jpg", curl: "curl.jpg", legcurl: "legcurl.jpg", adduct: "adduct.jpg", highrow: "highrow.jpg", backext: "backext.jpg",
+    decline: "decline.jpg", flatbench: "flatbench.jpg", tbar: "tbar.jpg", assist: "assist.jpg", pullover: "pullover.jpg", innerchest: "innerchest.jpg" };
 
   // 트리오짐 유튜브(@트리오짐) 기구 사용법 쇼츠: 운동 코드 → 영상 ID. 3·4주차 기구는 코드 뒤에 _b.
   // 2026-11-12 원장님이 영상마다 기구를 확인해 줌. 영상 없는 운동: row, row_b, chest_b, incline_b, pecdeck, reardelt, curl, backext.
@@ -345,6 +354,9 @@
   const VIDEO = {
     pendulum: "4Vibt2QdJgs", pendulum_b: "TiTC-YATeys", abduct: "4z7CSDQwAaw", abduct_b: "_QH-44skT1s", adduct: "H-bPrfbrAbo",
     highrow: "gI_o26yKwV4", lateral: "ckOQ_-oASEA", legext: "vDPHjTNrflY", legext_b: "sAT7TAORifY", legcurl: "ouc-8G46td8",
+    innerchest: "mM0VTLbiDqo", neckpress: "SAE489qQX0Y",
+    // 2026-11-19 원장님이 기구 이름과 함께 보내 준 영상
+    pecdeck: "cwcbs18zFb0", reardelt: "cwcbs18zFb0", curl: "OUvp8SYSb9Y", row_b: "ehM8kV33Xx0", pecdeck_x1: "fCn7xcLKPj4",
     row: "yNSIm_tUI8k", legpress: "CNT5Wt2pIms", shoulder: "zm5DZf8VerI", incline: "_pgZq7S0uOY", latpull: "-L5fo4LXvKc", chest: "lf8NIAKmks0",
     hipthrust: "7DgSJerwi9g", // 부티빌더 힙쓰러스트 (원장님 재확인, 주황 핀). 몬스터글루트 영상은 iXSBsWFHu10
     highrow_b: "pP-wkv3XR-Y", legcurl_b: "SjR-aqA1M6Q", legpress_b: "TU6eEE2X2J4", shoulder_b: "XMsPwngG83o", latpull_b: "DesRyCI1wzo",
@@ -376,6 +388,30 @@
     L2: { t: "하체 B", type: "lower", ex: ["pendulum", "rdl", "abduct", "adduct", "backext", "sideplank"] },
     C1: { t: "유산소 + 코어", type: "core", ex: ["plank", "deadbug", "birddog", "sideplank"], cardioDay: true },
   };
+  // 중급·상급: 부위별 루틴 (주 2회 상체/하체, 3회 가슴어깨삼두/등이두/하체, 4회 가슴삼두/등이두/하체/어깨, 5회 가슴/등/하체/어깨/팔)
+  Object.assign(DAYS, {
+    SU2: { t: "상체 (가슴·등·어깨·팔)", type: "upper", ex: ["chest", "latpull", "shoulder", "row", "incline", "curl", "pushdown"] },
+    SL2: { t: "하체·코어", type: "lower", ex: ["legpress", "pendulum", "legcurl", "legext", "hipthrust", "plank"] },
+    SC: { t: "가슴·어깨·삼두", type: "upper", ex: ["chest", "incline", "pecdeck", "shoulder", "lateral", "pushdown"] },
+    SB: { t: "등·이두", type: "upper", ex: ["latpull", "row", "highrow", "tbar", "reardelt", "curl"] },
+    SL: { t: "하체", type: "lower", ex: ["legpress", "pendulum", "legext", "legcurl", "hipthrust", "calf"] },
+    SCH: { t: "가슴·삼두", type: "upper", ex: ["chest", "incline", "flatbench", "pecdeck", "pushdown", "kickback"] },
+    SSH: { t: "어깨·복근", type: "upper", ex: ["shoulder", "lateral", "reardelt", "neckpress", "plank", "deadbug"] },
+    SCH5: { t: "가슴", type: "upper", ex: ["chest", "incline", "flatbench", "pecdeck", "decline"] },
+    SB5: { t: "등", type: "upper", ex: ["latpull", "row", "highrow", "tbar", "pullover"] },
+    SL5: { t: "하체", type: "lower", ex: ["legpress", "pendulum", "legext", "legcurl", "hipthrust", "abduct", "calf"] },
+    SS5: { t: "어깨", type: "upper", ex: ["shoulder", "lateral", "reardelt", "neckpress", "plank"] },
+    SA5: { t: "팔·복근", type: "upper", ex: ["curl", "dbcurl", "pushdown", "kickback", "sideplank", "deadbug"] },
+  });
+  const SPLIT_ADV = { 2: ["SU2", "SL2"], 3: ["SC", "SB", "SL"], 4: ["SCH", "SB", "SL", "SSH"], 5: ["SCH5", "SB5", "SL5", "SS5", "SA5"] };
+  const PRO_ONLY = { neckpress: "", decline: "", pullover: "assist" };   // 중급은 빼거나 쉬운 기구로
+  const EVEN_SWAP = { pecdeck: "innerchest", highrow: "assist", calf: "adduct" }; // 짝수 달(2·4·6…)에 바꿔 넣는 운동
+  // 달마다 바뀌는 목표 (2개월차부터 3달 주기): 운동량 늘리기 → 무게 올리기 → 자극 바꾸기
+  const MPHASE = [
+    { t: "운동량 늘리기", what: "세트를 하나 늘려 근육에 쌓이는 운동량을 키워요" },
+    { t: "무게 올리기", what: "횟수를 줄이고 무게를 올려 힘을 키워요" },
+    { t: "자극 바꾸기", what: "횟수를 늘리고 쉬는 시간을 줄여 새로운 자극을 줘요" },
+  ];
   const SPLIT = { 2: ["F1", "F2"], 3: ["F1", "F2", "F3"], 4: ["U1", "L1", "U2", "L2"], 5: ["U1", "L1", "C1", "U2", "L2"], "5근력증진": ["U1", "L1", "U2", "L2", "F2"] };
   const WEEKDAYS = { 2: [1, 4], 3: [1, 3, 5], 4: [1, 2, 4, 5], 5: [1, 2, 3, 4, 5] }; // 0=일
   const WD = "일월화수목금토";
@@ -514,7 +550,11 @@
 
     // 주차별 강도 (나이·체성분에 맞게 조정)
     const weeks = WEEKS[p.goal].map(w => Object.assign({}, w));
+    const ph = M >= 2 ? (M - 2) % 3 : -1;
     weeks.forEach((w, i) => {
+      if (ph === 0) { w.s = Math.min(strong && pro ? 5 : 4, w.s + 1); w.r = strong ? "10~12" : "12~15"; w.rest = strong ? "60~90초" : "45~60초"; }
+      if (ph === 1) { w.r = strong ? (p.exp === "0" ? "8~10" : "6~8") : "10~12"; w.rest = strong ? "2분" : "60~90초"; if (i >= 1) w.load = "지난주보다 한 칸 무겁게 (자세가 흔들리면 유지)"; }
+      if (ph === 2) { w.r = strong ? "12~15" : "15"; w.rest = strong ? "45~60초" : "30~45초"; w.cmin += 5; }
       if (senior) {
         w.s = Math.min(w.s, 3);
         if (strong && i >= 2) w.r = "10~12";
@@ -538,7 +578,8 @@
     if (p.goal === "벌크업" && senior) notes.push("60세 이상이라 무게를 크게 올리기보다 근육량을 지키는 데 맞췄어요.");
     if (adv) notes.push((pro ? "상급" : "중급") + "이라 운동마다 세트 수와 횟수를 직접 정할 수 있어요. 일지의 세트·횟수 칸에서 바꾸면 돼요." + (pro ? " 2주차부터 세트를 하나씩 더 넣었어요." : ""));
     else if (p.exp) notes.push("초보라 세트 수와 횟수는 센터가 정해 드려요. 무게는 기록할 때마다 다음 무게가 자동으로 정해져요.");
-    if (M >= 2) notes.push(M + "개월차예요. 같은 운동을 센터의 다른 기구로 바꿔 새 자극을 주고, 지난달 무게를 이어서 써요.");
+    if (M >= 2) notes.push(M + "개월차 목표는 \"" + MPHASE[ph].t + "\"예요. " + MPHASE[ph].what + ". 기구도 센터의 다른 기구로 바꾸고, 지난달 무게를 이어서 써요.");
+    if (adv) notes.push("부위별로 나눠서 하는 루틴이에요 (" + (SPLIT_ADV[p.freq] || []).map(k => DAYS[k].t).join(" / ") + ").");
     if (p.goal === "기초체력" && a.fatHigh) notes.push("체지방이 높은 편이에요. 체력이 붙는 3주 차부터 유산소 시간을 늘려 보세요.");
 
     // 심박수 (Tanaka: 208 - 0.7×나이)
@@ -564,7 +605,7 @@
     })();
 
     // 루틴 구성
-    const split = SPLIT[p.freq === 5 && strong ? "5근력증진" : p.freq];
+    const split = adv ? SPLIT_ADV[p.freq] : SPLIT[p.freq === 5 && strong ? "5근력증진" : p.freq];
     const coreT = lowImpact ? [15, 20, 25, 30] : [20, 30, 40, 45];
     const sideR = [8, 10, 12, 12];
     const cardioWhat = lowImpact ? "실내 자전거 또는 러닝머신 경사 걷기 (무릎 부담이 적어요)"
@@ -576,6 +617,8 @@
     const days = split.map((key, di) => {
       const D = DAYS[key];
       let ids = D.ex.slice();
+      if (adv && (!pro || senior)) ids = ids.map(id => id in PRO_ONLY ? PRO_ONLY[id] : id).filter(Boolean);
+      if (adv && M % 2 === 0) ids = ids.map(id => EVEN_SWAP[id] && !ids.includes(EVEN_SWAP[id]) ? EVEN_SWAP[id] : id);
       if (lowImpact) ids = ids.map(id => SAFE[id] ? (SAFE[id].find(alt => !ids.includes(alt) && !D.ex.includes(alt)) || SAFE[id][0]) : id);
       ids = ids.filter((id, i) => ids.indexOf(id) === i);
       const ex = ids.map(id => {
@@ -684,7 +727,7 @@
 
     return {
       v: 2, made: ymd(new Date()), start: dates ? dates[0] : "", end: dates ? dates[dates.length - 1] : "",
-      month: M,
+      month: M, mtheme: ph >= 0 ? MPHASE[ph].t : "",
       member: { name: p.name, sex: p.sex, age: p.age, height: num(p.height), weight: num(p.weight), smm: num(p.smm), fat: num(p.fat), freq: p.freq, goal: p.goal, exp: p.exp, month: M, id: p.id || "",
         token: /^[a-z0-9]{10,16}$/.test(p.token || "") ? p.token : newToken() },
       analysis: a, senior, lowImpact, adv, pro, notes, weeks, days, sessions, cardioWhat, hr, foodTips, expect,
@@ -1135,7 +1178,7 @@ function build() {
   pg = TRIO_PROGRAM.make(P);
   if (DEMO) ["name", "sex", "age", "weight", "freq", "goal", "start"].forEach(k => $(k).value = P[k] ?? "");
   $("hName").textContent = pg.member.name + " 회원님 운동 일지";
-  $("hSub").textContent = (pg.month > 1 ? pg.month + "개월차 · " : "") + pg.member.goal + " · 주 " + pg.member.freq + "회 · " + (pg.start ? md(pg.start) + " ~ " + md(pg.end) : "4주") + (DEMO ? " · 체험판" : "");
+  $("hSub").textContent = (pg.month > 1 ? pg.month + "개월차" + (pg.mtheme ? "(" + pg.mtheme + ")" : "") + " · " : "") + pg.member.goal + " · 주 " + pg.member.freq + "회 · " + (pg.start ? md(pg.start) + " ~ " + md(pg.end) : "4주") + (DEMO ? " · 체험판" : "");
   $("setupBox").hidden = true; $("progPanel").hidden = false; $("out").hidden = false;
   $("simBox").hidden = !DEMO; $("demoForm").hidden = !DEMO; $("moveBox").hidden = SERVER; $("infoBox").hidden = DEMO;
   openIdx = null;
