@@ -145,6 +145,15 @@
   .body svg{width:120px;height:190px;display:block}
   .lvname{font-weight:800;font-size:17px} .lvbar{height:8px;border-radius:999px;background:var(--soft);overflow:hidden;margin:6px 0 2px} .lvbar i{display:block;height:100%;background:linear-gradient(90deg,#ff6a1a,#ffb21a)}
   .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px} .badge{font-size:12px;border-radius:999px;padding:3px 9px;background:var(--soft);color:var(--sub);white-space:nowrap} .badge.on{background:#fff1e6;color:#d2560c;font-weight:700}
+  .att .goal{position:relative;height:16px;border-radius:999px;background:var(--soft);overflow:visible;margin:10px 0 4px}
+  .att .goal i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#3b82f6,#2bb673)}
+  .att .goal .mark{position:absolute;top:-6px;bottom:-6px;width:2px;background:#e5322d}
+  .att .goal .mark span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;color:#e5322d;white-space:nowrap;font-weight:700}
+  .att .wk{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;align-items:end;height:74px}
+  .att .wk div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11px;color:var(--sub)}
+  .att .wk b{display:block;width:70%;border-radius:6px 6px 0 0;background:#3b82f6;min-height:3px}
+  .att .wk b.full{background:#2bb673}
+  .att .pt{margin-top:10px;padding:8px 10px;border-radius:10px;background:#fff1e6;color:#a8440a;font-size:13.5px;font-weight:600}
   .celebrate{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
   .celebrate .card{background:var(--card,#fff);border-radius:18px;padding:18px 20px;text-align:center;max-width:320px;width:100%;animation:pop .45s ease-out}
   .celebrate svg{width:150px;height:236px} .celebrate h2{margin:6px 0 2px}
@@ -1257,6 +1266,19 @@ function badges() {
   all.push(["첫 운동", tot >= 1], ["한 주 개근", weekFull || (R.hist || []).some(h => h.rate >= 70)], ["무게 UP", up], ["10회 운동", tot >= 10], ["한 달 완주", (R.hist || []).some(h => h.rate >= 70) || (pg && monthState().over && monthState().unlock)], ["30회 운동", tot >= 30], ["3개월 연속", (R.hist || []).length >= 3], ["50회 운동", tot >= 50]);
   return all;
 }
+// 이번 달 출석률 (목표 70%) — 달성하면 다음 달에 PT를 받아볼 수 있어요
+function attendPanel() {
+  const ms = monthState(), pct = Math.round(ms.rate * 100), goal = Math.round(THRESH * 100), need = Math.max(0, Math.ceil(THRESH * ms.total) - ms.done);
+  const wk = pg.weeks.map((w, i) => { const ss = pg.sessions.filter(s => s.week === i + 1), d = ss.filter(s => R[s.idx] && R[s.idx].done).length; return { d, t: ss.length }; });
+  const ok = pct >= goal;
+  return `<section class="panel att" aria-label="이번 달 출석률">
+    <div class="row" style="justify-content:space-between;align-items:baseline"><b>${pg.month}개월차 출석률</b><span class="num" style="font-size:22px;font-weight:800;color:${ok ? "#2bb673" : "inherit"}">${pct}%</span></div>
+    <div class="goal" role="img" aria-label="출석률 ${pct}%, 목표 ${goal}%"><i style="width:${Math.min(100, pct)}%"></i><div class="mark" style="left:${goal}%"><span>목표 ${goal}%</span></div></div>
+    <span class="hint num">${ms.done} / ${ms.total}회 운동 · ${ok ? "목표 달성!" : "목표까지 " + need + "번 남았어요"}</span>
+    <div class="wk">${wk.map((x, i) => `<div><span class="num">${x.d}/${x.t}</span><b class="${x.t && x.d >= x.t ? "full" : ""}" style="height:${x.t ? Math.max(4, Math.round(x.d / x.t * 46)) : 4}px"></b>${i + 1}주</div>`).join("")}</div>
+    <div class="pt">${ok ? "🎉 출석률을 달성했어요! 다음 달에 PT를 받아볼 수 있어요. 인포데스크에 말씀해 주세요." : "🎁 이번 달 출석률 " + goal + "%를 달성하면 다음 달에 PT를 받아볼 수 있어요!"}</div>
+  </section>`;
+}
 function bodyPanel() {
   const tot = totalDone(), lv = levelOf(tot), L = LEVELS[lv], nx = LEVELS[lv + 1];
   const pct = nx ? Math.round((tot - L.at) / (nx.at - L.at) * 100) : 100;
@@ -1446,6 +1468,7 @@ function render() {
       <p class="sub">출석률 ${pct}% (${ms.done}/${ms.total}회)예요. 다음 달 프로그램은 출석 ${Math.round(THRESH * 100)}% 이상일 때 열려요.</p>
       <p class="hint" style="margin:0">센터에 알려 드렸어요. 인포데스크에서 운동 시간과 횟수를 같이 맞춰 보는 상담을 도와드릴게요. 상담 뒤에 다음 달을 열어 드려요.</p></section>`;
   }
+  if (!READONLY) h += attendPanel();
   h += bodyPanel();
   if (cur) h += sessionCard(cur, cells[cur.idx], true);
 
