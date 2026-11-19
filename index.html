@@ -1086,6 +1086,7 @@ const srv = {
         .then(r => r.json()).then(d => { if (!d || d.error) throw new Error((d && d.error) || "저장 실패"); return d; })
 };
 let P = fromLink ? Object.assign({}, fromLink) : { name: "홍길동", sex: "M", age: 34, height: 175, weight: 82, smm: 32.5, fat: 27.5, freq: 3, goal: "다이어트", start: today, token: "demo00000000" };
+let READONLY = null; // 회원권 만료 후 3개월: {end, until} — 기록만 보기
 let pg = null, R = {}, openIdx = null, mem = {}, timer = null, saveT = null;
 // 회원이 직접 고른 정보는 기록 안의 R._p 에 저장돼요 (센터 시트에도 같이 올라가요)
 const PROF = ["sex", "age", "height", "weight", "smm", "fat", "freq", "goal", "exp", "month", "start"];
@@ -1096,6 +1097,7 @@ const key = () => (DEMO ? "trio_demo_" : "trio_log_") + (P.token || TRIO_PROGRAM
 const load = () => { try { const v = localStorage.getItem(key()); return v ? JSON.parse(v) : (mem[key()] || {}); } catch (e) { return mem[key()] || {}; } };
 const sync = t => { const el = $("syncText"); if (el) el.textContent = t; };
 const save = () => {
+  if (READONLY) return;
   mem[key()] = R; try { localStorage.setItem(key(), JSON.stringify(R)); } catch (e) {}
   if (!SERVER) return;
   clearTimeout(saveT); sync("저장 중…");
@@ -1110,7 +1112,7 @@ function pushServer() {
   const ms = monthState();
   const meta = { name: m.name, start: pg.start, freq: m.freq, goal: m.goal, month: pg.month, rate: Math.round(ms.rate * 100), status: ms.status, done: doneS.length, total: pg.sessions.length, lastAt: doneS.length ? (R[doneS.at(-1).idx].at || "") : "",
     p: { sex: m.sex, age: m.age || "", exp: m.exp || "", height: m.height || "", weight: m.weight || "", smm: m.smm || "", fat: m.fat || "" }, pAt: R._p ? R._p.at || "" : "" };
-  srv.save(myCode(), R, flat, meta).then(() => sync("센터에 저장됨 ✓"), err => isBlocked(err) ? blocked() : sync("연결이 안 돼서 휴대폰에 임시 저장했어요"));
+  srv.save(myCode(), R, flat, meta).then(() => sync("센터에 저장됨 ✓"), err => isBlocked(err) ? blocked() : /readonly/.test(String(err && err.message || err)) ? (READONLY = READONLY || { end: "", until: "" }, render()) : sync("연결이 안 돼서 휴대폰에 임시 저장했어요"));
 }
 const doneCount = X => Object.values(X || {}).filter(v => v && v.done).length;
 function toast(t) { document.querySelectorAll(".toast").forEach(x => x.remove()); const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
@@ -1185,7 +1187,7 @@ function blocked() {
   $("hName").textContent = (P.name || "") + " 회원님";
   $("hSub").textContent = "운동 일지";
   $("out").hidden = false;
-  $("out").innerHTML = `<section class="panel today"><h2 style="margin:0">회원권 기간이 끝나서 일지를 열 수 없어요</h2>
+  $("out").innerHTML = `<section class="panel today"><h2 style="margin:0">회원권이 끝난 지 3개월이 지나 일지를 열 수 없어요</h2>
     <p class="sub">회원권을 다시 등록하시면 그동안의 기록과 함께 이어서 쓰실 수 있어요. 인포데스크에 편하게 문의해 주세요.</p></section>`;
 }
 const isBlocked = x => !!x && (x.blocked || /blocked/.test(String(x.message || x.error || x)));
@@ -1209,6 +1211,7 @@ function boot() {
   $("out").innerHTML = `<div class="panel hint">불러오는 중…</div>`;
   srv.load(myCode()).then(res => {
     if (isBlocked(res)) return blocked();
+    if (res && res.readonly) READONLY = { end: res.passEnd || "", until: res.until || "" };
     const S = res && res.R ? res.R : null;
     let push = false;
     if (S && doneCount(S) >= doneCount(R) && (S._p || !R._p)) { R = S; try { localStorage.setItem(key(), JSON.stringify(R)); } catch (e) {} }
@@ -1324,18 +1327,19 @@ function sessionCard(s, cells, isToday) {
     <p class="hint" style="margin:4px 0 0">${esc(s.load)} · 세트 사이 휴식 ${esc(s.rest)}</p>
     ${s.flag ? `<div class="flag">${esc(s.flag)}</div>` : ""}
     ${isToday ? `<details class="fold"><summary>준비운동 10분 보기</summary>${listHtml(s.warm)}</details>` : ""}
-    <div style="margin-top:4px">${rowsHtml(s, cells, !S.done)}</div>
+    <div style="margin-top:4px">${rowsHtml(s, cells, !S.done && !READONLY)}</div>
     ${isToday ? `<div class="timer"><span class="hint">휴식</span><span class="t" id="tm">${restSec(s.rest)}초</span><button class="btn ghost" type="button" id="tmBtn" data-sec="${restSec(s.rest)}">시작</button></div>` : ""}
     <div class="cardio">유산소 ${s.cardio.min}분 · ${esc(s.cardio.set)}</div>
     ${isToday ? `<details class="fold"><summary>마무리 스트레칭 5분 보기</summary>${listHtml(s.cool)}</details>` : ""}
     <div class="row" style="margin-top:10px;justify-content:space-between">
       <span class="hint">세트를 모두 해냈으면 체크, 못 했으면 비워 두세요.</span>
-      ${S.done ? `<span class="row"><span class="done-tag">완료</span><button class="btn ghost" type="button" data-undo="${s.idx}">다시 고치기</button></span>` : `<button class="btn" type="button" data-finish="${s.idx}">운동 마침</button>`}
+      ${S.done ? `<span class="row"><span class="done-tag">완료</span><button class="btn ghost" type="button" data-undo="${s.idx}">다시 고치기</button></span>` : READONLY ? `<span class="hint">기록만 볼 수 있어요</span>` : `<button class="btn" type="button" data-finish="${s.idx}">운동 마침</button>`}
     </div></section>`;
 }
 
 function render() {
   const cells = plan(), cur = current(), ld = lastDone();
+  if ($("infoEdit")) $("infoEdit").hidden = !!READONLY;
   const doneN = pg.sessions.filter(s => R[s.idx] && R[s.idx].done).length;
   $("progText").textContent = doneN + " / " + pg.sessions.length + "회 완료";
   $("progBar").style.width = (doneN / pg.sessions.length * 100) + "%";
@@ -1347,7 +1351,10 @@ function render() {
     if (gap >= 5) h += `<div class="nudge">마지막 운동 뒤 ${gap}일이 지났어요. 오늘은 무게를 그대로 두고 가볍게 다시 시작해 보세요.</div>`;
   }
   const ms = monthState(), pct = Math.round(ms.rate * 100), nm = pg.month + 1;
-  if (ms.over && !DEMO || (DEMO && !cur)) {
+  if (READONLY) h += `<section class="panel today"><h2 style="margin:0">회원권이 끝나서 지금은 기록만 볼 수 있어요</h2>
+    <p class="sub">${READONLY.end ? md(READONLY.end) + "에 회원권이 끝났어요. " : ""}${READONLY.until ? md(READONLY.until) + "까지 " : ""}지난 기록과 무게 변화를 볼 수 있고, 그 뒤에는 일지가 닫혀요.</p>
+    <p class="hint" style="margin:0">회원권을 다시 등록하시면 기록을 그대로 이어서 운동하실 수 있어요. 인포데스크에 편하게 문의해 주세요.</p></section>`;
+  else if (ms.over && !DEMO || (DEMO && !cur)) {
     if (ms.unlock) h += `<section class="panel today"><h2 style="margin:0">${pg.month}개월차 ${ms.done >= ms.total ? "완주" : "마무리"}를 축하해요!</h2>
       <p class="sub">출석률 ${pct}% (${ms.done}/${ms.total}회). 다음 달 프로그램을 시작할 수 있어요. 지난달 무게를 이어서 쓰고, 기구도 새로 바뀌어요.</p>
       <p class="hint" style="margin:0">시작하기 전에 인바디를 다시 재면 목적과 식단도 새로 맞춰 드려요. 인포데스크에 말씀해 주세요.</p>
