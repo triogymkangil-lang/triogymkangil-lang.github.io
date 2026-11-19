@@ -1225,8 +1225,51 @@ const LEVELS = [
 ];
 const totalDone = () => (R.hist || []).reduce((a, h) => a + (+h.done || 0), 0) + (pg ? pg.sessions.filter(s => R[s.idx] && R[s.idx].done).length : 0);
 const levelOf = n => { let i = 0; LEVELS.forEach((L, k) => { if (n >= L.at) i = k; }); return i; };
+// 여자: 긴 다리·잘록한 허리의 이상적인 체형. 레벨이 오를수록 탄력(허리·복근 선·어깨 라인)이 생겨요
+function avatarF(lv) {
+  const m = Math.min(1, lv / (LEVELS.length - 1)), c = 60, skin = "#f4cdb0", sh = "rgba(170,95,70,.35)", top = "#ff6f91", lg = "#2a2a35";
+  const sw = 18.5 + m * 2.5, ww = 12.5 - m * 1.2, hw = 20 + m * 1.2, bw = 17.5 + m * 0.5;
+  const P = (pts) => pts.join(" ");
+  let s = `<svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="여자 캐릭터 레벨 ${lv}">`;
+  if (lv >= LEVELS.length - 1) s += `<circle cx="60" cy="100" r="58" fill="#ffb21a" opacity=".18"/>`;
+  // 포니테일
+  s += `<path d="M70 14 Q86 18 84 40 Q82 56 76 62 Q79 46 74 32 Q72 22 66 18 Z" fill="#3a271f"/>`;
+  // 팔 (가늘고 매끈하게)
+  [-1, 1].forEach(k => { const x0 = c + k * sw;
+    s += `<path d="M${x0 - k * 1} 44 Q${x0 + k * 5} 47 ${x0 + k * 6.5} 60 Q${x0 + k * 8} 82 ${x0 + k * 8.5} 104 L${x0 + k * 4.2} 104 Q${x0 + k * 3.5} 84 ${x0 + k * 2} 66 Q${x0 - k * 1.5} 56 ${x0 - k * 3} 50 Z" fill="${skin}"/>`;
+    s += `<ellipse cx="${x0 + k * 6.4}" cy="107" rx="3.1" ry="4" fill="${skin}"/>`;
+    if (m > 0.45) s += `<path d="M${x0 + k * 2.5} 49 q${k * 3.5} 3 ${k * 4} 9" stroke="${sh}" stroke-width="1" fill="none"/>`; });
+  // 목·몸통 (모래시계)
+  s += `<path d="M56.5 30 L63.5 30 L64.5 41 L55.5 41 Z" fill="${skin}"/>`;
+  s += `<path d="${P([`M${c - sw} 44`, `Q${c} 38 ${c + sw} 44`, `C${c + sw + 1} 50 ${c + bw + 1} 54 ${c + bw} 62`, `C${c + bw - 1} 72 ${c + ww + 1} 78 ${c + ww} 86`, `C${c + ww} 94 ${c + hw} 99 ${c + hw} 110`, `L${c - hw} 110`, `C${c - hw} 99 ${c - ww} 94 ${c - ww} 86`, `C${c - ww - 1} 78 ${c - bw + 1} 72 ${c - bw} 62`, `C${c - bw - 1} 54 ${c - sw - 1} 50 ${c - sw} 44 Z`])}" fill="${skin}"/>`;
+  // 쇄골
+  s += `<path d="M${c - 9} 44 Q${c - 4} 46 ${c - 1} 45 M${c + 9} 44 Q${c + 4} 46 ${c + 1} 45" stroke="${sh}" stroke-width=".9" fill="none"/>`;
+  // 스포츠 브라
+  s += `<path d="M${c - bw + 0.5} 55 Q${c - 9} 49 ${c} 57 Q${c + 9} 49 ${c + bw - 0.5} 55 L${c + bw - 1.5} 69 Q${c} 72 ${c - bw + 1.5} 69 Z" fill="${top}"/>`;
+  s += `<path d="M${c - 11} 50 L${c - 13} 44 M${c + 11} 50 L${c + 13} 44" stroke="${top}" stroke-width="2.2" stroke-linecap="round"/>`;
+  // 탄력 (복근·허리 라인)
+  if (m > 0.3) s += `<path d="M${c} 74 L${c} 96" stroke="${sh}" stroke-width="${0.6 + m * 0.6}"/>`;
+  if (m > 0.55) s += `<path d="M${c - 6} 79 Q${c - 3} 80 ${c - 1} 79 M${c + 6} 79 Q${c + 3} 80 ${c + 1} 79 M${c - 6} 86 Q${c - 3} 87 ${c - 1} 86 M${c + 6} 86 Q${c + 3} 87 ${c + 1} 86" stroke="${sh}" stroke-width=".9" fill="none"/>`;
+  if (m > 0.7) s += `<path d="M${c - ww + 1.5} 82 Q${c - ww + 3} 92 ${c - 8} 99 M${c + ww - 1.5} 82 Q${c + ww - 3} 92 ${c + 8} 99" stroke="${sh}" stroke-width=".8" fill="none"/>`;
+  s += `<ellipse cx="${c}" cy="93" rx="1" ry="1.4" fill="${sh}"/>`;
+  // 레깅스 (긴 다리)
+  s += `<path d="M${c - hw} 104 L${c + hw} 104 L${c + hw} 113 Q${c + 5} 118 ${c} 121 Q${c - 5} 118 ${c - hw} 113 Z" fill="${lg}"/>`;
+  [-1, 1].forEach(k => {
+    s += `<path d="${P([`M${c + k * hw} 108`, `C${c + k * (hw + 1)} 128 ${c + k * 15} 150 ${c + k * 11.5} 168`, `L${c + k * 9.5} 189`, `L${c + k * 4.5} 189`, `L${c + k * 3.8} 168`, `C${c + k * 2.5} 150 ${c + k * 1.5} 128 ${c} 116 Z`])}" fill="${lg}"/>`;
+    s += `<path d="M${c + k * (hw - 1)} 112 C${c + k * hw} 130 ${c + k * 14} 150 ${c + k * 10.8} 168" stroke="#ff6f91" stroke-width="1.1" fill="none" opacity=".8"/>`;
+    s += `<ellipse cx="${c + k * 7.5}" cy="192" rx="6.5" ry="3.6" fill="#ffffff" stroke="#ddd" stroke-width=".6"/><path d="M${c + k * 4} 191 L${c + k * 11} 191" stroke="${top}" stroke-width="1.2"/>`; });
+  // 머리·얼굴
+  s += `<circle cx="60" cy="21" r="11.5" fill="${skin}"/>`;
+  s += `<path d="M48 22 Q47 8 60 8 Q73 8 72 22 Q69 13 61 13 Q55 13 52 17 Q50 19 48 22 Z" fill="#3a271f"/>`;
+  s += `<path d="M54.2 22 Q55.5 21 56.8 22 M63.2 22 Q64.5 21 65.8 22" stroke="#3a271f" stroke-width="1.1" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="M53.6 21 l-.9 -.9 M66.4 21 l.9 -.9" stroke="#3a271f" stroke-width=".7"/>`;
+  s += `<circle cx="53.5" cy="25.5" r="1.8" fill="#ff9aa8" opacity=".55"/><circle cx="66.5" cy="25.5" r="1.8" fill="#ff9aa8" opacity=".55"/>`;
+  s += `<path d="M57.5 27 Q60 ${28.8 + Math.min(lv, 4) * 0.3} 62.5 27" stroke="#c0505a" stroke-width="1.2" fill="none" stroke-linecap="round"/>`;
+  return s + `</svg>`;
+}
 function avatarSVG(sex, lv) {
-  const m = Math.min(1, lv / (LEVELS.length - 1)), F = sex === "F", skin = "#f1c3a0", line = "rgba(150,80,50,.45)", c = 60;
+  if (sex === "F") return avatarF(lv);
+  const m = Math.min(1, lv / (LEVELS.length - 1)), F = false, skin = "#f1c3a0", line = "rgba(150,80,50,.45)", c = 60;
   const sw = F ? 27 + m * 7 : 30 + m * 15, ww = F ? 17 - m : 23 - m * 3, hw = F ? 25 + m * 2 : ww + 2;
   const at = F ? 6.5 + m * 3.5 : 7 + m * 7, lt = F ? 10.5 + m * 4 : 10 + m * 5.5, wy = F ? 92 : 108;
   let s = `<svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${F ? "여자" : "남자"} 캐릭터 레벨 ${lv}">`;
