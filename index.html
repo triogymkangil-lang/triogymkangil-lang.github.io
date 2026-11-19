@@ -141,6 +141,17 @@
   .howto b{color:var(--sub);font-weight:500}
   .exname{display:flex;gap:10px;align-items:flex-start;min-width:0}
   .exThumb{width:64px;height:64px;flex:none;object-fit:cover;border-radius:8px;background:var(--line);cursor:pointer}
+  .body{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
+  .body svg{width:120px;height:190px;display:block}
+  .lvname{font-weight:800;font-size:17px} .lvbar{height:8px;border-radius:999px;background:var(--soft);overflow:hidden;margin:6px 0 2px} .lvbar i{display:block;height:100%;background:linear-gradient(90deg,#ff6a1a,#ffb21a)}
+  .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px} .badge{font-size:12px;border-radius:999px;padding:3px 9px;background:var(--soft);color:var(--sub);white-space:nowrap} .badge.on{background:#fff1e6;color:#d2560c;font-weight:700}
+  .celebrate{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+  .celebrate .card{background:var(--card,#fff);border-radius:18px;padding:18px 20px;text-align:center;max-width:320px;width:100%;animation:pop .45s ease-out}
+  .celebrate svg{width:150px;height:236px} .celebrate h2{margin:6px 0 2px}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+  .confetti{position:fixed;top:-12px;width:8px;height:12px;z-index:51;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(540deg)}}
+  @media (prefers-reduced-motion: reduce){.celebrate .card,.confetti{animation:none}}
   .install{border:1px solid var(--accent);background:var(--accent-soft,var(--soft))}
   .setsel{font-family:inherit;font-size:12px;color:var(--sub);margin-left:6px;white-space:nowrap} .setsel select{font:inherit;padding:1px 2px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink,inherit)}
   .vbadge{font-size:11px;font-weight:600;color:#fff;background:#e5322d;border-radius:4px;padding:1px 5px;vertical-align:2px}
@@ -1191,6 +1202,78 @@ function blocked() {
     <p class="sub">회원권을 다시 등록하시면 그동안의 기록과 함께 이어서 쓰실 수 있어요. 인포데스크에 편하게 문의해 주세요.</p></section>`;
 }
 const isBlocked = x => !!x && (x.blocked || /blocked/.test(String(x.message || x.error || x)));
+// ---------- 내 몸 변화 (운동할수록 캐릭터가 근육질로 바뀌어요) ----------
+const LEVELS = [
+  { at: 0, n: "시작", d: "첫 운동을 마치면 몸이 바뀌기 시작해요" },
+  { at: 1, n: "첫 걸음", d: "첫 운동 완료! 시작이 반이에요" },
+  { at: 4, n: "몸이 깨어나는 중", d: "운동 습관이 생기고 있어요" },
+  { at: 8, n: "탄탄해지는 중", d: "근육에 힘이 붙고 있어요" },
+  { at: 12, n: "근육 시동", d: "한 달 치 운동을 해냈어요" },
+  { at: 18, n: "라인 등장", d: "몸의 라인이 보이기 시작해요" },
+  { at: 24, n: "탄탄 근육", d: "두 달 꾸준히! 몸이 확실히 달라졌어요" },
+  { at: 36, n: "근육질", d: "석 달을 버틴 몸이에요" },
+  { at: 48, n: "트리오짐 레전드", d: "누구나 부러워할 꾸준함이에요" },
+];
+const totalDone = () => (R.hist || []).reduce((a, h) => a + (+h.done || 0), 0) + (pg ? pg.sessions.filter(s => R[s.idx] && R[s.idx].done).length : 0);
+const levelOf = n => { let i = 0; LEVELS.forEach((L, k) => { if (n >= L.at) i = k; }); return i; };
+function avatarSVG(sex, lv) {
+  const m = Math.min(1, lv / (LEVELS.length - 1)), F = sex === "F", skin = "#f1c3a0", line = "rgba(150,80,50,.45)", c = 60;
+  const sw = F ? 27 + m * 7 : 30 + m * 15, ww = F ? 17 - m : 23 - m * 3, hw = F ? 25 + m * 2 : ww + 2;
+  const at = F ? 6.5 + m * 3.5 : 7 + m * 7, lt = F ? 10.5 + m * 4 : 10 + m * 5.5, wy = F ? 92 : 108;
+  let s = `<svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${F ? "여자" : "남자"} 캐릭터 레벨 ${lv}">`;
+  if (lv >= LEVELS.length - 1) s += `<circle cx="60" cy="100" r="58" fill="#ffb21a" opacity=".18"/>`;
+  if (F) s += `<path d="M42 30 Q40 8 60 8 Q80 8 78 30 L80 58 Q60 64 40 58 Z" fill="#3b2a22"/>`;
+  // 팔 (위팔 근육 + 아래팔)
+  [-1, 1].forEach(k => { const x = c + k * (sw - 1);
+    s += `<ellipse cx="${x + k * at * 0.55}" cy="70" rx="${at * 0.75 + m * 2}" ry="17" fill="${skin}"/>`;
+    s += `<rect x="${x + k * at * 0.55 - at * 0.55}" y="80" width="${at * 1.1}" height="34" rx="${at * 0.55}" fill="${skin}"/>`;
+    s += `<circle cx="${x + k * at * 0.55}" cy="117" r="${at * 0.6}" fill="${skin}"/>`;
+    if (m > 0.45) s += `<path d="M${x + k * at * 0.2} 63 q${k * at * 0.6} 6 0 14" stroke="${line}" stroke-width="1.2" fill="none"/>`; });
+  // 몸통
+  s += `<rect x="54" y="38" width="12" height="12" fill="${skin}"/>`;
+  s += F ? `<path d="M${c - sw} 52 Q${c} 45 ${c + sw} 52 L${c + ww} ${wy} Q${c + hw + 3} 112 ${c + hw} 122 L${c - hw} 122 Q${c - hw - 3} 112 ${c - ww} ${wy} Z" fill="${skin}"/>`
+         : `<path d="M${c - sw} 52 Q${c} 44 ${c + sw} 52 Q${c + sw - 4} 80 ${c + ww} ${wy} L${c + ww} 122 L${c - ww} 122 L${c - ww} ${wy} Q${c - sw + 4} 80 ${c - sw} 52 Z" fill="${skin}"/>`;
+  if (!F && m > 0.25) s += `<path d="M${c - sw * 0.75} 66 Q${c - 8} ${74 + m * 4} ${c - 1} 68 M${c + sw * 0.75} 66 Q${c + 8} ${74 + m * 4} ${c + 1} 68" stroke="${line}" stroke-width="1.3" fill="none"/>`;
+  if (F) s += `<path d="M${c - sw + 4} 58 Q${c} 52 ${c + sw - 4} 58 L${c + sw - 7} 76 Q${c} 80 ${c - sw + 7} 76 Z" fill="#ff6a1a"/>`;
+  if (m > 0.5) { const top = F ? 82 : 80; s += `<path d="M${c} ${top} L${c} ${wy + 8}" stroke="${line}" stroke-width="1.2"/>`;
+    for (let i = 0; i < (F ? 2 : 3); i++) s += `<path d="M${c - 9} ${top + 6 + i * 9} Q${c - 4} ${top + 8 + i * 9} ${c - 1} ${top + 6 + i * 9} M${c + 9} ${top + 6 + i * 9} Q${c + 4} ${top + 8 + i * 9} ${c + 1} ${top + 6 + i * 9}" stroke="${line}" stroke-width="1.1" fill="none"/>`; }
+  // 하의·다리
+  s += F ? `<path d="M${c - hw} 120 L${c + hw} 120 L${c + hw - 2} 140 L${c - hw + 2} 140 Z" fill="#2b2b33"/>` : `<rect x="${c - ww - 3}" y="118" width="${(ww + 3) * 2}" height="26" rx="4" fill="#2b2b33"/>`;
+  [-1, 1].forEach(k => { const x = c + k * (F ? hw * 0.5 : ww * 0.55);
+    s += `<rect x="${x - lt / 2}" y="${F ? 136 : 140}" width="${lt}" height="${F ? 54 : 50}" rx="${lt / 2}" fill="${F ? "#2b2b33" : skin}"/>`;
+    if (!F && m > 0.4) s += `<path d="M${x - lt * 0.3} 150 q${lt * 0.3} 10 0 18" stroke="${line}" stroke-width="1.1" fill="none"/>`;
+    s += `<ellipse cx="${x + k * 2}" cy="193" rx="${lt * 0.65}" ry="4" fill="#ff6a1a"/>`; });
+  // 머리
+  s += `<circle cx="60" cy="26" r="14" fill="${skin}"/>`;
+  s += F ? `<path d="M46 24 Q48 10 60 10 Q72 10 74 24 Q66 16 60 17 Q52 16 46 24 Z" fill="#3b2a22"/>` : `<path d="M46 23 Q47 10 60 10 Q73 10 74 23 Q68 15 60 15 Q52 15 46 23 Z" fill="#222"/>`;
+  s += `<circle cx="55" cy="27" r="1.4" fill="#333"/><circle cx="65" cy="27" r="1.4" fill="#333"/><path d="M56 33 Q60 ${35 + Math.min(lv, 4) * 0.4} 64 33" stroke="#a0522d" stroke-width="1.3" fill="none"/>`;
+  return s + `</svg>`;
+}
+function badges() {
+  const all = [], tot = totalDone();
+  const weekFull = pg && pg.weeks.some((w, i) => { const ss = pg.sessions.filter(s => s.week === i + 1); return ss.length && ss.every(s => R[s.idx] && R[s.idx].done); });
+  let up = false; if (pg) { const first = {}; pg.sessions.forEach(s => { const S = R[s.idx]; if (!S || !S.done || !S.ex) return; Object.entries(S.ex).forEach(([id, r]) => { const w = +r.w; if (!w) return; if (first[id] == null) first[id] = w; else if (w > first[id]) up = true; }); }); }
+  if ((R.hist || []).length) up = true;
+  all.push(["첫 운동", tot >= 1], ["한 주 개근", weekFull || (R.hist || []).some(h => h.rate >= 70)], ["무게 UP", up], ["10회 운동", tot >= 10], ["한 달 완주", (R.hist || []).some(h => h.rate >= 70) || (pg && monthState().over && monthState().unlock)], ["30회 운동", tot >= 30], ["3개월 연속", (R.hist || []).length >= 3], ["50회 운동", tot >= 50]);
+  return all;
+}
+function bodyPanel() {
+  const tot = totalDone(), lv = levelOf(tot), L = LEVELS[lv], nx = LEVELS[lv + 1];
+  const pct = nx ? Math.round((tot - L.at) / (nx.at - L.at) * 100) : 100;
+  return `<section class="panel body" aria-label="내 몸 변화">${avatarSVG(pg.member.sex, lv)}<div>
+    <div class="eyebrow">내 몸 변화 · 레벨 ${lv + 1}</div><div class="lvname">${esc(L.n)}</div><p class="hint" style="margin:2px 0 0">${esc(L.d)}</p>
+    <div class="lvbar"><i style="width:${pct}%"></i></div><span class="hint num">${nx ? "다음 레벨 '" + esc(nx.n) + "'까지 운동 " + (nx.at - tot) + "번" : "최고 레벨이에요!"} · 지금까지 ${tot}번 운동</span>
+    <div class="badges">${badges().map(b => `<span class="badge ${b[1] ? "on" : ""}">${b[1] ? "🏅" : "🔒"} ${esc(b[0])}</span>`).join("")}</div></div></section>`;
+}
+function celebrate(lv) {
+  const L = LEVELS[lv], d = document.createElement("div"); d.className = "celebrate";
+  d.innerHTML = `<div class="card">${avatarSVG(pg.member.sex, lv)}<h2>레벨 업! ${esc(L.n)}</h2><p class="sub" style="margin:0">${esc(L.d)}</p><button class="btn bigbtn" type="button" style="margin-top:12px">좋아요!</button></div>`;
+  d.onclick = e => { if (e.target === d || e.target.tagName === "BUTTON") d.remove(); };
+  document.body.appendChild(d);
+  const C = ["#ff6a1a", "#ffb21a", "#2bb673", "#3b82f6", "#e5322d"];
+  for (let i = 0; i < 40; i++) { const p = document.createElement("i"); p.className = "confetti"; p.style.left = Math.random() * 100 + "vw"; p.style.background = C[i % 5]; p.style.animationDuration = 1.6 + Math.random() * 1.6 + "s"; p.style.animationDelay = Math.random() * 0.4 + "s"; document.body.appendChild(p); setTimeout(() => p.remove(), 3800); }
+  try { navigator.vibrate && navigator.vibrate([80, 60, 80]); } catch (e) {}
+}
 function build() {
   pg = TRIO_PROGRAM.make(P);
   if (DEMO) ["name", "sex", "age", "weight", "freq", "goal", "start"].forEach(k => $(k).value = P[k] ?? "");
@@ -1363,6 +1446,7 @@ function render() {
       <p class="sub">출석률 ${pct}% (${ms.done}/${ms.total}회)예요. 다음 달 프로그램은 출석 ${Math.round(THRESH * 100)}% 이상일 때 열려요.</p>
       <p class="hint" style="margin:0">센터에 알려 드렸어요. 인포데스크에서 운동 시간과 횟수를 같이 맞춰 보는 상담을 도와드릴게요. 상담 뒤에 다음 달을 열어 드려요.</p></section>`;
   }
+  h += bodyPanel();
   if (cur) h += sessionCard(cur, cells[cur.idx], true);
 
   // 무게 변화표
@@ -1406,7 +1490,7 @@ $("out").addEventListener("change", e => {
 $("out").addEventListener("toggle", e => { const d = e.target.dataset && e.target.dataset.det; if (d) openIdx = e.target.open ? +d : (openIdx === +d ? null : openIdx); }, true);
 $("out").addEventListener("click", e => {
   const f = e.target.dataset.finish, u = e.target.dataset.undo;
-  if (f) { finish(+f); const n = current(); toast(n ? f + "회차 완료! 다음 " + n.idx + "회차 무게가 정해졌어요" : pg.month + "개월차 완주! 수고 많으셨어요"); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  if (f) { const lv0 = levelOf(totalDone()); finish(+f); const lv1 = levelOf(totalDone()); if (lv1 > lv0) setTimeout(() => celebrate(lv1), 300); const n = current(); toast(n ? f + "회차 완료! 다음 " + n.idx + "회차 무게가 정해졌어요" : pg.month + "개월차 완주! 수고 많으셨어요"); window.scrollTo({ top: 0, behavior: "smooth" }); }
   if (u) { R[u] = R[u] || {}; R[u].done = false; save(); render(); }
   if (e.target.dataset.next) showSetup(true, true);
   if (e.target.id === "tmBtn") startTimer(+e.target.dataset.sec);
