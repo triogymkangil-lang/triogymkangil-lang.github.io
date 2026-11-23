@@ -331,7 +331,7 @@
     hipthrust: { n: "부티빌더 힙쓰러스트", part: "엉덩이", eq: "plate", more: "몬스터글루트", cue: "등 윗부분을 패드에 대고 엉덩이를 조이며 올려 1초 멈추기. 허리를 꺾지 말고 엉덩이 힘으로", alt: "bridge" },
     adduct: { n: "짐80 시그넘 이너타이 (힙어덕션)", part: "허벅지 안쪽", eq: "machine", more: "싸이벡스·왓슨 힙어브덕션&어덕션(모으는 쪽)", cue: "등을 붙이고 다리를 안쪽으로 모은 뒤 3초 동안 천천히 벌리기", alt: "abduct" },
     incline: { n: "해머스트랭스 MTS 인클라인체스트프레스", part: "윗가슴·어깨 앞", eq: "machine", more: "너틸러스 니트로 인클라인체스트프레스", cue: "손잡이가 가슴 윗부분에 오게 의자 맞추기. 어깨를 내리고 비스듬히 위로 밀기", alt: "chest" },
-    highrow: { n: "해머스트랭스 MTS 하이로우", part: "등 위·넓은 등", eq: "machine", more: "짐80 듀얼 롱풀", cue: "가슴을 패드에 대고 팔꿈치를 아래 뒤로 당기기. 어깨가 귀 쪽으로 올라가지 않게", alt: "latpull" },
+    highrow: { n: "해머스트랭스 MTS 하이로우", part: "등 위·넓은 등", eq: "machine", more: "짐80 멀티롱풀", cue: "가슴을 패드에 대고 팔꿈치를 아래 뒤로 당기기. 어깨가 귀 쪽으로 올라가지 않게", alt: "latpull" },
     reardelt: { n: "이카리안 펙덱 (리어델토이드)", part: "어깨 뒤", eq: "machine", more: "싸이벡스 프레스티지 펙덱플라이&리어델토이드", cue: "기구를 마주 보고 앉아 팔을 옆으로 벌리기. 팔꿈치 높이는 어깨와 같게, 날개뼈는 모으지 않고 어깨 뒤로만", alt: "row" },
     goblet: { n: "덤벨 고블릿 스쿼트", part: "허벅지 앞·엉덩이", eq: "db", st: ["4~6kg", "8~12kg"], cue: "덤벨을 가슴에 안고 의자에 앉듯이 엉덩이를 뒤로. 무릎이 안으로 모이지 않게", alt: "legpress" },
     boxsq: { n: "벤치 스쿼트", part: "허벅지 앞·엉덩이", eq: "body", cue: "벤치에 살짝 앉았다가 발바닥 전체로 밀며 일어서기. 무릎이 안으로 모이지 않게", alt: "legpress" },
@@ -381,7 +381,7 @@
   // 기구 사진: GitHub 저장소 img 폴더에 올린 파일 이름 (운동 코드: 파일). 사진이 없는 운동은 글로만 나와요.
   const PHOTO = { legpress: "legpress.jpg", pendulum: "pendulum.jpg", hipthrust: "hipthrust.jpg", legext: "legext.jpg", abduct: "abduct.jpg", chest: "chest_nitro.jpg", incline: "incline_b.jpg",
     pecdeck: "pecdeck.jpg", reardelt: "pecdeck.jpg", shoulder: "shoulder.jpg", lateral: "lateral.jpg", latpull: "latpull.jpg", row: "row.jpg", curl: "curl.jpg", legcurl: "legcurl.jpg", adduct: "adduct.jpg", highrow: "highrow.jpg", backext: "backext.jpg",
-    decline: "decline.jpg", flatbench: "flatbench.jpg", tbar: "tbar.jpg", assist: "assist.jpg", pullover: "pullover.jpg", innerchest: "innerchest.jpg" };
+    decline: "decline.jpg", flatbench: "flatbench.jpg", tbar: "tbar.jpg", assist: "assist.jpg", pullover: "pullover.jpg", innerchest: "innerchest.jpg", neckpress: "neckpress.jpg", hacksq: "hacksq.jpg" };
 
   // 트리오짐 유튜브(@트리오짐) 기구 사용법 쇼츠: 운동 코드 → 영상 ID. 3·4주차 기구는 코드 뒤에 _b.
   // 2026-11-12 원장님이 영상마다 기구를 확인해 줌. 영상 없는 운동: row, row_b, chest_b, incline_b, pecdeck, reardelt, curl, backext.
@@ -495,12 +495,12 @@
   // 2개월차부터 같은 운동을 돌려 쓰는 센터 기구 (0번 = 기본 기구, WEEK34 = 1개월차 3·4주 기구, 그다음 = 아래 목록 순서)
   // 달마다 2주씩 다음 기구로 넘어가요. 같은 기구가 다시 나오면 그 기구의 지난 무게부터 이어서 해요.
   const EXTRA = {
-    chest: [{ n: "짐레코 시티드 체스트프레스", eq: "machine", img: "chest_b.jpg" }, { n: "아틀란티스 시티드 체스트프레스", eq: "machine", vid: "cisPEjSKttM" }],
+    chest: [{ n: "짐레코 시티드 체스트프레스", eq: "machine", img: "chest_b.jpg" }, { n: "아틀란티스 체스트프레스", eq: "machine", img: "chest_x2.jpg", vid: "cisPEjSKttM" }],
     shoulder: [{ n: "아스날 숄더프레스", eq: "plate", vid: "diOz3cPq-50" }],
-    latpull: [{ n: "해머스트랭스 프론트풀다운", eq: "machine", img: "latpull_x1.jpg", vid: "rKhhew0JmXA" }, { n: "짐80 렛풀다운", eq: "machine", vid: "dSssep5WOZs" }],
-    row: [{ n: "해머스트랭스 레터럴로우", eq: "plate", img: "row_x1.jpg", vid: "T8iHHEUvm8g" }, { n: "짐80 로우로우", eq: "machine", vid: "37AGacXhHbU" }, { n: "짐80 파워로우", eq: "plate", img: "row_x3.jpg", vid: "wgdWp4VzJCk", cue: "가슴을 패드에 대고 팔꿈치를 뒤로 당기며 날개뼈 모으기. 허리 반동 없이" }],
+    latpull: [{ n: "해머스트랭스 프론트풀다운", eq: "machine", img: "latpull_x1.jpg", vid: "rKhhew0JmXA" }, { n: "짐80 렛풀다운", eq: "machine", img: "latpull_x2.jpg", vid: "dSssep5WOZs" }],
+    row: [{ n: "해머스트랭스 레터럴로우", eq: "plate", img: "row_x1.jpg", vid: "T8iHHEUvm8g" }, { n: "짐80 로우로우", eq: "plate", img: "row_x2.jpg", vid: "37AGacXhHbU" }, { n: "짐80 파워로우", eq: "plate", img: "row_x3.jpg", vid: "wgdWp4VzJCk", cue: "가슴을 패드에 대고 팔꿈치를 뒤로 당기며 날개뼈 모으기. 허리 반동 없이" }],
     tbar: [{ n: "짐레코 T바로우", eq: "plate", img: "tbar_x1.jpg", vid: "FRj_KiqQC1s" }],
-    highrow: [{ n: "짐80 듀얼 롱풀", eq: "plate", vid: "4edrrKGuorA" }],
+    highrow: [{ n: "짐80 멀티롱풀", eq: "machine", img: "highrow_x1.jpg", vid: "4edrrKGuorA" }],
     legpress: [{ n: "싸이벡스 수직레그프레스", eq: "plate", img: "legpress_x1.jpg", vid: "zeyVjYm3gtk", cue: "등을 패드에 붙이고 누워서 발판을 위로 밀기. 무릎이 가슴 쪽으로 너무 많이 오지 않게, 허리가 뜨지 않는 데까지만" }],
     pendulum: [{ n: "싸이벡스 핵스쿼트", eq: "plate", img: "pendulum_x1.jpg", stand: true, cue: "등과 엉덩이를 패드에 붙이고 허벅지가 수평이 될 때까지 앉기. 무릎이 안으로 모이지 않게" }],
     hipthrust: [{ n: "몬스터글루트", eq: "plate", img: "hipthrust_x1.jpg", vid: "iXSBsWFHu10", cue: "앉아서 패드를 골반에 대고, 엉덩이를 조이며 밀어 올린 뒤 1초 멈추기. 허리로 밀지 않기" }],
