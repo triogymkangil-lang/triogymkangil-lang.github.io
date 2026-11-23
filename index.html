@@ -170,6 +170,9 @@
   .exrow .why{grid-column:1/-1;font-size:12px;color:var(--sub);margin-top:-2px}
   .exrow .why.up{color:var(--good)} .exrow .why.down{color:var(--warn)}
   .wbox{display:flex;align-items:center;gap:4px}
+  .exrow .sets{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;padding:6px 0 2px 8px;border-left:3px solid var(--accent-soft)}
+  .setrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap} .setrow .sn{font-family:var(--mono);font-size:12.5px;color:var(--sub);width:40px}
+  .setrow .setsel{margin-left:0;font-size:13px} .setrow .setsel select{padding:5px 4px;font-size:14px}
   .wbox input{width:76px;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;font-family:var(--mono);text-align:right}
   .wbox input.sug{border-color:var(--accent);background:var(--accent-soft)}
   .wbox span{font-size:12px;color:var(--sub)}
@@ -1129,7 +1132,7 @@ const save = () => {
 // 센터 시트에 저장: 원본 기록 + 사람이 보기 쉬운 표(운동 한 개당 한 줄)
 function pushServer() {
   const flat = [];
-  pg.sessions.forEach(s => { const S = R[s.idx]; if (!S || !S.ex) return; s.ex.forEach(e => { const r = S.ex[e.id]; if (r && (r.w !== undefined || r.d !== undefined)) flat.push([s.idx, s.week, S.at || "", e.n + (r.s || r.r ? " (" + (r.s ? r.s + "세트" : "") + (r.r ? "×" + r.r + "회" : "") + ")" : ""), e.core ? "" : (r.w ?? ""), !!r.d, pg.month]); }); });
+  pg.sessions.forEach(s => { const S = R[s.idx]; if (!S || !S.ex) return; s.ex.forEach(e => { const r = S.ex[e.id]; if (r && (r.w !== undefined || r.d !== undefined)) flat.push([s.idx, s.week, S.at || "", e.n + (r.sets && r.sets.length ? " (" + r.sets.map((x, i) => (i + 1) + "세트 " + (x.w === "" || x.w == null ? "-" : x.w + "kg") + "×" + (x.r || "") + "회").join(", ") + ")" : r.s || r.r ?" (" + (r.s ? r.s + "세트" : "") + (r.r ? "×" + r.r + "회" : "") + ")" : ""), e.core ? "" : (r.w ?? ""), !!r.d, pg.month]); }); });
   const doneS = pg.sessions.filter(s => R[s.idx] && R[s.idx].done);
   const m = pg.member;
   const ms = monthState();
@@ -1451,15 +1454,28 @@ function howto(e) {
   const vid = e.vid ? `<button type="button" class="vbtn" data-vid="${esc(e.vid)}">▶ 트리오짐 사용법 영상 보기</button>` : "";
   return `<div class="howto">${img}${vid}<span><b>부위</b> ${esc(e.part)}</span><span><b>요령</b> ${esc(e.cue)}</span>${e.tempo ? `<span><b>속도</b> ${esc(e.tempo)}</span>` : ""}${e.more ? `<span><b>자리가 없으면</b> ${esc(e.more)} (같은 운동)</span>` : ""}${e.alt ? `<span><b>기구를 못 쓰면</b> ${esc(e.alt)}</span>` : ""}</div>`;
 }
+const REPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 25, 30];
+const presDef = e => [+(/^(\d+)세트/.exec(e.pres) || [0, 3])[1], +(/×(\d+)/.exec(e.pres) || [0, 12])[1]];
+// 세트별 기록 중 가장 무거운 무게를 그 운동의 대표 무게(r.w)로 써요 → 다음 회차 추천·무게 변화표가 그대로 동작
+function setTop(r) { const ws = (r.sets || []).map(x => x && x.w).filter(v => v !== "" && v != null && !isNaN(+v)).map(Number); if (ws.length) r.w = String(Math.max(...ws)); }
+// 중급·상급: 아직 안 적은 세트는 추천 무게·기본 횟수로 채워요
+function fillSets(idx, id) {
+  const s = pg.sessions.find(x => x.idx === idx), e = s && s.ex.find(y => y.id === id); if (!e || e.core) return;
+  const r = R[idx].ex[id], c = plan()[idx][id], [defS, defR] = presDef(e);
+  const n = r.s || defS, R0 = r.r || defR || 12, base = r.w !== undefined && r.w !== "" ? r.w : c.sug != null ? fmt(c.sug) : "";
+  r.sets = (r.sets || []).slice(0, n);
+  for (let i = 0; i < n; i++) { const st = r.sets[i] = r.sets[i] || {}; if (st.w === undefined || st.w === "") st.w = base; if (!st.r) st.r = REPS.includes(R0) ? R0 : 12; }
+  setTop(r);
+}
 function rowsHtml(s, cells, editable) {
   return s.ex.map(e => {
     const c = cells[e.id], rec = c.rec || {};
     const myS = !c.core && pg.adv && rec.s ? +rec.s : 0, myR = !c.core && pg.adv && rec.r ? +rec.r : 0;
     let pres = myS ? String(e.pres).replace(/^\d+세트/, myS + "세트") : e.pres;
     if (myR) pres = String(pres).replace(/×[\d~]+회/, "×" + myR + "회");
-    const defS = +(/^(\d+)세트/.exec(e.pres) || [0, 3])[1], defR = +(/×(\d+)/.exec(e.pres) || [0, 12])[1];
-    const opt = (L, v) => L.map(n => `<option value="${n}" ${n === v ? "selected" : ""}>${n}</option>`).join("");
-    const setSel = !c.core && pg.adv ? ` <label class="setsel">세트 <select data-s="${s.idx}" data-e="${e.id}" data-k="s" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 세트 수">${opt([1, 2, 3, 4, 5, 6], myS || defS)}</select></label><label class="setsel">횟수 <select data-s="${s.idx}" data-e="${e.id}" data-k="r" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 횟수">${opt([3, 4, 5, 6, 8, 10, 12, 15, 20], myR || ([3, 4, 5, 6, 8, 10, 12, 15, 20].includes(defR) ? defR : 12))}</select></label>` : "";
+    const [defS, defR] = presDef(e);
+    const opt =(L, v) => L.map(n => `<option value="${n}" ${n === v ? "selected" : ""}>${n}</option>`).join("");
+    const setSel = !c.core && pg.adv ? ` <label class="setsel">세트 <select data-s="${s.idx}" data-e="${e.id}" data-k="s" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 세트 수">${opt([1, 2, 3, 4, 5, 6, 7, 8], myS || defS)}</select></label>` : "";
     const name = `<div class="exname">${thumbHtml(e)}<div style="min-width:0"><details><summary>${esc(e.n)}${e.vid ? ` <span class="vbadge">▶영상</span>` : ""}</summary>${howto(e)}</details><div class="ps">${esc(pres)}${setSel}</div></div></div>`;
     if (c.core) {
       const d = R[s.idx] && R[s.idx].ex && R[s.idx].ex[e.id] && R[s.idx].ex[e.id].d;
@@ -1468,6 +1484,21 @@ function rowsHtml(s, cells, editable) {
     }
     const has = rec.w !== undefined && rec.w !== "";
     const val = has ? rec.w : fmt(c.sug);
+    if (pg.adv) {
+      // 중급·상급: 세트마다 무게와 횟수를 따로 적어요
+      const n = myS || defS, R0 = myR || defR || 12, sets = rec.sets || [];
+      const rows = Array.from({ length: n }, (_, i) => {
+        const st = sets[i] || {}, hw = st.w !== undefined && st.w !== "";
+        const wv = hw ? st.w : (has ? rec.w : fmt(c.sug)), rv = +st.r || R0;
+        return `<div class="setrow"><span class="sn">${i + 1}세트</span>
+          <span class="wbox"><input type="number" inputmode="decimal" step="0.5" min="0" data-s="${s.idx}" data-e="${e.id}" data-k="sw" data-i="${i}" class="${!hw ? "sug" : ""}" value="${esc(wv ?? "")}" placeholder="${e.eq === "body" ? "맨몸" : "kg"}" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} ${i + 1}세트 무게"><span>kg</span></span>
+          <label class="setsel">× <select data-s="${s.idx}" data-e="${e.id}" data-k="sr" data-i="${i}" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} ${i + 1}세트 횟수">${opt(REPS, REPS.includes(rv) ? rv : 12)}</select> 회</label></div>`;
+      }).join("");
+      return `<div class="exrow"><div>${name}</div><span class="hint num">${has ? "최고 " + fmt(+rec.w) + "kg" : ""}</span>
+      <input class="ck" type="checkbox" data-s="${s.idx}" data-e="${e.id}" ${rec.d ? "checked" : ""} ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 세트 모두 완료">
+      <div class="sets">${rows}</div>
+      <div class="why ${c.tone}">${c.sug != null ? "추천 " + fmt(c.sug) + "kg · " : ""}${esc(c.why)}${c.est ? " (예상)" : ""} · 세트마다 무게와 횟수를 바꿔 적을 수 있어요</div></div>`;
+    }
     return `<div class="exrow"><div>${name}</div>
       <div class="wbox"><input type="number" inputmode="decimal" step="0.5" min="0" data-s="${s.idx}" data-e="${e.id}" class="${!has && c.sug != null ? "sug" : ""}" value="${esc(val)}" placeholder="${e.eq === "body" ? "맨몸" : "kg"}" ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 무게"><span>kg</span></div>
       <input class="ck" type="checkbox" data-s="${s.idx}" data-e="${e.id}" ${rec.d ? "checked" : ""} ${editable ? "" : "disabled"} aria-label="${esc(e.n)} 세트 모두 완료">
@@ -1556,9 +1587,11 @@ function render() {
 $("out").addEventListener("change", e => {
   const t = e.target, si = t.dataset.s, ei = t.dataset.e; if (!si) return;
   R[si] = R[si] || {}; R[si].ex = R[si].ex || {}; const r = R[si].ex[ei] = R[si].ex[ei] || {};
-  if (t.type === "checkbox") { r.d = t.checked; const inp = t.parentElement.querySelector('input[type=number]'); if (inp && (r.w === undefined || r.w === "") && inp.value !== "") r.w = inp.value; }
-  else if (t.dataset.k === "s") r.s = +t.value;
-  else if (t.dataset.k === "r") r.r = +t.value;
+  const k = t.dataset.k;
+  if (t.type === "checkbox") { r.d = t.checked; if (pg.adv) fillSets(+si, ei); else { const inp = t.parentElement.querySelector('input[type=number]'); if (inp && (r.w === undefined || r.w === "") && inp.value !== "") r.w = inp.value; } }
+  else if (k === "s") { r.s = +t.value; if (r.sets) { r.sets = r.sets.slice(0, r.s); setTop(r); } }
+  else if (k === "r") r.r = +t.value;
+  else if (k === "sw" || k === "sr") { fillSets(+si, ei); const st = r.sets[+t.dataset.i] = r.sets[+t.dataset.i] || {}; if (k === "sw") st.w = t.value; else st.r = +t.value; setTop(r); }
   else r.w = t.value;
   save(); render();
 });
@@ -1581,7 +1614,7 @@ const doneToday = () => !DEMO && !!pg && pg.sessions.some(x => R[x.idx] && R[x.i
 function finish(idx, at) {
   const s = pg.sessions.find(x => x.idx === idx), cells = plan()[idx];
   R[idx] = R[idx] || {}; R[idx].ex = R[idx].ex || {};
-  s.ex.forEach(e => { const r = R[idx].ex[e.id] = R[idx].ex[e.id] || {}; if (!e.core && (r.w === undefined || r.w === "") && cells[e.id].sug != null) r.w = fmt(cells[e.id].sug); });
+  s.ex.forEach(e => { const r = R[idx].ex[e.id] = R[idx].ex[e.id] || {}; if (!e.core && pg.adv) fillSets(idx, e.id); else if (!e.core && (r.w === undefined || r.w === "") && cells[e.id].sug != null) r.w = fmt(cells[e.id].sug); });
   R[idx].done = true; R[idx].at = at || today; save(); render();
 }
 
