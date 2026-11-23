@@ -1371,7 +1371,13 @@ function boot() {
     if (push && pg) pushServer();
   }, err => { if (isBlocked(err)) return blocked(); ready(); sync("센터 연결이 안 돼요. 휴대폰에 임시 저장해요"); });
 }
-function ready() { applyProfile(R._p); if (+P.freq && P.goal) build(); else showSetup(false); }
+function ready() {
+  applyProfile(R._p);
+  if (!(+P.freq && P.goal)) return showSetup(false);
+  build();
+  // 운동 수준 칸이 생기기 전에 정보를 넣은 회원: 수준을 한 번만 골라 달라고 해요 (안 고르면 초보로 봐요)
+  if (!P.exp && !READONLY) { showSetup(true); $("setupErr").textContent = "새로 생긴 '운동 수준'을 골라 주세요. 중급·상급은 세트 수와 횟수를 직접 정할 수 있어요."; }
+}
 
 // ---------- 내 정보 입력 ----------
 const SEX = { M: "남", F: "여" };
