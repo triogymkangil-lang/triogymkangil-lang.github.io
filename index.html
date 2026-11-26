@@ -176,7 +176,11 @@
   .rlist{margin:8px 0;padding-left:22px;display:flex;flex-direction:column;gap:6px} .rlist li{display:flex;align-items:center;gap:8px;font-size:14px}
   .rlist li span{flex:1;min-width:0} .rlist img{width:36px;height:36px;object-fit:cover;border-radius:6px}
   .rbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;width:30px;height:30px;font:inherit;cursor:pointer} .rbtn:disabled{opacity:.3}
-  .radd{width:100%;padding:8px;border:1px dashed var(--accent);border-radius:8px;background:var(--card);color:var(--accent);font:inherit}
+  .rparts{display:flex;flex-wrap:wrap;gap:6px;align-items:center} .rparts .hint{width:100%;margin:0}
+  .rpart{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer} .rpart.on{background:var(--accent);color:#fff}
+  .rpick{margin-top:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px} .rpick h4{grid-column:1/-1;margin:6px 0 0;font-size:13px;color:var(--sub)}
+  .rpick button{display:flex;align-items:center;gap:6px;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px;font:inherit;font-size:13px;line-height:1.3;cursor:pointer}
+  .rpick button img{width:40px;height:30px;object-fit:cover;border-radius:5px;flex:none} .rpick button:disabled{opacity:.45;cursor:default}
   .exrow .sets{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;padding:6px 0 2px 8px;border-left:3px solid var(--accent-soft)}
   .setrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap} .setrow .sn{font-family:var(--mono);font-size:12.5px;color:var(--sub);width:40px}
   .setrow .setsel{margin-left:0;font-size:13px} .setrow .setsel select{padding:5px 4px;font-size:14px}
@@ -354,7 +358,7 @@
     calf: { n: "카프레이즈", part: "종아리", eq: "body", cue: "발뒤꿈치를 끝까지 들고 1초 멈춘 뒤 천천히 내리기. 벽이나 기구를 잡아도 돼요", alt: "legpress" },
     backext: { n: "바디마스터 백익스텐션", part: "허리·엉덩이", eq: "body", cue: "몸이 일직선이 될 때까지만 올라오기. 허리를 과하게 젖히지 않기", alt: "bridge" },
     chest: { n: "너틸러스 니트로 시티드 체스트프레스", part: "가슴·팔 뒤", eq: "machine", more: "싸이벡스 체스트프레스, 아틀란티스·짐레코 시티드 체스트프레스", cue: "손잡이는 가슴 중간 높이로 의자 맞추기. 어깨가 들리지 않게 가슴을 편 채 밀기", alt: "dbbench" },
-    dbbench: { n: "덤벨 벤치프레스", part: "가슴·팔 뒤", eq: "db", st: ["2~4kg", "6~10kg"], cue: "팔꿈치를 몸통에서 45도로 벌리고 가슴 옆까지 내렸다가 밀기", alt: "chest" },
+    dbbench: { n: "덤벨 체스트프레스 (벤치프레스)", part: "가슴·팔 뒤", eq: "db", st: ["2~4kg", "6~10kg"], cue: "팔꿈치를 몸통에서 45도로 벌리고 가슴 옆까지 내렸다가 밀기", alt: "chest" },
     pecdeck: { n: "이카리안 펙덱플라이", part: "가슴", eq: "machine", more: "싸이벡스 프레스티지 펙덱플라이&리어델토이드", cue: "팔꿈치를 살짝 굽힌 채 가슴 앞으로 모으고 천천히 벌리기", alt: "chest" },
     shoulder: { n: "싸이벡스 숄더프레스", part: "어깨", eq: "machine", more: "너틸러스 니트로 숄더프레스, 아스날 숄더프레스", cue: "허리를 등받이에 붙이고 귀 옆에서 위로 밀기. 허리가 뜨면 무게를 줄이기", alt: "lateral" },
     lateral: { n: "짐80 사이드레터럴 레이즈머신", part: "어깨 옆", eq: "plate", more: "싸이벡스 사이드레터럴레이즈머신", cue: "패드에 팔꿈치 바깥쪽을 대고 어깨 높이까지만 들기. 어깨가 귀 쪽으로 올라가지 않게", alt: "shoulder" },
@@ -386,12 +390,76 @@
     stepup: { n: "벤치 스텝업", part: "허벅지·엉덩이·심폐", eq: "body", kind: "side", cue: "낮은 벤치에 한 발을 올리고 그 다리 힘으로 올라서기", alt: "boxsq" },
     pushup: { n: "푸시업", part: "가슴·팔·코어", eq: "body", cue: "힘들면 무릎을 대고. 몸통이 일직선을 유지하는 범위까지만", alt: "chest" },
     mountain: { n: "마운틴 클라이머", part: "코어·심폐", eq: "body", kind: "time", cue: "팔을 어깨 아래에 두고 무릎을 번갈아 가슴 쪽으로. 엉덩이가 들리지 않게", alt: "deadbug" },
+    // 상급자 "내 루틴 직접 짜기"용 프리웨이트 (2026-11-26 원장님 요청). 그림은 FW_IMG(직접 그린 그림)
+    smithohp: { n: "스미스머신 숄더프레스", part: "어깨", eq: "smith", cue: "벤치를 세워 앉고 바가 턱 앞을 지나게 자리 잡기. 귀 높이까지 내렸다가 머리 위로 밀기. 허리가 뜨지 않게", alt: "shoulder" },
+    smithbench: { n: "스미스머신 체스트프레스", part: "가슴·팔 뒤", eq: "smith", cue: "바가 가슴 중간(명치 위)에 오게 벤치 놓기. 날개뼈를 모으고 가슴에 닿기 직전까지 내렸다가 밀기", alt: "chest" },
+    smithincline: { n: "스미스머신 인클라인체스트프레스", part: "윗가슴·어깨 앞", eq: "smith", cue: "벤치 각도 30~45도. 바가 쇄골 아래 윗가슴에 오게 맞추고 날개뼈를 모은 채 밀기", alt: "incline" },
+    dbincline: { n: "덤벨 인클라인체스트프레스", part: "윗가슴·어깨 앞", eq: "db", st: ["2~4kg", "8~12kg"], cue: "벤치 각도 30~45도. 덤벨을 윗가슴 옆까지 내렸다가 위로 모으듯 밀기. 팔꿈치는 몸통에서 45도", alt: "incline" },
+    dblateral: { n: "덤벨 사이드레터럴레이즈 (사레레)", part: "어깨 옆", eq: "db", st: ["1~2kg", "3~6kg"], cue: "팔꿈치를 살짝 굽히고 옆으로 어깨 높이까지만 들기. 반동 없이, 어깨가 귀 쪽으로 올라가지 않게", alt: "lateral" },
+    dbrear: { n: "덤벨 벤트오버 레터럴레이즈", part: "어깨 뒤", eq: "db", st: ["1~2kg", "3~5kg"], cue: "허리를 편 채 상체를 숙이고, 팔꿈치를 살짝 굽혀 옆으로 벌리기. 날개뼈를 모으지 말고 어깨 뒤로 들기", alt: "reardelt" },
+    bbsquat: { n: "바벨 스쿼트", part: "허벅지 앞·엉덩이·허리", eq: "bar", cue: "바를 승모근 위에 얹고 발은 어깨너비. 가슴을 편 채 허벅지가 수평이 될 때까지 앉기. 무릎은 발끝 방향, 안전바 꼭 맞추기", alt: "smithsq" },
+    bbdead: { n: "바벨 데드리프트", part: "허벅지 뒤·엉덩이·등", eq: "bar", cue: "바를 정강이에 붙이고 허리를 곧게 편 채 바닥을 밀듯 일어서기. 바가 몸에서 떨어지지 않게, 허리 반동 없이", alt: "bbrdl" },
+    bbrow: { n: "바벨 로우", part: "등 가운데·두께", eq: "bar", cue: "허리를 편 채 상체를 45도쯤 숙이고, 바를 배꼽 쪽으로 당겨 날개뼈 모으기. 상체가 들썩이지 않게", alt: "row" },
+    bbohp: { n: "바벨 OHP (오버헤드프레스)", part: "어깨·팔 뒤", eq: "bar", cue: "서서 바를 쇄골 위에 두고 엉덩이·배에 힘을 준 채 머리 위로 밀기. 허리를 젖히지 않게, 바는 얼굴 가까이 지나가게", alt: "shoulder" },
+    bbincline: { n: "바벨 인클라인벤치프레스", part: "윗가슴·어깨 앞", eq: "bar", cue: "벤치 각도 30~45도. 날개뼈를 모으고 바를 쇄골 아래 윗가슴까지 내렸다가 밀기. 보조자나 안전바와 함께", alt: "incline" },
   };
 
   // 기구 사진: GitHub 저장소 img 폴더에 올린 파일 이름 (운동 코드: 파일). 사진이 없는 운동은 글로만 나와요.
   const PHOTO = { legpress: "legpress.jpg", pendulum: "pendulum.jpg", hipthrust: "hipthrust.jpg", legext: "legext.jpg", abduct: "abduct.jpg", chest: "chest_nitro.jpg", incline: "incline_b.jpg",
     pecdeck: "pecdeck.jpg", reardelt: "pecdeck.jpg", shoulder: "shoulder.jpg", lateral: "lateral.jpg", latpull: "latpull.jpg", row: "row.jpg", curl: "curl.jpg", legcurl: "legcurl.jpg", adduct: "adduct.jpg", highrow: "highrow.jpg", backext: "backext.jpg",
     decline: "decline.jpg", flatbench: "flatbench.jpg", tbar: "tbar.jpg", assist: "assist.jpg", pullover: "pullover.jpg", innerchest: "innerchest.jpg", neckpress: "neckpress.jpg", hacksq: "hacksq.jpg" };
+
+  // 프리웨이트 그림 (사진 대신 직접 그린 옆모습 그림, svg). 관절 좌표로 사람을 그리고 바벨은 원판(원), 덤벨은 작은 원.
+  const FW_IMG = (function () {
+    const BODY = "#2b3a55", BAR = "#e4572e", GRAY = "#9aa3b2";
+    const ln = (pts, c, w) => `<polyline points="${pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const person = j => ln([j.foot, j.knee, j.hip, j.sh], BODY, 10) + ln([j.sh, j.elbow, j.hand], BODY, 8) + `<circle cx="${j.head[0]}" cy="${j.head[1]}" r="10" fill="${BODY}"/>`;
+    const plate = (p, big) => big ? `<circle cx="${p[0]}" cy="${p[1]}" r="16" fill="${BAR}" stroke="#fff" stroke-width="2"/><circle cx="${p[0]}" cy="${p[1]}" r="3" fill="#fff"/>`
+      : `<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="${BAR}" stroke="#fff" stroke-width="2"/>`;
+    const arrow = (x, y, up) => `<path d="M${x} ${y + (up ? 12 : -12)}V${y - (up ? 10 : -10)}M${x - 6} ${y - (up ? 4 : -4)}L${x} ${y - (up ? 11 : -11)}L${x + 6} ${y - (up ? 4 : -4)}" fill="none" stroke="${BAR}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>`;
+    const smith = `${ln([[52, 135], [52, 8], [158, 8], [158, 135]], "#c3cad6", 5)}`;
+    const flatBench = ln([[48, 100], [140, 100]], GRAY, 9) + ln([[60, 104], [60, 135]], GRAY, 5) + ln([[128, 104], [128, 135]], GRAY, 5);
+    const inclBench = ln([[118, 104], [70, 46]], GRAY, 10) + ln([[118, 104], [138, 104]], GRAY, 9) + ln([[120, 108], [120, 135]], GRAY, 5);
+    const seatBench = ln([[84, 106], [118, 106]], GRAY, 9) + ln([[82, 106], [80, 44]], GRAY, 9) + ln([[100, 110], [100, 135]], GRAY, 5);
+    const P = {
+      seat: { foot: [126, 133], knee: [124, 100], hip: [92, 100], sh: [90, 58], elbow: [106, 44], hand: [102, 22], head: [82, 44] },
+      flat: { foot: [150, 133], knee: [144, 84], hip: [118, 92], sh: [70, 90], elbow: [76, 66], hand: [72, 44], head: [54, 88] },
+      incl: { foot: [146, 133], knee: [140, 92], hip: [112, 98], sh: [84, 64], elbow: [96, 46], hand: [86, 26], head: [74, 52] },
+      stand: { foot: [102, 133], knee: [100, 108], hip: [100, 84], sh: [100, 50], elbow: [114, 34], hand: [106, 14], head: [86, 40] },
+      bent: { foot: [112, 133], knee: [106, 108], hip: [114, 86], sh: [72, 74], elbow: [64, 92], hand: [70, 110], head: [58, 68] },
+      squat: { foot: [100, 133], knee: [126, 110], hip: [84, 100], sh: [104, 60], elbow: [88, 74], hand: [96, 60], head: [120, 44] },
+      dead: { foot: [100, 133], knee: [110, 110], hip: [76, 90], sh: [110, 66], elbow: [110, 90], hand: [110, 114], head: [124, 58] },
+      row: { foot: [100, 133], knee: [108, 110], hip: [84, 86], sh: [126, 70], elbow: [94, 72], hand: [104, 96], head: [140, 62] },
+    };
+    const front = () => ln([[88, 133], [94, 108], [100, 86]], BODY, 10) + ln([[112, 133], [106, 108], [100, 86]], BODY, 10) + ln([[100, 86], [100, 52]], BODY, 11)
+      + ln([[86, 56], [114, 56]], BODY, 9) + ln([[86, 56], [70, 60], [56, 58]], BODY, 8) + ln([[114, 56], [130, 60], [144, 58]], BODY, 8)
+      + `<circle cx="100" cy="36" r="11" fill="${BODY}"/>` + `<rect x="50" y="50" width="8" height="16" rx="3" fill="${BAR}"/><rect x="142" y="50" width="8" height="16" rx="3" fill="${BAR}"/>`
+      + arrow(40, 70, true) + arrow(160, 70, true);
+    const pics = {
+      smithohp: smith + seatBench + person(P.seat) + plate(P.seat.hand, 1) + arrow(130, 34, true),
+      smithbench: smith + flatBench + person(P.flat) + plate(P.flat.hand, 1) + arrow(100, 52, true),
+      smithincline: smith + inclBench + person(P.incl) + plate(P.incl.hand, 1) + arrow(116, 34, true),
+      dbohp: seatBench + person(P.seat) + plate(P.seat.hand) + arrow(130, 34, true),
+      dbbench: flatBench + person(P.flat) + plate(P.flat.hand) + arrow(100, 52, true),
+      dbincline: inclBench + person(P.incl) + plate(P.incl.hand) + arrow(116, 34, true),
+      dblateral: front(),
+      dbrear: person(P.bent) + plate(P.bent.hand) + arrow(46, 104, true),
+      bbsquat: person(P.squat) + plate([92, 60], 1) + arrow(150, 80, true),
+      bbdead: person(P.dead) + plate([110, 117], 1) + arrow(150, 90, true),
+      bbrow: person(P.row) + plate(P.row.hand, 1) + arrow(150, 100, true),
+      bbohp: person(P.stand) + plate(P.stand.hand, 1) + arrow(134, 36, true),
+      bbbench: flatBench + ln([[60, 104], [60, 40]], "#c3cad6", 4) + person(P.flat) + plate(P.flat.hand, 1) + arrow(100, 52, true),
+      smithsq: smith + person(P.squat) + plate([92, 60], 1) + arrow(150, 80, true),
+      bbrdl: person(Object.assign({}, P.dead, { knee: [106, 108], hip: [80, 84], sh: [116, 66], elbow: [114, 84], hand: [112, 100], head: [130, 60] })) + plate([112, 102], 1) + arrow(150, 90, true),
+      bbincline: inclBench + person(P.incl) + plate(P.incl.hand, 1) + arrow(116, 34, true),
+    };
+    const out = {};
+    Object.keys(pics).forEach(k => {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><rect width="200" height="150" rx="14" fill="#eef2f8"/><line x1="12" y1="137" x2="188" y2="137" stroke="#cfd6e2" stroke-width="3"/>${pics[k]}</svg>`;
+      out[k] = "data:image/svg+xml," + encodeURIComponent(svg);
+    });
+    return out;
+  })();
 
   // 트리오짐 유튜브(@트리오짐) 기구 사용법 쇼츠: 운동 코드 → 영상 ID. 3·4주차 기구는 코드 뒤에 _b.
   // 2026-11-12 원장님이 영상마다 기구를 확인해 줌. 영상 없는 운동: row, row_b, chest_b, incline_b, pecdeck, reardelt, curl, backext.
@@ -581,24 +649,23 @@
   }
   // 상급자 "내 루틴 직접 짜기"에서 고를 수 있는 센터 기구 (부위별). 같은 운동의 다른 기구(id_b, id_xN)도 따로 고를 수 있어요.
   const CAT_PARTS = [
-    ["가슴", ["chest", "incline", "flatbench", "decline", "innerchest", "pecdeck", "dbbench"]],
-    ["등", ["latpull", "row", "highrow", "tbar", "assist", "pullover", "dbrow", "backext"]],
-    ["어깨", ["shoulder", "neckpress", "lateral", "reardelt", "dbohp"]],
-    ["하체", ["legpress", "pendulum", "hacksq", "legext", "legcurl", "hipthrust", "abduct", "adduct", "calf", "rdl", "lunge", "goblet"]],
-    ["팔", ["curl", "dbcurl", "pushdown", "kickback"]],
-    ["복근", ["plank", "sideplank", "deadbug", "birddog"]],
+    ["가슴", ["chest", "incline", "flatbench", "decline", "innerchest", "pecdeck", "smithbench", "smithincline", "bbbench", "bbincline", "dbbench", "dbincline"]],
+    ["어깨", ["shoulder", "neckpress", "lateral", "reardelt", "smithohp", "bbohp", "dbohp", "dblateral", "dbrear"]],
+    ["등", ["latpull", "row", "highrow", "tbar", "assist", "pullover", "bbrow", "bbdead", "dbrow", "backext"]],
+    ["하체", ["legpress", "pendulum", "hacksq", "legext", "legcurl", "hipthrust", "abduct", "adduct", "bbsquat", "smithsq", "bbrdl", "rdl", "lunge", "goblet", "calf"]],
+    ["팔·복근", ["curl", "dbcurl", "pushdown", "kickback", "plank", "sideplank", "deadbug", "birddog"]],
   ];
   const baseOf = id => String(id).replace(/_(b|x\d+)$/, "");
   function machineInfo(id) {
     const b = baseOf(id), e = EX[b]; if (!e) return null;
     const v = id === b ? null : variants(b).find(x => x.id === id); if (id !== b && !v) return null;
-    return { id, base: b, n: v ? v.n : e.n, img: v ? v.img || "" : PHOTO[b] || "", vid: v ? VIDEO[id] || v.vid || "" : VIDEO[b] || "", eq: v ? v.eq || e.eq : e.eq, part: e.part, core: !!e.kind, stand: !!(v && v.stand), side: !!(v && v.side), cue: (v && v.cue) || e.cue };
+    return { id, base: b, n: v ? v.n : e.n, img: v ? v.img || "" : PHOTO[b] || FW_IMG[b] || "", vid: v ? VIDEO[id] || v.vid || "" : VIDEO[b] || "", eq: v ? v.eq || e.eq : e.eq, part: e.part, core: !!e.kind, stand: !!(v && v.stand), side: !!(v && v.side), cue: (v && v.cue) || e.cue };
   }
   function catalog() {
     return CAT_PARTS.map(([t, ids]) => ({ t, items: ids.filter(b => EX[b]).flatMap(b => variants(b).map(v => machineInfo(v.id))).filter(Boolean)
       .filter((x, i, L) => L.findIndex(y => y.n === x.n) === i) }));
   }
-  const LOWER = new Set(CAT_PARTS[3][1]);
+  const LOWER = new Set(CAT_PARTS.find(c => c[0] === "하체")[1]);
   function make(input) {
     const p = Object.assign({}, input);
     p.name = (p.name || "").trim() || "회원";
@@ -680,6 +747,8 @@
       : p.goal === "다이어트" ? "러닝머신 빠르게 걷기·가벼운 조깅, 스텝밀, 자전거 중 편한 것"
       : "러닝머신, 자전거, 스텝밀 중 편한 것";
     const startTip = e => e.eq === "plate" ? "원판 없이 기구만으로 1세트 해보고, 쉬우면 가벼운 원판(5kg)부터 끼우기 (적을 때는 끼운 원판 무게 합계)"
+      : e.eq === "bar" ? "빈 바(20kg)로 1세트 해보고 양쪽에 같은 원판 끼우기 (적을 때는 바 포함 전체 무게)"
+      : e.eq === "smith" ? "바만으로 1세트 해보고 양쪽에 같은 원판 끼우기 (적을 때는 끼운 원판 무게 합계)"
       : e.eq === "machine" || e.eq === "cable" ? "가장 가벼운 칸에서 1세트 해보고, 쉬우면 한 칸씩 올리기"
       : e.eq === "db" ? "덤벨 " + e.st[sx] + "에서 시작 (참고)" : e.kind ? "맨몸" : "맨몸으로 시작";
     // 상급자 직접 짠 루틴: [{from: 회차, days: [{t, ex:[id…]}…]}]. 주 횟수와 날 수가 같고 기구가 하나 이상인 날만 써요.
@@ -723,7 +792,7 @@
         });
         let alt = EX[e.alt] ? e.alt : null;
         if (lowImpact && SAFE[alt]) alt = SAFE[alt][0];
-        return { id, n: e.n, part: e.part, cue: e.cue, core: !!e.kind, eq: e.eq, start: startTip(e), more: e.more || "", img: PHOTO[id] || "", vid: VIDEO[id] || "",
+        return { id, n: e.n, part: e.part, cue: e.cue, core: !!e.kind, eq: e.eq, start: startTip(e), more: e.more || "", img: PHOTO[id] || FW_IMG[id] || "", vid: VIDEO[id] || "",
           tempo: e.kind === "time" ? "숨은 참지 말고 고르게" : e.kind === "side" ? "한 번에 2초씩 천천히" : "2초 들고(밀고) 3초 내리기",
           alt: alt && alt !== id ? EX[alt].n : "", pres };
       });
@@ -1503,7 +1572,7 @@ document.addEventListener("click", ev => {
   f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(b.dataset.vid) + "?autoplay=1&playsinline=1&rel=0";
   b.replaceWith(f);
 });
-const imgSrc = e => /^https?:/.test(e.img) ? e.img : TRIO_PROGRAM.LOG_URL + "img/" + e.img;
+const imgSrc = e => /^(https?:|data:)/.test(e.img) ? e.img : TRIO_PROGRAM.LOG_URL + "img/" + e.img;
 // 운동 이름 왼쪽에 기구 사진을 항상 보여 줌 (누르면 설명이 펼쳐짐)
 const thumbHtml = e => e.img ? `<img class="exThumb" src="${esc(imgSrc(e))}" alt="${esc(e.n)} 사진" loading="lazy" onclick="this.parentNode.querySelector('details').toggleAttribute('open')" onerror="this.remove()">` : "";
 function howto(e) {
@@ -1675,7 +1744,8 @@ function myCustoms() {
   const prev = L.filter(x => x.m < M).at(-1);
   return (prev && prev.days ? [{ from: 1, days: prev.days }] : []).concat(L.filter(x => x.m === M).map(x => ({ from: x.from, days: x.days })));
 }
-let EDIT = null, CAT = null;
+let EDIT = null, CAT = null, PICK = {};
+const FREE_EQ = { bar: 1, db: 1, smith: 1 };
 const activeRoutine = () => { const last = myCustoms().at(-1); return last && last.days ? last.days : null; };
 function drawRoutine() {
   const box = $("routineBox"); if (!box) return;
@@ -1689,14 +1759,19 @@ function drawRoutine() {
     return;
   }
   CAT = CAT || TRIO_PROGRAM.catalog();
-  const opts = CAT.map(g => `<optgroup label="${esc(g.t)}">${g.items.map(x => `<option value="${esc(x.id)}">${esc(x.n)}</option>`).join("")}</optgroup>`).join("");
+  const pickHtml = i => {
+    const g = CAT.find(c => c.t === PICK[i]); if (!g) return "";
+    const btn = x => { const has = EDIT[i].ex.includes(x.id); return `<button type="button" data-rt-pick="${i}|${esc(x.id)}" ${has ? "disabled" : ""}>${x.img ? `<img src="${esc(imgSrc(x))}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span>${has ? "✓ " : "+ "}${esc(x.n)}</span></button>`; };
+    const mach = g.items.filter(x => !FREE_EQ[x.eq] && x.eq !== "body"), free = g.items.filter(x => FREE_EQ[x.eq]), body = g.items.filter(x => x.eq === "body");
+    return `<div class="rpick">${mach.length ? "<h4>센터 기구</h4>" + mach.map(btn).join("") : ""}${free.length ? "<h4>프리웨이트 (바벨·덤벨·스미스)</h4>" + free.map(btn).join("") : ""}${body.length ? "<h4>맨몸</h4>" + body.map(btn).join("") : ""}</div>`;
+  };
   box.innerHTML = `<h2 style="margin:0">내 루틴 직접 짜기</h2>
-    <p class="hint" style="margin:4px 0 0">주 ${pg.member.freq}회라 ${pg.member.freq}일 루틴을 짜요. 날마다 부위 이름을 적고 센터 기구를 골라 주세요 (하루 12개까지).</p>
+    <p class="hint" style="margin:4px 0 0">주 ${pg.member.freq}회라 ${pg.member.freq}일 루틴을 짜요. 날마다 부위 이름을 적고 센터 기구를 골라 주세요 (하루 12개까지). 부위 버튼을 누르면 그 부위 기구가 나와요.</p>
     ${EDIT.map((d, i) => `<div class="rday">
       <div class="row" style="gap:8px"><b class="num">${i + 1}일차</b><input class="rtitle" data-rt-t="${i}" value="${esc(d.t)}" maxlength="20" placeholder="부위 (예: 가슴·삼두)" aria-label="${i + 1}일차 부위 이름"></div>
       <ol class="rlist">${d.ex.map((id, j) => { const m = TRIO_PROGRAM.machineInfo(id); if (!m) return ""; return `<li>${m.img ? `<img src="${esc(imgSrc(m))}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span>${esc(m.n)}</span>
         <button type="button" class="rbtn" data-rt-up="${i},${j}" ${j ? "" : "disabled"} aria-label="위로">↑</button><button type="button" class="rbtn" data-rt-del="${i},${j}" aria-label="빼기">✕</button></li>`; }).join("")}</ol>
-      ${d.ex.length < 12 ? `<select class="radd" data-rt-add="${i}" aria-label="${i + 1}일차 기구 추가"><option value="">+ 기구 추가</option>${opts}</select>` : ""}
+      ${d.ex.length < 12 ? `<div class="rparts"><span class="hint">+ 기구 추가: 부위를 골라 주세요</span>${CAT.map(g => `<button type="button" class="rpart${PICK[i] === g.t ? " on" : ""}" data-rt-part="${i}|${esc(g.t)}">${esc(g.t)}</button>`).join("")}</div>${pickHtml(i)}` : `<p class="hint">하루 12개까지 넣을 수 있어요.</p>`}
     </div>`).join("")}
     <p class="hint" style="margin:8px 0 0">저장하면 ${cur ? cur.idx + "회차" : "다음 운동"}부터 이 루틴으로 바뀌어요. 이미 한 운동 기록은 그대로예요. 세트별 무게·횟수는 지금처럼 일지에서 적어요.</p>
     <p class="err" id="rtErr" style="margin:4px 0 0"></p>
@@ -1709,7 +1784,10 @@ function setRoutine(days) {
 }
 $("out").addEventListener("click", e => {
   const d = e.target.dataset; if (!e.target.closest || !e.target.closest("#routineBox")) return;
-  if (d.rtOpen) { EDIT = JSON.parse(JSON.stringify(activeRoutine() || pg.defaultDays)); drawRoutine(); }
+  const hit = e.target.closest("[data-rt-pick],[data-rt-part]"), hd = hit ? hit.dataset : {};
+  if (hd.rtPart) { const [i, t] = hd.rtPart.split("|"); PICK[i] = PICK[i] === t ? null : t; drawRoutine(); return; }
+  if (hd.rtPick) { const [i, id] = hd.rtPick.split("|"); if (EDIT[+i].ex.length < 12 && !EDIT[+i].ex.includes(id)) EDIT[+i].ex.push(id); drawRoutine(); return; }
+  if (d.rtOpen) { PICK = {}; EDIT = JSON.parse(JSON.stringify(activeRoutine() || pg.defaultDays)); drawRoutine(); }
   else if (d.rtCancel) { EDIT = null; drawRoutine(); }
   else if (d.rtReset) { if (confirm("센터가 짠 루틴으로 되돌릴까요? 다음 운동부터 바뀌어요.")) { setRoutine(null); toast("센터 추천 루틴으로 되돌렸어요"); } }
   else if (d.rtDel) { const [i, j] = d.rtDel.split(",").map(Number); EDIT[i].ex.splice(j, 1); drawRoutine(); }
@@ -1721,7 +1799,6 @@ $("out").addEventListener("click", e => {
     setRoutine(EDIT); toast("내 루틴을 저장했어요!"); window.scrollTo({ top: 0, behavior: "smooth" });
   }
 });
-$("out").addEventListener("change", e => { const i = e.target.dataset.rtAdd; if (i === undefined || !EDIT) return; const v = e.target.value; if (v && !EDIT[+i].ex.includes(v)) EDIT[+i].ex.push(v); drawRoutine(); });
 $("out").addEventListener("input", e => { const i = e.target.dataset.rtT; if (i !== undefined && EDIT) EDIT[+i].t = e.target.value; });
 
 // 하루에 한 번만 "운동 마침" (체험판은 제외)
