@@ -170,6 +170,13 @@
   .exrow .why{grid-column:1/-1;font-size:12px;color:var(--sub);margin-top:-2px}
   .exrow .why.up{color:var(--good)} .exrow .why.down{color:var(--warn)}
   .wbox{display:flex;align-items:center;gap:4px}
+  .rsum{display:flex;flex-wrap:wrap;gap:6px} .rsum span{background:var(--soft);border-radius:999px;padding:4px 10px;font-size:13px}
+  .rday{border-top:1px solid var(--line);padding:10px 0;margin-top:8px}
+  .rtitle{flex:1;min-width:0;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+  .rlist{margin:8px 0;padding-left:22px;display:flex;flex-direction:column;gap:6px} .rlist li{display:flex;align-items:center;gap:8px;font-size:14px}
+  .rlist li span{flex:1;min-width:0} .rlist img{width:36px;height:36px;object-fit:cover;border-radius:6px}
+  .rbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;width:30px;height:30px;font:inherit;cursor:pointer} .rbtn:disabled{opacity:.3}
+  .radd{width:100%;padding:8px;border:1px dashed var(--accent);border-radius:8px;background:var(--card);color:var(--accent);font:inherit}
   .exrow .sets{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;padding:6px 0 2px 8px;border-left:3px solid var(--accent-soft)}
   .setrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap} .setrow .sn{font-family:var(--mono);font-size:12.5px;color:var(--sub);width:40px}
   .setrow .setsel{margin-left:0;font-size:13px} .setrow .setsel select{padding:5px 4px;font-size:14px}
@@ -572,6 +579,26 @@
     (EXTRA[id] || []).forEach((x, j) => L.push(Object.assign({ id: id + "_x" + (j + 1) }, x)));
     return L;
   }
+  // 상급자 "내 루틴 직접 짜기"에서 고를 수 있는 센터 기구 (부위별). 같은 운동의 다른 기구(id_b, id_xN)도 따로 고를 수 있어요.
+  const CAT_PARTS = [
+    ["가슴", ["chest", "incline", "flatbench", "decline", "innerchest", "pecdeck", "dbbench"]],
+    ["등", ["latpull", "row", "highrow", "tbar", "assist", "pullover", "dbrow", "backext"]],
+    ["어깨", ["shoulder", "neckpress", "lateral", "reardelt", "dbohp"]],
+    ["하체", ["legpress", "pendulum", "hacksq", "legext", "legcurl", "hipthrust", "abduct", "adduct", "calf", "rdl", "lunge", "goblet"]],
+    ["팔", ["curl", "dbcurl", "pushdown", "kickback"]],
+    ["복근", ["plank", "sideplank", "deadbug", "birddog"]],
+  ];
+  const baseOf = id => String(id).replace(/_(b|x\d+)$/, "");
+  function machineInfo(id) {
+    const b = baseOf(id), e = EX[b]; if (!e) return null;
+    const v = id === b ? null : variants(b).find(x => x.id === id); if (id !== b && !v) return null;
+    return { id, base: b, n: v ? v.n : e.n, img: v ? v.img || "" : PHOTO[b] || "", vid: v ? VIDEO[id] || v.vid || "" : VIDEO[b] || "", eq: v ? v.eq || e.eq : e.eq, part: e.part, core: !!e.kind, stand: !!(v && v.stand), side: !!(v && v.side), cue: (v && v.cue) || e.cue };
+  }
+  function catalog() {
+    return CAT_PARTS.map(([t, ids]) => ({ t, items: ids.filter(b => EX[b]).flatMap(b => variants(b).map(v => machineInfo(v.id))).filter(Boolean)
+      .filter((x, i, L) => L.findIndex(y => y.n === x.n) === i) }));
+  }
+  const LOWER = new Set(CAT_PARTS[3][1]);
   function make(input) {
     const p = Object.assign({}, input);
     p.name = (p.name || "").trim() || "회원";
@@ -655,6 +682,30 @@
     const startTip = e => e.eq === "plate" ? "원판 없이 기구만으로 1세트 해보고, 쉬우면 가벼운 원판(5kg)부터 끼우기 (적을 때는 끼운 원판 무게 합계)"
       : e.eq === "machine" || e.eq === "cable" ? "가장 가벼운 칸에서 1세트 해보고, 쉬우면 한 칸씩 올리기"
       : e.eq === "db" ? "덤벨 " + e.st[sx] + "에서 시작 (참고)" : e.kind ? "맨몸" : "맨몸으로 시작";
+    // 상급자 직접 짠 루틴: [{from: 회차, days: [{t, ex:[id…]}…]}]. 주 횟수와 날 수가 같고 기구가 하나 이상인 날만 써요.
+    const okDays = L => Array.isArray(L) && L.length === p.freq && L.every(d => d && Array.isArray(d.ex) && d.ex.filter(id => machineInfo(id)).length);
+    const customs = pro ? (Array.isArray(p.customs) ? p.customs : []).filter(c => c && (c.days === null || okDays(c.days))).map(c => ({ from: Math.max(1, +c.from || 1), days: c.days })).sort((x, y) => x.from - y.from) : [];
+    const exOf = (id, e, fixed) => {
+      const pres = weeks.map((w, i) => {
+        const s = Math.min(w.s, 3);
+        if (e.kind === "time") return s + "세트×" + coreT[i] + "초";
+        if (e.kind === "side") return s + "세트×좌우 " + sideR[i] + "회";
+        return w.s + "세트×" + w.r + "회";
+      });
+      if (fixed) {
+        const m = machineInfo(id);
+        return { id, n: m.n, part: m.part, cue: m.cue, core: m.core, eq: m.eq, start: startTip(Object.assign({}, e, { eq: m.eq })), more: "", img: m.img, vid: m.vid, fixed: true,
+          tempo: e.kind === "time" ? "숨은 참지 말고 고르게" : e.kind === "side" ? "한 번에 2초씩 천천히" : "2초 들고(밀고) 3초 내리기", alt: "", pres: m.side ? pres.map(x => x + " (좌우 각각)") : pres };
+      }
+      return null;
+    };
+    const customDays = L => L.map((cd, di) => {
+      const ids = cd.ex.filter(id => machineInfo(id)).filter((id, i, A) => A.indexOf(id) === i).slice(0, 12);
+      const ex = ids.map(id => exOf(id, EX[baseOf(id)], true));
+      const low = ids.filter(id => LOWER.has(baseOf(id))).length, type = low * 2 >= ids.length ? "lower" : "upper";
+      return { no: di + 1, day: WD[WEEKDAYS[p.freq][di]], title: String(cd.t || "").trim().slice(0, 20) || (di + 1) + "일차", type, cardioDay: false, ex, custom: true,
+        cardio: weeks.map((w, i) => ({ min: w.cmin, how: w.chow, set: cardioSet[i] })), cardioFirst: strong && !a.fatHigh };
+    });
     const days = split.map((key, di) => {
       const D = DAYS[key];
       let ids = D.ex.slice();
@@ -698,20 +749,25 @@
       upper: [["가슴 스트레칭(벽 짚고)", "좌우 30초"], ["등 스트레칭(기둥 잡고)", "30초"], ["어깨 스트레칭(팔 당기기)", "좌우 20초"], ["팔 뒤 스트레칭", "좌우 20초"]],
       core: [["엎드려 상체 들기(코브라)", "20초"], ["아기 자세", "30초"], ["엉덩이 스트레칭(4자 자세)", "좌우 30초"]],
     };
-    days.forEach(d => {
+    const plans = customs.map(c => ({ from: c.from, days: c.days ? customDays(c.days) : days }));
+    const warmCool = d => {
       d.warm = [["러닝머신 또는 자전거 가볍게", "5분"]].concat(WARM[d.type]).concat(senior ? [["한 발 서기(벽 옆에서)", "좌우 20초"]] : []);
       d.cool = COOL[d.type];
-    });
+    };
+    days.forEach(warmCool); plans.forEach(P => P.days.forEach(warmCool));
+    // 회차(1부터)마다 쓸 루틴: 그 회차 이전에 시작한 직접 짠 루틴 중 가장 최근 것, 없으면 센터 추천
+    const daysFor = n => { let D = days; plans.forEach(P => { if (P.from <= n) D = P.days; }); return D; };
 
     // 회차별 일지
     const dates = sessionDates(p.start, p.freq);
     const sessions = [];
-    weeks.forEach((w, wi) => days.forEach((d, di) => {
-      const idx = wi * days.length + di;
+    weeks.forEach((w, wi) => days.forEach((d0, di) => {
+      const idx = wi * days.length + di, d = daysFor(idx + 1)[di];
       sessions.push({ idx: idx + 1, week: wi + 1, date: dates ? dates[idx] : "", day: dates ? WD[new Date(dates[idx] + "T00:00:00").getDay()] : d.day, dayNo: d.no, title: d.title,
         ex: d.ex.map(e => {
           const s = { id: e.id, eq: e.eq, n: e.n, pres: e.pres[wi], core: e.core, start: e.start, part: e.part, cue: e.cue, tempo: e.tempo, alt: e.alt, more: e.more, img: e.img, vid: e.vid };
           // 기구 고르기: 1개월차는 1·2주 기본 기구, 3·4주 WEEK34. 2개월차부터는 목록을 2주씩 돌려 가며.
+          if (e.fixed) return s; // 직접 고른 기구는 바꾸지 않아요
           const V = variants(e.id), k = M === 1 ? (wi >= 2 && WEEK34[e.id] ? 1 : 0) : (2 * (M - 1) + (wi >= 2 ? 1 : 0)) % V.length;
           const B = k > 0 ? V[k] : null;
           if (B && !(lowImpact && B.stand)) Object.assign(s, { id: B.id, n: B.n, eq: B.eq, img: B.img || "", vid: VIDEO[B.id] || B.vid || "", cue: B.cue || e.cue, start: startTip(B),
@@ -772,6 +828,7 @@
       member: { name: p.name, sex: p.sex, age: p.age, height: num(p.height), weight: num(p.weight), smm: num(p.smm), fat: num(p.fat), freq: p.freq, goal: p.goal, exp: p.exp, month: M, id: p.id || "",
         token: /^[a-z0-9]{10,16}$/.test(p.token || "") ? p.token : newToken() },
       analysis: a, senior, lowImpact, adv, pro, notes, weeks, days, sessions, cardioWhat, hr, foodTips, expect,
+      defaultDays: days.map(d => ({ t: d.title, ex: d.ex.map(e => e.id) })), customs,
       protein, goal4w, tips, safety, restDay,
       minutes: strong ? "약 60분" : "약 60~70분",
     };
@@ -1079,7 +1136,7 @@
     return o;
   }
 
-  root.TRIO_PROGRAM = { make, sms, makePT, smsPT, bytes, parseMemo, analyze, logCode, parseLogCode, logLink, setupLink, smsSetup, smsSafe, newToken, LOG_URL, API_URL, EX, GOALS, EXP };
+  root.TRIO_PROGRAM = { make, sms, makePT, smsPT, bytes, parseMemo, analyze, logCode, parseLogCode, logLink, setupLink, smsSetup, smsSafe, newToken, LOG_URL, API_URL, EX, GOALS, EXP, catalog, machineInfo };
 })(typeof window !== "undefined" ? window : this);
 
 </script>
@@ -1346,7 +1403,7 @@ function celebrate(lv) {
   try { navigator.vibrate && navigator.vibrate([80, 60, 80]); } catch (e) {}
 }
 function build() {
-  pg = TRIO_PROGRAM.make(P);
+  pg = TRIO_PROGRAM.make(Object.assign({}, P, { customs: myCustoms() }));
   if (DEMO) ["name", "sex", "age", "weight", "freq", "goal", "start"].forEach(k => $(k).value = P[k] ?? "");
   $("hName").textContent = pg.member.name + " 회원님 운동 일지";
   $("hSub").textContent = (pg.month > 1 ? pg.month + "개월차" + (pg.mtheme ? "(" + pg.mtheme + ")" : "") + " · " : "") + pg.member.goal + " · 주 " + pg.member.freq + "회 · " + (pg.start ? md(pg.start) + " ~ " + md(pg.end) : "4주") + (DEMO ? " · 체험판" : "");
@@ -1553,6 +1610,7 @@ function render() {
   }
   if (!READONLY) h += attendPanel();
   h += bodyPanel();
+  if (pg.pro && !READONLY) h += `<section class="panel" id="routineBox"></section>`;
   if (cur) h += sessionCard(cur, cells[cur.idx], true);
 
   // 무게 변화표
@@ -1580,6 +1638,7 @@ function render() {
   });
   h += `</div>`;
   $("out").innerHTML = h;
+  drawRoutine();
   try { $("moveCode").value = btoa(unescape(encodeURIComponent(JSON.stringify(R)))); } catch (e) {}
 }
 
@@ -1609,6 +1668,62 @@ function startTimer(sec) {
   const tick = () => { const el = $("tm"), b = $("tmBtn"); if (!el) { clearInterval(timer); return; } el.textContent = left + "초"; if (b) b.textContent = "다시"; if (left <= 0) { clearInterval(timer); el.textContent = "다음 세트!"; try { navigator.vibrate && navigator.vibrate(300); } catch (e) {} } left--; };
   tick(); timer = setInterval(tick, 1000);
 }
+// ---------- 상급자: 내 루틴 직접 짜기 ----------
+// R.routine = [{m: 개월차, from: 시작 회차, days: [{t, ex:[기구 id…]}…] 또는 null(센터 추천으로 되돌림)}]
+function myCustoms() {
+  const M = Math.max(1, +P.month || 1), L = (R && R.routine) || [];
+  const prev = L.filter(x => x.m < M).at(-1);
+  return (prev && prev.days ? [{ from: 1, days: prev.days }] : []).concat(L.filter(x => x.m === M).map(x => ({ from: x.from, days: x.days })));
+}
+let EDIT = null, CAT = null;
+const activeRoutine = () => { const last = myCustoms().at(-1); return last && last.days ? last.days : null; };
+function drawRoutine() {
+  const box = $("routineBox"); if (!box) return;
+  const act = activeRoutine(), cur = current();
+  if (!EDIT) {
+    box.innerHTML = `<h2 style="margin:0">내 루틴 직접 짜기 <span class="hint" style="font-weight:400">상급</span></h2>
+      <p class="sub" style="margin:4px 0 8px">${act ? "지금 내가 짠 루틴으로 운동하고 있어요." : "지금은 센터가 짠 부위별 루틴이에요. 원하는 부위와 기구로 직접 바꿀 수 있어요."}</p>
+      <div class="rsum">${(act || pg.defaultDays).map((d, i) => `<span><b>${i + 1}일차</b> ${esc(d.t)}</span>`).join("")}</div>
+      <div class="row" style="margin-top:10px;gap:8px">${cur ? `<button class="btn" type="button" data-rt-open="1">${act ? "내 루틴 고치기" : "직접 짜기"}</button>` : ""}
+      ${act && cur ? `<button class="btn ghost" type="button" data-rt-reset="1">센터 추천 루틴으로 되돌리기</button>` : ""}</div>`;
+    return;
+  }
+  CAT = CAT || TRIO_PROGRAM.catalog();
+  const opts = CAT.map(g => `<optgroup label="${esc(g.t)}">${g.items.map(x => `<option value="${esc(x.id)}">${esc(x.n)}</option>`).join("")}</optgroup>`).join("");
+  box.innerHTML = `<h2 style="margin:0">내 루틴 직접 짜기</h2>
+    <p class="hint" style="margin:4px 0 0">주 ${pg.member.freq}회라 ${pg.member.freq}일 루틴을 짜요. 날마다 부위 이름을 적고 센터 기구를 골라 주세요 (하루 12개까지).</p>
+    ${EDIT.map((d, i) => `<div class="rday">
+      <div class="row" style="gap:8px"><b class="num">${i + 1}일차</b><input class="rtitle" data-rt-t="${i}" value="${esc(d.t)}" maxlength="20" placeholder="부위 (예: 가슴·삼두)" aria-label="${i + 1}일차 부위 이름"></div>
+      <ol class="rlist">${d.ex.map((id, j) => { const m = TRIO_PROGRAM.machineInfo(id); if (!m) return ""; return `<li>${m.img ? `<img src="${esc(imgSrc(m))}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span>${esc(m.n)}</span>
+        <button type="button" class="rbtn" data-rt-up="${i},${j}" ${j ? "" : "disabled"} aria-label="위로">↑</button><button type="button" class="rbtn" data-rt-del="${i},${j}" aria-label="빼기">✕</button></li>`; }).join("")}</ol>
+      ${d.ex.length < 12 ? `<select class="radd" data-rt-add="${i}" aria-label="${i + 1}일차 기구 추가"><option value="">+ 기구 추가</option>${opts}</select>` : ""}
+    </div>`).join("")}
+    <p class="hint" style="margin:8px 0 0">저장하면 ${cur ? cur.idx + "회차" : "다음 운동"}부터 이 루틴으로 바뀌어요. 이미 한 운동 기록은 그대로예요. 세트별 무게·횟수는 지금처럼 일지에서 적어요.</p>
+    <p class="err" id="rtErr" style="margin:4px 0 0"></p>
+    <div class="row" style="margin-top:8px;gap:8px"><button class="btn" type="button" data-rt-save="1">이 루틴으로 저장</button><button class="btn ghost" type="button" data-rt-cancel="1">취소</button></div>`;
+}
+function setRoutine(days) {
+  const M = pg.month, cur = current(), from = cur ? cur.idx : pg.sessions.length + 1;
+  R.routine = (R.routine || []).filter(x => !(x.m === M && x.from >= from)).concat([{ m: M, from, days }]);
+  EDIT = null; save(); build();
+}
+$("out").addEventListener("click", e => {
+  const d = e.target.dataset; if (!e.target.closest || !e.target.closest("#routineBox")) return;
+  if (d.rtOpen) { EDIT = JSON.parse(JSON.stringify(activeRoutine() || pg.defaultDays)); drawRoutine(); }
+  else if (d.rtCancel) { EDIT = null; drawRoutine(); }
+  else if (d.rtReset) { if (confirm("센터가 짠 루틴으로 되돌릴까요? 다음 운동부터 바뀌어요.")) { setRoutine(null); toast("센터 추천 루틴으로 되돌렸어요"); } }
+  else if (d.rtDel) { const [i, j] = d.rtDel.split(",").map(Number); EDIT[i].ex.splice(j, 1); drawRoutine(); }
+  else if (d.rtUp) { const [i, j] = d.rtUp.split(",").map(Number); if (j > 0) { const L = EDIT[i].ex; [L[j - 1], L[j]] = [L[j], L[j - 1]]; } drawRoutine(); }
+  else if (d.rtSave) {
+    const empty = EDIT.findIndex(x => !x.ex.length);
+    if (empty >= 0) { $("rtErr").textContent = (empty + 1) + "일차에 기구를 하나 이상 넣어 주세요."; return; }
+    EDIT.forEach((x, i) => { x.t = String(x.t || "").trim() || (i + 1) + "일차"; });
+    setRoutine(EDIT); toast("내 루틴을 저장했어요!"); window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+});
+$("out").addEventListener("change", e => { const i = e.target.dataset.rtAdd; if (i === undefined || !EDIT) return; const v = e.target.value; if (v && !EDIT[+i].ex.includes(v)) EDIT[+i].ex.push(v); drawRoutine(); });
+$("out").addEventListener("input", e => { const i = e.target.dataset.rtT; if (i !== undefined && EDIT) EDIT[+i].t = e.target.value; });
+
 // 하루에 한 번만 "운동 마침" (체험판은 제외)
 const doneToday = () => !DEMO && !!pg && pg.sessions.some(x => R[x.idx] && R[x.idx].done && R[x.idx].at === today);
 function finish(idx, at) {
